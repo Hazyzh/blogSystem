@@ -85,11 +85,11 @@
         <div id="content">
             <h1>火狐浏览器你好</h1>
             <p class="info-title">
-                
+
                     <span class="tags">红红活活</span>
-                
+
                     <span class="tags">哈哈嘻嘻</span>
-                
+
                 <span class="time">2017年07月23日 14:35:42</span>
             </p>
             <span class="line"></span>
@@ -126,6 +126,6 @@
 
         </div>
 
-        <script type="text/javascript" src="/js/bundle.js"></script>
+        <!-- <script type="text/javascript" src="/js/bundle.js"></script> -->
     </body>
 </html>

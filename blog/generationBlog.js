@@ -108,7 +108,7 @@ function generationHtml(fileName) {
 // 数据库查询
 connection.connect()
 
-var sql = 'select blogId from myblog where id = 7'
+var sql = 'select blogId from myblog where id = 5'
 // var sql = 'select blogId from myblog'
 
 connection.query(sql, (err, results) => {

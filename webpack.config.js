@@ -16,7 +16,7 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             title: 'hello world',
-            template: path.resolve(__dirname, './public/b/170723143542')
+            template: path.resolve(__dirname, './public/b/170720113848')
         }),
         new webpack.HotModuleReplacementPlugin()
     ],
