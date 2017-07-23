@@ -3,7 +3,7 @@ var fs = require('fs'),
     connection = require('./mysql.js'),
     title = process.argv[2] || 'a new blog',
     nowtime = moment(),
-    time = nowtime.format('YYYY/MM/DD HH:ss:mm'),
+    time = nowtime.format('YYYY年MM月DD日 HH:ss:mm'),
     fileName = nowtime.format('YYMMDDHHssmm'),
     sqltime = nowtime.format('YYYY-MM-DD HH:ss:mm')
 

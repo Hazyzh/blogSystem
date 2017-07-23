@@ -78,11 +78,13 @@ function generationHtml(fileName) {
         var config = JSON.parse(reg.exec(data)[0]),
             mdStr = data.replace(reg, ''),
             content = marked(mdStr, {renderer: renderer}),
-            output = ejs.render(template, {
+            catalog = JSON.stringify(headInfo)
+
+            config.outTags = config.tags.split(',')
+        let output = ejs.render(template, {
                 content,
                 config
-            }),
-            catalog = JSON.stringify(headInfo)
+            })
 
         let mysql = 'update myblog set title=?,keywords=?,tags=?,relationBlog=?,generateFlag=1,catalog=? where blogId=?'
         connection.query(mysql, [config.title, config.keywords, config.tags, config.relationBlog, catalog, fileName.split('.')[0]], (err, results) => {
@@ -106,7 +108,7 @@ function generationHtml(fileName) {
 // 数据库查询
 connection.connect()
 
-var sql = 'select blogId from myblog where id = 4'
+var sql = 'select blogId from myblog where id = 7'
 // var sql = 'select blogId from myblog'
 
 connection.query(sql, (err, results) => {
