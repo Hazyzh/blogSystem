@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv=Content-Type content="text/html;charset=utf-8">
+        <meta name="keywords" contect="<%=config.keywords %>">
+        <meta name="author" contect="hazyzh">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+        <title><%=config.title %></title>
+        <link rel="shortcut icon" href="/static/imgs/logo.png"  type="image/x-icon">
+        <style>
+            body{
+                font: 17px/1.5 "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif;
+                background: white;
+                margin: 0;
+                color: #33333d;
+                overflow-y: scroll;
+                overflow-x: hidden;
+            }
+            p{
+                font-weight: 300;
+                letter-spacing: 1px;
+                font-family: "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif;
+            }
+            #content{
+                width: 80%;
+                margin: auto;
+            }
+            pre{
+                background: #eee;
+                font-size: 17px;
+                padding: 20px 0;
+                border-radius: 10px;
+                overflow: auto;
+                font-weight: 300;
+                text-shadow: 0 1px white;
+                font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+                white-space: pre;
+                word-spacing: normal;
+                word-break: normal;
+                word-wrap: normal;
+                line-height: 1.5;
+            }
+        </style>
+        <link rel="stylesheet" href="/styles/ocean.css">
+    </head>
+    <body>
+        <div id="content">
+            <h1><%=config.title %></h1>
+            <p> <%=config.time %></p>
+            <%-content%>
+        </div>
+    </body>
+</html>

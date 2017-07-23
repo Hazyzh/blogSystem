@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv=Content-Type content="text/html;charset=utf-8">
+        <meta name="keywords" contect="好你个火狐">
+        <meta name="author" contect="hazyzh">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+        <title>火狐浏览器</title>
+        <link rel="shortcut icon" href="/static/imgs/logo.png"  type="image/x-icon">
+        <style>
+            body{
+                font: 17px/1.5 "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif;
+                background: white;
+                margin: 0;
+                color: #33333d;
+                overflow-y: scroll;
+                overflow-x: hidden;
+            }
+            p{
+                font-weight: 300;
+                letter-spacing: 1px;
+                font-family: "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif;
+            }
+            #content{
+                width: 80%;
+                margin: auto;
+            }
+            pre{
+                background: #eee;
+                font-size: 17px;
+                padding: 20px 0;
+                border-radius: 10px;
+                overflow: auto;
+                font-weight: 300;
+                text-shadow: 0 1px white;
+                font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+                white-space: pre;
+                word-spacing: normal;
+                word-break: normal;
+                word-wrap: normal;
+                line-height: 1.5;
+            }
+        </style>
+        <link rel="stylesheet" href="/styles/ocean.css">
+    </head>
+    <body>
+        <div id="content">
+            <h1>火狐浏览器</h1>
+            <p> 2017/07/20 11:28:48</p>
+            <h1>hello world</h1><h3 id="hazyzh-h3-1">a标签的&#39;download&#39;属性</h3><p><em>html5</em> 中a标签增加了download选项，<code>&lt;a href=&quot;/images/logo.jpg&quot; download=&quot;logo&quot;&gt;</code>
+设置了download就可以当作资源下载，而不是出现文件预览图。</p>
+<pre><code class="lang-javascript">    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">download</span>(<span class="hljs-params">name, url</span>) </span>{
+        <span class="hljs-keyword">var</span> s = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">"a"</span>)
+        s.download = name
+        s.href=<span class="hljs-built_in">url</span>
+        s.click()
+    }
+</code></pre>
+<h3 id="hazyzh-h3-2">canvas生成图片</h3><pre><code class="lang-javascript">    <span class="hljs-built_in">var</span> myCanvas = document.getElementById(<span class="hljs-string">'mycanvas'</span>),
+        ctx = myCanvas.getContext(<span class="hljs-string">'2d'</span>)
+
+        <span class="hljs-params">...</span>
+
+    <span class="hljs-built_in">var</span> <span class="hljs-built_in">data</span> = myCanvas.toDataURL(<span class="hljs-string">"image/png"</span>),
+         s=document.createElement(<span class="hljs-string">"a"</span>)
+         s.download=<span class="hljs-string">"chart.png"</span>
+         s.href=<span class="hljs-built_in">data</span>.replace(<span class="hljs-string">"image/png"</span>,<span class="hljs-string">"image/octet-stream"</span>)
+         s.click()
+</code></pre>
+<pre><code class="lang-html">    <span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>hello<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span>
+</code></pre>
+<h4 id="hazyzh-h4-1">四级标题</h4><h3 id="hazyzh-h3-3">三级标签</h3><h4 id="hazyzh-h4-2">撒的啊是</h4><h4 id="hazyzh-h4-3">阿萨嗷嗷</h4>
+        </div>
+    </body>
+</html>
