@@ -15,14 +15,19 @@ class Catalog extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            name: '1'
+            data: []
         }
     }
 
     componentWillMount(){
-        console.log(1211111)
-        axios.get('/helloworld').then(data => {
-            console.log(data)
+        // var url = window.location.pathname.replace('b', 'get_catalog')
+        var url = "/get_catalog/170720113848"
+
+        axios.get(url).then(data => {
+            var blog_catalog = JSON.parse(data.data)
+            this.setState({
+                data: blog_catalog
+            })
         })
     }
 
@@ -36,7 +41,7 @@ class Catalog extends Component {
                 }
             })
         }
-        var links = loop(data)
+        var links = loop(this.state.data)
         return (
             <div>
                 <Anchor>
