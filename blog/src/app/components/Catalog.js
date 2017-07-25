@@ -20,7 +20,7 @@ class Catalog extends Component {
     }
 
     componentWillMount(){
-        console.log(1)
+        // console.log(1)
         // axios.get('/helloworld')
     }
 
