@@ -10,5 +10,10 @@
             "libraryDirectory": "lib",
             "style": true
             }]
-    ]
+    ],
+    "env": {
+      "development": {
+        "presets": ["react-hmre"]
+      }
+    }
 }

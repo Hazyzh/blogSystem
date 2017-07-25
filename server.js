@@ -1,6 +1,24 @@
 var express = require('express');
 var app = express(),
-    path = require('path')
+    path = require('path'),
+    webpack = require('webpack'),
+    config = require('./webpack.config'),
+    webpackDevMiddleware = require('webpack-dev-middleware'),
+    webpackHotMiddleware = require('webpack-hot-middleware')
+
+
+config.entry.unshift("webpack-hot-middleware/client")
+var compiler = webpack(config)
+// console.log(config)
+
+
+
+app.use(webpackDevMiddleware(compiler, {
+    noInfo: true,
+    publicPath: config.output.publicPath
+}))
+
+app.use(webpackHotMiddleware(compiler))
 
 app.use(express.static('public',{
     setHeaders: headFunction
@@ -13,7 +31,7 @@ function headFunction(res, pathname) {
 }
 
 
-app.get('*', (req, res) => {
+app.get('/*', (req, res) => {
     res.send('404 !!')
 })
 

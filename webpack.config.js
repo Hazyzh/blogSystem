@@ -3,10 +3,11 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const webpack = require('webpack')
 
 module.exports = {
-    entry: './blog/src/index.js',
+    entry: ['./blog/src/index.js'],
     output: {
         filename: 'js/bundle.js',
-        path: path.resolve(__dirname, './public')
+        path: path.resolve(__dirname, './public'),
+        publicPath: '/'
     },
     devtool: 'inline-source-map',
     devServer: {
