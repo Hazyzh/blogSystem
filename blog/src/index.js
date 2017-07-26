@@ -8,3 +8,7 @@ ReactDOM.render(
     <App />,
     document.getElementById('asideContent')
 )
+
+if (module.hot) {
+  module.hot.accept();
+}

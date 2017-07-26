@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "newblog": "node blog/generation.js",
     "render": "node blog/generationBlog.js && node server",
-    "start": "webpack-dev-server --open"
+    "start": "webpack-dev-server --open",
+    "dev": "export NODE_ENV=dev && node server.js"
   },
   "repository": {
     "type": "git",
@@ -46,6 +47,8 @@
     "mysql": "^2.13.0",
     "postcss-loader": "^2.0.6",
     "react-transform-hmr": "^1.0.4",
+    "socket.io": "^2.0.3",
+    "socket.io-client": "^2.0.3",
     "style-loader": "^0.18.2",
     "webpack": "^3.3.0",
     "webpack-dev-server": "^2.6.0",

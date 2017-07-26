@@ -25,8 +25,11 @@
                 font-family: "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif;
             }
             #content{
-                width: 1100px;
+                width: 1200px;
                 margin: auto;
+            }
+            #content img{
+                width: 100%;
             }
             pre{
                 background: #eee;
@@ -66,7 +69,7 @@
                 float: left;
             }
             .blog-aside{
-                width: 300px;
+                width: 400px;
                 float: right;
             }
             .clearleft{
@@ -84,57 +87,36 @@
     <body>
         <div id="content">
             <h1>大的说法</h1>
-            <p class="info-title">
+            <span class="info-title">
 
                     <span class="tags">飒飒</span>
 
                 <span class="time">2017/07/20 11:38:48</span>
-            </p>
+            </span>
             <span class="line"></span>
             <div class="blog-container clearleft">
                 <article class="blog-content">
-                    <h3 id="hazyzh-h3-1">前言:</h3><p><img src="http://oqqyvkd0p.bkt.clouddn.com/imgs/bg.jpg" alt="hazy"></p>
+                    <h3 id="hazyzh-h3-1">前言</h3><p><img src="http://oqqyvkd0p.bkt.clouddn.com/imgs/bg.jpg" alt="hazy"></p>
 <p> 记得没错的话应该是05月19日入职，不知不觉已经三个月了。<em>【失控】</em> 这个名字听起来还是有点奇怪的，当初培训完聚会时候收到这个面试短信，还在和其他同学嘲笑这个名字，没想到自己进来工作了。</p>
 <p> 感觉能进入这个公司还是挺幸运的，起初以为是外包公司挺苦恼的，毕竟传闻中外包公司名声都不怎么样。后面进来后意外的发现公司虽然规模不大，不过做事风格和技术栈都和我想要的非常符合。对比其他同学都工作，感觉自己真是挺幸运的。</p>
 <p> 还记得刚进去时候让写 <strong>Okrs</strong> 我还给自己定了很多规划目标，时间慢慢过去，我自己都忘记自己当初的目标了，以致于之前还想去墙上照个相片保留，没想那地方到已经换成 <strong>logo</strong> 了，感觉自己最近一段时间有点迷茫，想学的东西有点杂，想做的事情也有点多，导致自己有时候静下来反而没头绪不知道应该做什么了。</p>
-<h3 id="hazyzh-h3-2">期望的技术栈：</h3><p><img src="http://oqqyvkd0p.bkt.clouddn.com/ef0aa930fee923d34df5a395c65dbbe9.jpg" alt="框架"></p>
+<h3 id="hazyzh-h3-2">期望的技术栈</h3><p><img src="http://oqqyvkd0p.bkt.clouddn.com/ef0aa930fee923d34df5a395c65dbbe9.jpg" alt="框架"></p>
 <p> 自己的知识会很大程度改变对物体的认知，记得没工作前在自学 <strong>vue</strong> ,自己坚定的认为这个是最好的框架，自己后面一定要把这个学好、吃透。融汇贯通后就可以横行天下了，给自己定目标要在一两个月内学会核心知识，现在发现我所谓的核心知识不过是框架知识体系的冰山一脚。幸运的是公司是用<strong>react</strong> 的，这让我有机会了解到另一个流行框架，不再局限于一种思维方式，可以跳出框架本身，去了解框架整个的技术体系，整套的技术栈。<em>react</em> 没有给提供官方的脚手架，这一度让我更加苦恼，但是现在看来，自己去搭建脚手架工具的过程是可以带来质的改变的。这是可以让你真正的去了解整套框架的技术栈，让你真正的能去使用它。</p>
 <p> 之前期望的技术栈已经忘了很多了，索性现阶段思考下自己的预期</p>
-<ul>
-<li><p>前端</p>
-<ul>
-<li>es6</li>
-<li>函数式编程</li>
-<li>组件化开发思想</li>
-<li>less</li>
-</ul>
-<ul>
-<li>服务端</li>
-</ul>
-<ul>
-<li>expross</li>
-<li>koa</li>
-<li>socketIo</li>
-<li>nginx</li>
-</ul>
-<ul>
-<li>数据</li>
-</ul>
-<ul>
-<li>mongodb</li>
-<li>mysql</li>
-<li>redis</li>
-</ul>
-<ul>
-<li>环境</li>
-</ul>
-<ul>
-<li>linux</li>
-<li>阿里云ecs</li>
-</ul>
-<p>也是奇怪，明明是前端工程师，想起来期望技术，前端的要想半天，服务端后台的东西内心一下子能涌现很多。技术无止尽吧，希望大前端时代自己可以有机会接触这些知识。还记得小时候跟别人写同学录， 自己就写希望长大后可以天天学习自己想学的东西，没想到现在正在慢慢变成现实。</p>
-</li>
-</ul>
+<h5>前端</h5><pre><code>-<span class="ruby"> es6
+</span>-<span class="ruby"> 函数式编程
+</span>-<span class="ruby"> 组件化开发思想
+</span>-<span class="ruby"> less</span>
+</code></pre><h5>服务端</h5><pre><code>-<span class="ruby"> expross
+</span>-<span class="ruby"> koa
+</span>-<span class="ruby"> socketIo
+</span>-<span class="ruby"> nginx</span>
+</code></pre><h5>数据</h5><pre><code>-<span class="ruby"> mongodb
+</span>-<span class="ruby"> mysql
+</span>-<span class="ruby"> redis</span>
+</code></pre><h5>环境</h5><pre><code>-<span class="ruby"> linux
+</span>-<span class="ruby"> 阿里云ecs</span>
+</code></pre><p>  也是奇怪，明明是前端工程师，想起来期望技术，前端的要想半天，服务端后台的东西内心一下子能涌现很多。技术无止尽吧，希望大前端时代自己可以有机会接触这些知识。还记得小时候跟别人写同学录， 自己就写希望长大后可以天天学习自己想学的东西，没想到现在正在慢慢变成现实。</p>
 <h3 id="hazyzh-h3-3">关于技术栈</h3><h4 id="hazyzh-h4-1">es6</h4><p><a href="http://es6.ruanyifeng.com/"><strong>《ECMAScript 6 入门》</strong></a> 兴致勃勃的把这个书买回来，立志要几天内融汇贯通<em>es6</em>，现在看来却有点搞笑，纯概念性的东西看了一两天就看不下去了。还好后面工作用react, 不得不接触es6，当把一个个知识点用到生产环境时候，慢慢的积累，才勉强揭开了es6的神秘面纱，简单回想一下：</p>
 <ul>
 <li>let,const (let局部作用域，在一些闭包情况下奇效)</li>

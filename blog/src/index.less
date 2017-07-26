@@ -10,11 +10,81 @@ pre{
 
 // aside
 .aside-box{
-    padding: 20px;
+    padding: 50px;
     .chat-box{
         margin-top: 30px;
     }
 }
-#content img{
-    width: 100%;
+#content{
+    img{
+        width: 100%;
+        padding: 20px;
+        box-shadow: 0px 0px 2px #eee;
+    }
+    pre{
+        background: url('https://static.segmentfault.com/v-5976f73d/global/img/blueprint.png') #F6F6F6;
+        padding: 20px;
+        margin: 10px 0px;
+        font-size: 16px;
+        overflow: auto;
+        font-weight: 300;
+        text-shadow: 0 1px white;
+        font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+        white-space: pre;
+        word-spacing: normal;
+        word-break: normal;
+        word-wrap: normal;
+        line-height: 1.5;
+    }
+    p{
+        font-size: 14px;
+        line-height: 1.6em;
+        text-indent: 2em;
+    }
+    h2,h3,h4,h5,h6{
+        color: #00a2ae;
+        margin: 1.6em 0;
+        &:before{
+            content: " ";
+            display: inline-block;
+            vertical-align: bottom;
+            width: 5px;
+            height: 2em;
+            background: #a7dfe3;
+            margin-right: 20px;
+        }
+    }
+    ul,li{
+        list-style: circle;
+    }
+    ul{
+        margin-left: 2em;
+    }
+}
+
+.talk-container{
+    height: 300px;
+    overflow-y: auto;
+    padding-left: 10px;
+    .my-talk{
+        text-align: right;
+        .name{float: right;}
+        .time{margin-right: 10px;}
+    }
+    p{
+        margin: 0px 20px 3px 20px;
+        border-bottom: 1px solid #eee;
+        text-indent: 0px !important;
+        padding: 0px;
+        font-weight: 300;
+        letter-spacing: 0;
+    }
+    .name{
+        font-size: 14px;
+        font-weight: bold;
+    }
+    .time{
+        color: #bfbfbf;
+        font-size: 12px;
+    }
 }

@@ -1,25 +1,22 @@
 var express = require('express');
 var app = express(),
     path = require('path'),
-    webpack = require('webpack'),
-    config = require('./webpack.config'),
-    webpackDevMiddleware = require('webpack-dev-middleware'),
-    webpackHotMiddleware = require('webpack-hot-middleware'),
     connection = require('./blog/mysqlForServer.js')
 
+if(process.env.NODE_ENV == 'dev') {
+    var webpack = require('webpack')
+        config = require('./webpack.config'),
+        webpackDevMiddleware = require('webpack-dev-middleware'),
+        webpackHotMiddleware = require('webpack-hot-middleware')
 
-config.entry.unshift("webpack-hot-middleware/client")
-var compiler = webpack(config)
-// console.log(config)
-
-
-
-app.use(webpackDevMiddleware(compiler, {
-    noInfo: true,
-    publicPath: config.output.publicPath
-}))
-
-app.use(webpackHotMiddleware(compiler))
+        config.entry.unshift("webpack-hot-middleware/client")
+    var compiler = webpack(config)
+        app.use(webpackDevMiddleware(compiler, {
+            noInfo: true,
+            publicPath: config.output.publicPath
+        }))
+        app.use(webpackHotMiddleware(compiler))
+}
 
 app.use(express.static('public',{
     setHeaders: headFunction
@@ -36,7 +33,7 @@ app.get('/get_catalog/:blogId', (req, res) => {
     let blogId = req.params.blogId
     var sql = 'select catalog from myblog where blogId = ?'
     connection.query(sql, [blogId], (err, results) => {
-        res.send(results[0].catalog)
+        res.json(results[0].catalog)
     })
 })
 

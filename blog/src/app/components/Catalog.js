@@ -1,9 +1,8 @@
-import React,{ Component } from 'react'
+import React, { Component } from 'react'
 import { Anchor } from 'antd'
 const { Link } = Anchor
 
 import axios from 'axios'
-import data from './data.json'
 
 function htmlDecode(input){
     var e = document.createElement('div');

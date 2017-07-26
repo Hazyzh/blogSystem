@@ -1,6 +1,7 @@
 import React from 'react'
 import { Affix } from 'antd'
 import Catalog from './components/Catalog.js'
+import TalkBox from './components/TalkBox.js'
 
 // const app = ()=> (
 //     <div className="aside-box">
@@ -24,6 +25,7 @@ class App extends React.Component {
                    <p>导航栏</p>
                    <Catalog />
                    <p className="chat-box">讨论区</p>
+                   <TalkBox />
                </Affix>
             </div>
         )

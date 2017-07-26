@@ -25,7 +25,7 @@
                 font-family: "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif;
             }
             #content{
-                width: 1100px;
+                width: 1200px;
                 margin: auto;
             }
             #content img{
@@ -69,7 +69,7 @@
                 float: left;
             }
             .blog-aside{
-                width: 300px;
+                width: 400px;
                 float: right;
             }
             .clearleft{
@@ -87,12 +87,12 @@
     <body>
         <div id="content">
             <h1><%=config.title %></h1>
-            <p class="info-title">
+            <span class="info-title">
                 <%for (var i=0;i<config.outTags.length;i++){%>
                     <span class="tags"><%=config.outTags[i]%></span>
                 <%}%>
                 <span class="time"><%=config.time %></span>
-            </p>
+            </span>
             <span class="line"></span>
             <div class="blog-container clearleft">
                 <article class="blog-content">
