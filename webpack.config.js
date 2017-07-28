@@ -9,19 +9,27 @@ module.exports = {
         path: path.resolve(__dirname, './public'),
         publicPath: '/'
     },
-    devtool: 'inline-source-map',
+    // devtool: 'inline-source-map',
     devServer: {
         hot: true,
         contentBase: path.resolve(__dirname, './public')
     },
     plugins: [
-        new HtmlWebpackPlugin({
-            title: 'hello world',
-            inline: true,
-            color: true,
-            template: path.resolve(__dirname, './public/b/170720113848')
+        // new HtmlWebpackPlugin({
+        //     title: 'hello world',
+        //     inline: true,
+        //     color: true,
+        //     // template: path.resolve(__dirname, './public/b/170720113848')
+        //     // template: path.resolve(__dirname, './blog/template.html')
+        // }),
+        // new webpack.HotModuleReplacementPlugin(),
+        new webpack.optimize.OccurrenceOrderPlugin(), // 按照引用程度来排序各个模块，引用的越频繁id就越短，达到减小文件大小的效果
+        new webpack.optimize.UglifyJsPlugin({  // 用于压缩输出js代码
+            compress: {
+                warnings: false,
+                drop_console: true
+            }
         }),
-        new webpack.HotModuleReplacementPlugin(),
         new webpack.BannerPlugin("Copyright Hazyzh All rights reserved.")
     ],
     module: {

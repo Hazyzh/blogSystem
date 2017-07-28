@@ -3,9 +3,9 @@ var connection
 
 function handleError () {
     connection = mysql.createConnection({
-        host: 'localhost',
+        host: 'rm-wz9q5gati5vm67726o.mysql.rds.aliyuncs.com',
         user: 'root',
-        password: 'hou123',
+        password: 'Hou19910325',
         database: 'hazyzh',
         port: 3306
     });

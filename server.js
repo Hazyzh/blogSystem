@@ -1,7 +1,8 @@
 var express = require('express');
 var app = express(),
     path = require('path'),
-    connection = require('./blog/mysqlForServer.js')
+    connection = require('./blog/mysqlForServer.js'),
+    socket = require('./blog/blogSocket.js')
 
 if(process.env.NODE_ENV == 'dev') {
     var webpack = require('webpack')
@@ -43,12 +44,11 @@ app.get('/*', (req, res) => {
     res.send('404 !!')
 })
 
-
-
-
 var server = app.listen(8080, function () {
   var host = server.address().address;
   var port = server.address().port;
 
   console.log('Example app listening at http://%s:%s', host, port);
 });
+
+socket(server)

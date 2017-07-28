@@ -1,8 +1,7 @@
 var fs = require('fs'),
     ejs = require('ejs'),
     marked = require('marked'),
-    connection = require('./mysql.js'),
-    renderer = new marked.Renderer()
+    connection = require('./mysql.js')
 
     marked.setOptions({
         highlight: function (code) {
@@ -47,13 +46,17 @@ function gendir(name, callback) {
 
 // 生成文件
 function generationHtml(fileName) {
+    console.log(fileName)
+
     fileLength--
     let newstate = fileLength
     // mard 渲染标题规则
     let headInfo = [],
         index1 = 0,
         index2 = 0,
-        count = 0
+        count = 0,
+        renderer = new marked.Renderer()
+
     renderer.heading = function(text, level) {
         if(level == 3) {
             headInfo.push({
@@ -76,22 +79,26 @@ function generationHtml(fileName) {
     fs.readFile('./md/'+fileName, 'utf-8', (err, data) => {
         let reg = /^{(.|\n)*?}/
         var config = JSON.parse(reg.exec(data)[0]),
-            mdStr = data.replace(reg, ''),
-            content = marked(mdStr, {renderer: renderer}),
-            catalog = JSON.stringify(headInfo)
-
+            mdStr = data.replace(reg, '')
             config.outTags = config.tags.split(',')
+
+        var content = marked(mdStr, {renderer: renderer}, () => {
+                console.log(headInfo)
+                let catalog = JSON.stringify(headInfo)
+                let mysql = 'update myblog set title=?,keywords=?,tags=?,relationBlog=?,generateFlag=1,catalog=? where blogId=?'
+                connection.query(mysql, [config.title, config.keywords, config.tags, config.relationBlog, catalog, fileName.split('.')[0]], (err, results) => {
+                    if(err) throw err
+                    console.log('mysql has change ****', newstate)
+                    if(newstate == 0) {connection.end()}
+                })
+            })
+
         let output = ejs.render(template, {
                 content,
                 config
             })
 
-        let mysql = 'update myblog set title=?,keywords=?,tags=?,relationBlog=?,generateFlag=1,catalog=? where blogId=?'
-        connection.query(mysql, [config.title, config.keywords, config.tags, config.relationBlog, catalog, fileName.split('.')[0]], (err, results) => {
-            if(err) throw err
-            console.log('mysql has change ****', newstate)
-            if(newstate == 0) {connection.end()}
-        })
+
 
         fs.writeFile(`./public/b/${fileName.split('.')[0]}`, output, (err) => {
             if(!err) {
@@ -108,8 +115,8 @@ function generationHtml(fileName) {
 // 数据库查询
 connection.connect()
 
-var sql = 'select blogId from myblog where id = 5'
-// var sql = 'select blogId from myblog'
+// var sql = 'select blogId from myblog where id = 5'
+var sql = 'select blogId from myblog'
 
 connection.query(sql, (err, results) => {
     if(err) throw err

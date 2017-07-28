@@ -8,7 +8,9 @@
     "newblog": "node blog/generation.js",
     "render": "node blog/generationBlog.js && node server",
     "start": "webpack-dev-server --open",
-    "dev": "export NODE_ENV=dev && node server.js"
+    "dev": "export NODE_ENV=dev && node server.js",
+    "server": "export NODE_ENV=server && node server.js",
+    "build": "export NODE_ENV=production && webpack"
   },
   "repository": {
     "type": "git",
@@ -57,6 +59,7 @@
   "dependencies": {
     "axios": "^0.16.2",
     "react": "^15.6.1",
-    "react-dom": "^15.6.1"
+    "react-dom": "^15.6.1",
+    "react-scroll": "^1.5.4"
   }
 }
