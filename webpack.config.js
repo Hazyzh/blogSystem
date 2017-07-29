@@ -9,6 +9,10 @@ module.exports = {
         path: path.resolve(__dirname, './public'),
         publicPath: '/'
     },
+    externals: {
+        'react': 'React',
+        'react-dom':'ReactDOM'
+    },
     // devtool: 'inline-source-map',
     devServer: {
         hot: true,

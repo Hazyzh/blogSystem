@@ -96,7 +96,49 @@
             <span class="line"></span>
             <div class="blog-container clearleft">
                 <article class="blog-content">
-                    
+                    <h3 id="hazyzh-h3-1">前言</h3><p><img src="http://oqqyvkd0p.bkt.clouddn.com/imgs/bg.jpg" alt="hazy"></p>
+<p> 记得没错的话应该是05月19日入职，不知不觉已经三个月了。<em>【失控】</em> 这个名字听起来还是有点奇怪的，当初培训完聚会时候收到这个面试短信，还在和其他同学嘲笑这个名字，没想到自己进来工作了。</p>
+<p> 感觉能进入这个公司还是挺幸运的，起初以为是外包公司挺苦恼的，毕竟传闻中外包公司名声都不怎么样。后面进来后意外的发现公司虽然规模不大，不过做事风格和技术栈都和我想要的非常符合。对比其他同学都工作，感觉自己真是挺幸运的。</p>
+<p> 还记得刚进去时候让写 <strong>Okrs</strong> 我还给自己定了很多规划目标，时间慢慢过去，我自己都忘记自己当初的目标了，以致于之前还想去墙上照个相片保留，没想那地方到已经换成 <strong>logo</strong> 了，感觉自己最近一段时间有点迷茫，想学的东西有点杂，想做的事情也有点多，导致自己有时候静下来反而没头绪不知道应该做什么了。</p>
+<h3 id="hazyzh-h3-2">期望的技术栈</h3><p><img src="http://oqqyvkd0p.bkt.clouddn.com/ef0aa930fee923d34df5a395c65dbbe9.jpg" alt="框架"></p>
+<p> 自己的知识会很大程度改变对物体的认知，记得没工作前在自学 <strong>vue</strong> ,自己坚定的认为这个是最好的框架，自己后面一定要把这个学好、吃透。融汇贯通后就可以横行天下了，给自己定目标要在一两个月内学会核心知识，现在发现我所谓的核心知识不过是框架知识体系的冰山一脚。幸运的是公司是用<strong>react</strong> 的，这让我有机会了解到另一个流行框架，不再局限于一种思维方式，可以跳出框架本身，去了解框架整个的技术体系，整套的技术栈。<em>react</em> 没有给提供官方的脚手架，这一度让我更加苦恼，但是现在看来，自己去搭建脚手架工具的过程是可以带来质的改变的。这是可以让你真正的去了解整套框架的技术栈，让你真正的能去使用它。</p>
+<p> 之前期望的技术栈已经忘了很多了，索性现阶段思考下自己的预期</p>
+<h5>前端</h5><pre><code>-<span class="ruby"> es6
+</span>-<span class="ruby"> 函数式编程
+</span>-<span class="ruby"> 组件化开发思想
+</span>-<span class="ruby"> less</span>
+</code></pre><h5>服务端</h5><pre><code>-<span class="ruby"> expross
+</span>-<span class="ruby"> koa
+</span>-<span class="ruby"> socketIo
+</span>-<span class="ruby"> nginx</span>
+</code></pre><h5>数据</h5><pre><code>-<span class="ruby"> mongodb
+</span>-<span class="ruby"> mysql
+</span>-<span class="ruby"> redis</span>
+</code></pre><h5>环境</h5><pre><code>-<span class="ruby"> linux
+</span>-<span class="ruby"> 阿里云ecs</span>
+</code></pre><p>  也是奇怪，明明是前端工程师，想起来期望技术，前端的要想半天，服务端后台的东西内心一下子能涌现很多。技术无止尽吧，希望大前端时代自己可以有机会接触这些知识。还记得小时候跟别人写同学录， 自己就写希望长大后可以天天学习自己想学的东西，没想到现在正在慢慢变成现实。</p>
+<h3 id="hazyzh-h3-3">关于技术栈</h3><h4 id="hazyzh-h4-1">es6</h4><p><a href="http://es6.ruanyifeng.com/"><strong>《ECMAScript 6 入门》</strong></a> 兴致勃勃的把这个书买回来，立志要几天内融汇贯通<em>es6</em>，现在看来却有点搞笑，纯概念性的东西看了一两天就看不下去了。还好后面工作用react, 不得不接触es6，当把一个个知识点用到生产环境时候，慢慢的积累，才勉强揭开了es6的神秘面纱，简单回想一下：</p>
+<ul>
+<li>let,const (let局部作用域，在一些闭包情况下奇效)</li>
+<li>promise (ajax得以实践)</li>
+<li>字符串、数组、对象的扩展（keys, values, entries, ..., 数据结构）</li>
+<li>箭头函数 （刚开始还不习惯, 后面在函数式编程里感觉很方便）</li>
+<li>set, map 数据结构 （set对象数组去重有奇效）</li>
+<li>async, class (react，用class去声明模块，感觉没怎么研究就一直在用， async,await在nodejs的koa框架下倒是强行用的很久，感觉也不错)</li>
+<li>module (import, export 相比nodejs的require 感觉更舒服一点)</li>
+<li>Iterator， for~of (对循环有新的认识)</li>
+</ul>
+<p>自己大概经常用的就是这些，还有一些新特性也就是大眼扫了一遍，真正用到的机会还是很少。准备再过一遍这本书，感觉封面做的很文艺，希望能百尺竿头更进一步。</p>
+<h4 id="hazyzh-h4-2">函数式编程</h4><p>总是很向往这种编程模式，但是看文章和说明总是似懂非懂，感觉就是在门外撞墙，<em>柯里化、编程范式、高阶函数</em> 等等概念，总感觉云里雾里，直到自己在参考<a href="http://huziketang.com/books/react/"><strong>《React.js 小书》</strong></a>手动实现<strong>redux</strong>时候， 用到高阶函数去强化组件，才真正算是用到了函数编程的一些特性，回想之前自己的一些编程思想，去写PHP代码时候也是喜欢用函数去解决问题，看了<a href="http://steve-yegge.blogspot.com/2006/03/execution-in-kingdom-of-nouns.html"><strong>《名词王国中的死刑》</strong></a> 感觉我去写java可能会很别扭。回想自己一开始写程序实现需求的思路，可能在某些思想上就一直属于函数编程的阵营吧。</p>
+<h4 id="hazyzh-h4-3">组件化开发、less</h4><p>组件化目前来说是一个趋势，把一个功能当作一个组件开发感觉在之前老的框架就有一部分这种思想，只不过nodejs崛起后，在脚手架工具普遍使用后，这种模式看起来更加规范了，说什么掌握不掌握都是虚的，做多了理解会更深一点吧。less自己也是那来当方便的css来用，变量声明的高级用法还没怎么实践，有机会要自己做一套antd的ui,熟悉一下less。话说回来，工作侧重点在js上了，css知识到忘了不少，网页兼容性更是..</p>
+<h4 id="hazyzh-h4-4">Express、Koa</h4><p>作为一个没用过express直接先写koa的人，真正体会了什么叫一脸懵逼，跟着教程把功能全都做出来了，但是还是感觉自己啥都不懂，promise还没搞懂是啥就全程async、await去处理异步，实话说刚开始看人家的博客<a href="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434501245426ad4b91f2b880464ba876a8e3043fc8ef000">nodejs</a>学完自己打击挺大的，之前一直觉的自己js学的不错，现在才渐渐明白了为啥循序渐进的重要性，基础都不牢固去看高级实现只会越来越蒙，推荐两本书<a href="https://www.nodebeginner.org/index-zh-cn.html">Nodejs 入门</a>、<a href="http://nqdeng.github.io/7-days-nodejs/">七天学会NodeJS</a>，基础东西往往容易理解。</p>
+<p>express在之前用koa时候就听说了，自己真正用起来时候也是感觉比较傻瓜式，当然我也没用到高深的地方，感觉如果我一开始就用这个框架去做个网站应该难度不会很大。现在只停留在会用的基础上对于框架是怎么设计的，如何实现这些功能的还是模棱两可。一方面自己没怎么研究，在一点就是自己对node的基础知识不怎么熟悉，其实也看了不少，就差实践了。</p>
+<h4 id="hazyzh-h4-5">socketIo、nginx</h4><p>套接字这个概念，当初听到时就有种熟悉感，虽然自己一点也不懂。当初过年回家下那么大决心要把我做的游戏联网，做成多人在线玩的游戏。没想动一大半时间都在研究nodejs的基础知识，真正用来开发的时间几乎没多少，最后只实现了个聊天室，游戏都还没有进去。不过现在看业务需求用到及时通讯的越来越多，自己很多想做的东西也包含这一环，也算自己的一个目标。学php时候傻瓜式的用wamp，apache对我来说就是理所当然，导致了后面学node时候居然要自己做路由，想了好久才想明白。nginx说的那么好，经常有听到，内心就萌生了这样一个想法，自己必须要找机会去亲自用一下。</p>
+<h4 id="hazyzh-h4-6">mongodb、mysql、redis</h4><p>对新技术自己总是听风就是雨的，看一个人说<em>mongodb</em>怎么怎么好，就想着要赶快学会，赶上潮流，不过一直没在实践中用到，就感觉对我来说就是一个名字，工作了一直做前端，mysql的东西都忘掉一大半了，感觉自己要赶快做个项目把这些弄起来了。记得最后毕业和同学做项目时候，就一直想用到<em>redis</em>，对我来说去数据库查询一个数据，总感觉很费时，但是自己没去做后台，也就管不了这些了。现在看来不管说sql还是nosql，会用是一方面，用到合适的地方貌似更难把握。关系型存储在服务端没机会实践，反倒在前端去 <em>范式化数据</em> 时候有机会去体验一番。</p>
+<h4 id="hazyzh-h4-7">linux、ecs</h4><p>记得去面试这家公司时候，让写十个linux命令，当时绞尽脑汁也就写了6、7条好像。自己想建站，但是总感觉无从下手，网上大多都是php的环境，我却想用nodejs,找了半天找到百度的<em>BAE</em>，真的很方便，自己建个仓库，代码传上去就运行了。建站一下子变得简单许多，但是后面发现bae里面已经限制死node版本了，js更新这么快，自己写的东西上传上去都识别不了。在node里面有时候对源码包进行了修改，在bae里面更是无能为力。后面就像自己搭服务器了。正好ecs做活动，可以有机会自己搭建环境。真正进入centos环境后才发现自己除了看看终端，啥都不会搞。<em>&lt;防火墙、端口、rpm包、源码包、yum、启动服务、配置。。。&gt;</em> 对linux总是很向往，现在勉强可以安装好node跑起来程序了，对linux也有了一些理解了，一句话--实践出真知。</p>
+<hr>
+<h3 id="hazyzh-h3-4">杂言</h3><p>公司喜欢用先进的知识，的确让我可以实践很多东西，<strong>git,node,webpack,babel,Oauth</strong>，记得刚进公司时候感觉要学的很多，每天都很忙碌。后面大概快一个月居然陷入了对物理学的探究中，感觉 <strong>量子力学</strong> 带给我的震撼是很大的，探究这些知识渐渐会和哲学融合，第一次对物理有这么大的兴趣。有空总在想<em>量子纠缠</em> ，以前总以为21世纪了，什么东西都可以用科学解释清楚，现在对所谓的科学可能有另外一种认知。<em>百分之七</em> 是自己在<em>dota2</em> 里的名字， 感觉自己现在也包含的百分之七的唯心思想了。</p>
+
                 </article>
                 <aside class="blog-aside" id="asideContent">
                     我是侧边栏目
@@ -105,6 +147,8 @@
 
         </div>
 
+        <script src="https://cdn.bootcss.com/react/15.6.1/react.min.js"></script>
+        <script src="https://cdn.bootcss.com/react/15.6.1/react-dom.min.js"></script>
         <script type="text/javascript" src="/js/bundle.js"></script>
     </body>
 </html>

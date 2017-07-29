@@ -82,16 +82,14 @@ function generationHtml(fileName) {
             mdStr = data.replace(reg, '')
             config.outTags = config.tags.split(',')
 
-        var content = marked(mdStr, {renderer: renderer}, () => {
-                console.log(headInfo)
-                let catalog = JSON.stringify(headInfo)
-                let mysql = 'update myblog set title=?,keywords=?,tags=?,relationBlog=?,generateFlag=1,catalog=? where blogId=?'
-                connection.query(mysql, [config.title, config.keywords, config.tags, config.relationBlog, catalog, fileName.split('.')[0]], (err, results) => {
-                    if(err) throw err
-                    console.log('mysql has change ****', newstate)
-                    if(newstate == 0) {connection.end()}
-                })
-            })
+        var content = marked(mdStr, {renderer: renderer})
+        let catalog = JSON.stringify(headInfo)
+        let mysql = 'update myblog set title=?,keywords=?,tags=?,relationBlog=?,generateFlag=1,catalog=? where blogId=?'
+        connection.query(mysql, [config.title, config.keywords, config.tags, config.relationBlog, catalog, fileName.split('.')[0]], (err, results) => {
+           if(err) throw err
+           console.log('mysql has change ****', newstate)
+           if(newstate == 0) {connection.end()}
+        })
 
         let output = ejs.render(template, {
                 content,

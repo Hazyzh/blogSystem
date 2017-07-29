@@ -6,7 +6,7 @@ var app = express(),
 
 if(process.env.NODE_ENV == 'dev') {
     var webpack = require('webpack')
-        config = require('./webpack.config'),
+        config = require('./webpack.dev.config.js'),
         webpackDevMiddleware = require('webpack-dev-middleware'),
         webpackHotMiddleware = require('webpack-hot-middleware')
 
