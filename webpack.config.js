@@ -1,6 +1,7 @@
 const path = require('path')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
 const webpack = require('webpack')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 module.exports = {
     entry: ['./blog/src/index.js'],
@@ -11,28 +12,22 @@ module.exports = {
     },
     externals: {
         'react': 'React',
-        'react-dom':'ReactDOM'
+        'react-dom': 'ReactDOM',
+        'antd': 'antd'
     },
-    // devtool: 'inline-source-map',
     devServer: {
         hot: true,
         contentBase: path.resolve(__dirname, './public')
     },
     plugins: [
-        // new HtmlWebpackPlugin({
-        //     title: 'hello world',
-        //     inline: true,
-        //     color: true,
-        //     // template: path.resolve(__dirname, './public/b/170720113848')
-        //     // template: path.resolve(__dirname, './blog/template.html')
-        // }),
-        // new webpack.HotModuleReplacementPlugin(),
-        new webpack.optimize.OccurrenceOrderPlugin(), // 按照引用程度来排序各个模块，引用的越频繁id就越短，达到减小文件大小的效果
         new webpack.optimize.UglifyJsPlugin({  // 用于压缩输出js代码
             compress: {
                 warnings: false,
                 drop_console: true
             }
+        }),
+        new ExtractTextPlugin({
+          filename: path.resolve(__dirname,'css/[name].[contenthash].css')
         }),
         new webpack.BannerPlugin("Copyright Hazyzh All rights reserved.")
     ],

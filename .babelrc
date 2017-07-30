@@ -9,16 +9,18 @@
     "react"
     ],
     "plugins":[
-        ["import", {
-            "libraryName": "antd",
-            "libraryDirectory": "lib",
-            "style": true
-            }],
         "transform-runtime"
     ],
     "env": {
       "development": {
-        "presets": ["react-hmre"]
+        "presets": ["react-hmre"],
+        "plugins": [
+            ["import", {
+                "libraryName": "antd",
+                "libraryDirectory": "lib",
+                "style": true
+            }]
+        ]
       }
     }
 }
