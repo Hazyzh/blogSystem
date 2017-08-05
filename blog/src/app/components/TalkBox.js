@@ -95,7 +95,7 @@ class TalkBox extends Component {
         const { resetFields, getFieldValue } = this.props.form
         const { socket } = this.state
 
-        var val = getFieldValue('hello').replace(/\s+/g, '')
+        var val = getFieldValue('hello') && getFieldValue('hello').replace(/\s+/g, '')
         if(val) {
             var time = moment().format('HH:mm:ss')
             // console.log(time, val)

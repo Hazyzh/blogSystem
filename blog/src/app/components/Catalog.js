@@ -19,27 +19,17 @@ class Catalog extends Component {
     }
 
     componentWillMount(){
-        var ipurl = 'http://restapi.amap.com/v3/ip'
-        var key = 'e38506ecc1e237f3a242b11fef36a18e'
-        var parameters = {
-            key,
-            ip: '120.35.119.10',
-        }
-        axios({
-            method:"get",
-            url: ipurl,
-            params: parameters
-        }).then(data=>{
-            console.log(data)
-        })
         var url = window.location.pathname.replace('b', 'get_catalog')
-        // var url = "/get_catalog/170720113848"
 
         axios.get(url).then(data => {
-            var blog_catalog = JSON.parse(data.data)
+            var results = data.data,
+                blog_catalog = JSON.parse(results.catalog),
+                readNumber = results.readNumber
+
             this.setState({
                 data: blog_catalog
             })
+            document.getElementById('countNumbers').innerText = '阅读数： ' + readNumber
         })
     }
 

@@ -31,6 +31,7 @@
             #content img{
                 width: 100%;
             }
+
             pre{
                 background: #eee;
                 font-size: 17px;
@@ -46,11 +47,15 @@
                 word-wrap: normal;
                 line-height: 1.5;
             }
+            .info-title{
+                display: block;
+                margin: 10px;
+            }
             .info-title .tags{
                 background: #eee;
                 padding: 5px;
                 border-radius: 3px;
-                margin-left: 5px;
+                margin-right: 5px;
                 cursor: pointer;
             }
             .info-title .time{
@@ -81,6 +86,7 @@
                 content: "";
                 clear: both;
             }
+            .count-total{float: right;margin-right: 30px;}
         </style>
         <link rel="stylesheet" href="/styles/ocean.css">
         <link href="https://cdn.bootcss.com/antd/2.12.2/antd.min.css" rel="stylesheet">
@@ -88,11 +94,12 @@
     <body>
         <div id="content">
             <h1>写点什么</h1>
-            <span class="info-title">
+            <span class="info-title clearleft">
                 
                     <span class="tags">个人感想</span>
                 
                 <span class="time">2017年07月27日 13:35:06</span>
+                <span class="count-total" id="countNumbers"></span>
             </span>
             <span class="line"></span>
             <div class="blog-container clearleft">
@@ -140,14 +147,12 @@
 <hr>
 <h3 id="hazyzh-h3-4">杂言</h3><p>公司喜欢用先进的知识，的确让我可以实践很多东西，<strong>git,node,webpack,babel,Oauth</strong>，记得刚进公司时候感觉要学的很多，每天都很忙碌。后面大概快一个月居然陷入了对物理学的探究中，感觉 <strong>量子力学</strong> 带给我的震撼是很大的，探究这些知识渐渐会和哲学融合，第一次对物理有这么大的兴趣。有空总在想<em>量子纠缠</em> ，以前总以为21世纪了，什么东西都可以用科学解释清楚，现在对所谓的科学可能有另外一种认知。<em>百分之七</em> 是自己在<em>dota2</em> 里的名字， 感觉自己现在也包含的百分之七的唯心思想了。</p>
 
+                    <div id="comment" class="comment"></div>
                 </article>
                 <aside class="blog-aside" id="asideContent">
-                    我是侧边栏目
                 </aside>
             </div>
-
         </div>
-
         <script src="https://cdn.bootcss.com/react/15.6.1/react.min.js"></script>
         <script src="https://cdn.bootcss.com/react/15.6.1/react-dom.min.js"></script>
         <script src="https://cdn.bootcss.com/antd/2.12.2/antd.min.js"></script>

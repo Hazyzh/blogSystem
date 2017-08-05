@@ -1,10 +1,17 @@
 var express = require('express');
 var app = express(),
     path = require('path'),
-    connection = require('./blog/mysqlForServer.js'),
-    socket = require('./blog/blogSocket.js')
+    cookieParser = require('cookie-parser'),
+    bodyParser = require('body-parser'),
+    multer = require('multer')
 
-if(process.env.NODE_ENV == 'dev') {
+    // zidingyi
+var connection = require('./blog/mysqlForServer.js'),
+    socket = require('./blog/blogSocket.js'),
+    getLoginInfo = require('./blog/loginOauth.js'),
+    blogComment = require('./blog/blogComment.js')
+
+if(process.env.NODE_ENV == 'development') {
     var webpack = require('webpack')
         config = require('./webpack.dev.config.js'),
         webpackDevMiddleware = require('webpack-dev-middleware'),
@@ -14,10 +21,19 @@ if(process.env.NODE_ENV == 'dev') {
     var compiler = webpack(config)
         app.use(webpackDevMiddleware(compiler, {
             noInfo: true,
-            publicPath: config.output.publicPath
+            publicPath: config.output.publicPath,
+            filename: 'b/170727133506',
+            headers: { 'Content-type': 'text/html; charset=utf-8' },
+            mimeTypes: { "text/html": [ " " ] }
         }))
         app.use(webpackHotMiddleware(compiler))
 }
+// cookie
+app.use(cookieParser())
+// body
+app.use(bodyParser.json()); // for parsing application/json
+app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+app.use(multer()); // for parsing multipart/form-data
 
 app.use(express.static('public',{
     setHeaders: headFunction
@@ -26,19 +42,29 @@ app.use(express.static('public',{
 function headFunction(res, pathname) {
     if (path.dirname(pathname) == path.join(__dirname, './public/b')) {
         res.setHeader('Content-type', 'text/html; charset=utf-8')
+
+        var blogId = pathname.match(/\d+$/)[0],
+            sql = 'UPDATE myblog SET readNumber = readNumber + 1 WHERE blogId = ?;'
+        connection.query(sql, [blogId])
+        console.log(blogId)
     }
 }
 
 // 获取文章目录列表
 app.get('/get_catalog/:blogId', (req, res) => {
     let blogId = req.params.blogId
-    var sql = 'select catalog from myblog where blogId = ?'
+    var sql = 'select catalog, readNumber from myblog where blogId = ?'
     connection.query(sql, [blogId], (err, results) => {
-        res.json(results[0].catalog)
+        res.json(results && results[0])
     })
 })
 
 
+app.get('/oauth', getLoginInfo)
+
+app.get('/blog_comment/:blogId', blogComment.get)
+app.post('/blog_comment', blogComment.post)
+app.delete('/blog_comment', blogComment.delete)
 
 app.get('/*', (req, res) => {
     res.send('404 !!')

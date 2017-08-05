@@ -31,6 +31,7 @@
             #content img{
                 width: 100%;
             }
+
             pre{
                 background: #eee;
                 font-size: 17px;
@@ -46,11 +47,15 @@
                 word-wrap: normal;
                 line-height: 1.5;
             }
+            .info-title{
+                display: block;
+                margin: 10px;
+            }
             .info-title .tags{
                 background: #eee;
                 padding: 5px;
                 border-radius: 3px;
-                margin-left: 5px;
+                margin-right: 5px;
                 cursor: pointer;
             }
             .info-title .time{
@@ -81,6 +86,7 @@
                 content: "";
                 clear: both;
             }
+            .count-total{float: right;margin-right: 30px;}
         </style>
         <link rel="stylesheet" href="/styles/ocean.css">
         <link href="https://cdn.bootcss.com/antd/2.12.2/antd.min.css" rel="stylesheet">
@@ -88,11 +94,12 @@
     <body>
         <div id="content">
             <h1>a标签的下载属性</h1>
-            <span class="info-title">
+            <span class="info-title clearleft">
                 
                     <span class="tags">标签属性</span>
                 
                 <span class="time">2017年07月28日 10:37:54</span>
+                <span class="count-total" id="countNumbers"></span>
             </span>
             <span class="line"></span>
             <div class="blog-container clearleft">
@@ -118,14 +125,12 @@
      s.click()
 </code></pre>
 
+                    <div id="comment" class="comment"></div>
                 </article>
                 <aside class="blog-aside" id="asideContent">
-                    我是侧边栏目
                 </aside>
             </div>
-
         </div>
-
         <script src="https://cdn.bootcss.com/react/15.6.1/react.min.js"></script>
         <script src="https://cdn.bootcss.com/react/15.6.1/react-dom.min.js"></script>
         <script src="https://cdn.bootcss.com/antd/2.12.2/antd.min.js"></script>

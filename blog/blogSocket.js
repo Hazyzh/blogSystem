@@ -25,7 +25,7 @@ function startSocketServer(server) {
         var key = 'e38506ecc1e237f3a242b11fef36a18e'
         var parameters = {
             key,
-            address
+            ip: address
         }
 
         axios({
@@ -33,8 +33,8 @@ function startSocketServer(server) {
             url: ipurl,
             params: parameters
         }).then(data=>{
-            let city = data.data.city
-            userName = city.substring(0, 2) + '-' + nameArr[Math.floor(Math.random()*1419)]
+            let city = data.data.city || ''
+            userName = city.substring(0, city.length-1) + '-' + nameArr[Math.floor(Math.random()*1419)]
             client.emit('hi', userName)
         })
 
