@@ -103,7 +103,7 @@ class TalkBox extends Component {
             var item = {
                 time,
                 name,
-                content: val,
+                content: getFieldValue('hello'),
                 isMe: true
             }
 

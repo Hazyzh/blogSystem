@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Row, Col, Input, Form, Button, message, Avatar, Icon } from 'antd'
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 const FormItem = Form.Item
 
 import CommentDetails from './CommentDetails.js'
@@ -78,7 +79,7 @@ class AddComment extends Component {
             axios({
                 method: 'post',
                 url: '/blog_comment',
-                data: { blogId, pid, comment }
+                data: { blogId, pid, comment: val }
             }).then(data => {
                 if(data.data.code == 0) {
                     message.success('评论成功')
@@ -92,6 +93,8 @@ class AddComment extends Component {
                 })
             }).catch(err => {
                 console.log(err)
+                if(callback)callback()
+                
                 this.setState({
                     isAdd: false
                 })
@@ -156,6 +159,15 @@ class AddComment extends Component {
                         </Button>
                     </Col>
                 </Row>
+                <ReactCSSTransitionGroup
+                    transitionName={{
+                        enter: 'slideInDown',
+                        leave: 'bounceOut',
+                    }}
+                    transitionEnter={true}
+                    transitionLeave={true}
+                    transitionEnterTimeout={1500}
+                    transitionLeaveTimeout={1500} >
                 {this.state.commentList.map(d=>
                     (<CommentDetails
                         changeShow={(id) => this.changeShow(id)}
@@ -165,6 +177,7 @@ class AddComment extends Component {
                         key={d.id}
                         addComment={(val, pid, callback)=>this.addComment(val, pid, callback)} />)
                 )}
+                </ReactCSSTransitionGroup>
             </div>
         )
     }

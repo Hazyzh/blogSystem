@@ -1,5 +1,5 @@
 import React from 'react'
-import { Affix } from 'antd'
+import { Affix, BackTop } from 'antd'
 import Catalog from './components/Catalog.js'
 import TalkBox from './components/TalkBox.js'
 
@@ -26,6 +26,7 @@ class App extends React.Component {
                    <Catalog />
                    <p className="chat-box">讨论区</p>
                    <TalkBox />
+                   <BackTop />
                </Affix>
             </div>
         )

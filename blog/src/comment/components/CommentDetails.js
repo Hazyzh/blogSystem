@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Row, Col, Input, Form, Button, message, Avatar, Icon, Popconfirm } from 'antd'
 import moment from 'moment'
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 
 class CommentDetails extends Component {
     state = {
@@ -34,7 +35,7 @@ class CommentDetails extends Component {
             childIsOk = commentInfo.childern.length === 0
 
         return (
-            <div className="user-comment-box">
+            <div className="user-comment-box animated">
                 <Row className="comment-content">
                     <Col span={24}>
                         <p className="text">
@@ -51,7 +52,9 @@ class CommentDetails extends Component {
                         </span>}
                     </Col>
                     <Col offset={4} span={2}>
-                        <a href={commentInfo.commentUserUrl}>
+                        <a
+                            href={commentInfo.commentUserUrl}
+                            title={commentInfo.commentUserDes}>
                             <Avatar
                                 shape="square"
                                 size="large"
@@ -65,37 +68,60 @@ class CommentDetails extends Component {
                         <span className="time">{commentInfo.createTime}</span>
                     </Col>
                 </Row>
-                <div style={{display: this.props.showState[commentInfo.id] ? 'block' : 'none'}}>
-                    {
-                        commentInfo.childern.map(d=>(
-                            <Row className="userComment" key={d.id}>
-                                <Col offset={4} span={20} className="info-one">
-                                    <span className="content">{d.commentContent}</span>
-                                    <a href={d.commentUserUrl}>
-                                     {d.commentUser}
-                                    </a>
-                                    <span className="time">{d.createTime}</span>
-                                    {d.isUser && !moment(d.createdate).add(1, 'd').isBefore(moment()) && <span
-                                        className="inner-delete">
-                                        <Popconfirm title="确定要删除此评论吗?" onConfirm={() => this.props.deleteComment(d.id)}>
-                                            <Icon type="close-circle" /> 删除
-                                       </Popconfirm>
-                                    </span>}
-                                </Col>
-                            </Row>
-                        ))
-                    }
-                    <Row className="user-form">
-                        <Col span={20}>
-                            <Input
-                                value={this.state.usercomment}
-                                onChange={e => this.setState({usercomment: e.target.value})}/>
-                        </Col>
-                        <Col span={4} className="btn">
-                            <Button disabled={this.state.isload} onClick={e => this.commit()}>提交评论</Button>
-                        </Col>
-                    </Row>
-                </div>
+                <ReactCSSTransitionGroup
+                    transitionName={{
+                        enter: 'bounceInDown',
+                        leave: 'bounceOutUp',
+                    }}
+                    transitionEnter={true}
+                    transitionLeave={true}
+                    transitionEnterTimeout={1500}
+                    transitionLeaveTimeout={300} >
+                    {this.props.showState[commentInfo.id] && <div
+                        key={commentInfo.id}
+                        className="animated" >
+                        <ReactCSSTransitionGroup
+                            transitionName={{
+                                enter: 'bounceInLeft',
+                                leave: 'bounceOutRight',
+                            }}
+                            transitionEnter={true}
+                            transitionLeave={true}
+                            transitionEnterTimeout={1500}
+                            transitionLeaveTimeout={1500} >
+                        {
+                            commentInfo.childern.map(d=>(
+                                <Row className="userComment animated" key={d.id}>
+                                    <Col offset={4} span={20} className="info-one">
+                                        <span className="content">{d.commentContent}</span>
+                                        <a href={d.commentUserUrl}>
+                                         {d.commentUser}
+                                        </a>
+                                        <span className="time">{d.createTime}</span>
+                                        {d.isUser && !moment(d.createdate).add(1, 'd').isBefore(moment()) && <span
+                                            className="inner-delete">
+                                            <Popconfirm title="确定要删除此评论吗?" onConfirm={() => this.props.deleteComment(d.id)}>
+                                                <Icon type="close-circle" /> 删除
+                                           </Popconfirm>
+                                        </span>}
+                                    </Col>
+                                </Row>
+                            ))
+                        }
+                        </ReactCSSTransitionGroup>
+                        <Row className="user-form">
+                            <Col span={20}>
+                                <Input
+                                    value={this.state.usercomment}
+                                    onChange={e => this.setState({usercomment: e.target.value})}/>
+                            </Col>
+                            <Col span={4} className="btn">
+                                <Button disabled={this.state.isload} onClick={e => this.commit()}>提交评论</Button>
+                            </Col>
+                        </Row>
+                    </div>}
+                </ReactCSSTransitionGroup>
+
             </div>
         )
     }
