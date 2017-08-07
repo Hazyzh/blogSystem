@@ -13,12 +13,15 @@ var connection = require('./blog/mysqlForServer.js'),
 
 if(process.env.NODE_ENV == 'development') {
     var webpack = require('webpack')
-        config = require('./webpack.dev.config.js'),
         webpackDevMiddleware = require('webpack-dev-middleware'),
-        webpackHotMiddleware = require('webpack-hot-middleware')
+        webpackHotMiddleware = require('webpack-hot-middleware'),
+        config = {}
 
+
+    if(!process.env.NODE_HOME){
+        config = require('./webpack.dev.config.js')
         config.entry.unshift("webpack-hot-middleware/client")
-    var compiler = webpack(config)
+        var compiler = webpack(config)
         app.use(webpackDevMiddleware(compiler, {
             noInfo: true,
             publicPath: config.output.publicPath,
@@ -26,7 +29,18 @@ if(process.env.NODE_ENV == 'development') {
             headers: { 'Content-type': 'text/html; charset=utf-8' },
             mimeTypes: { "text/html": [ " " ] }
         }))
-        app.use(webpackHotMiddleware(compiler))
+    } else {
+        config = require('./webpack.home.config.js')
+        config.entry.unshift("webpack-hot-middleware/client")
+        var compiler = webpack(config)
+        app.use(webpackDevMiddleware(compiler, {
+            noInfo: true,
+            publicPath: config.output.publicPath,
+            filename: '/blog',
+            headers: { 'Content-type': 'text/html; charset=utf-8' }
+        }))
+    }
+    app.use(webpackHotMiddleware(compiler))
 }
 // cookie
 app.use(cookieParser())
@@ -39,6 +53,7 @@ app.use(express.static('public',{
     setHeaders: headFunction
 }))
 
+
 function headFunction(res, pathname) {
     if (path.dirname(pathname) == path.join(__dirname, './public/b')) {
         res.setHeader('Content-type', 'text/html; charset=utf-8')
@@ -49,6 +64,11 @@ function headFunction(res, pathname) {
         console.log(blogId)
     }
 }
+
+app.get('/blog/*',(req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'blog/index.html'))
+})
+
 
 // 获取文章目录列表
 app.get('/get_catalog/:blogId', (req, res) => {

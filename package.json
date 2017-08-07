@@ -9,6 +9,7 @@
     "render": "node blog/generationBlog.js && node server",
     "start": "webpack-dev-server --open",
     "dev": "export NODE_ENV=development && node server.js",
+    "devhome": "export NODE_ENV=development && export NODE_HOME=blog && node server.js",
     "server": "export NODE_ENV=server && node server.js",
     "build": "export NODE_ENV=production && webpack --progress --color"
   },
@@ -51,6 +52,8 @@
     "mysql": "^2.13.0",
     "postcss-loader": "^2.0.6",
     "react-addons-css-transition-group": "^15.6.0",
+    "react-router": "^4.1.2",
+    "react-router-dom": "^4.1.2",
     "react-transform-hmr": "^1.0.4",
     "socket.io": "^2.0.3",
     "socket.io-client": "^2.0.3",

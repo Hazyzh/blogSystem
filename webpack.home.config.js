@@ -1,46 +1,34 @@
 const path = require('path')
-const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const webpack = require('webpack')
 
 module.exports = {
-    entry: {
-        bundle: './blog/src/index.js',
-        homePage: './blog/home/index.js'
-    },
+    entry: [ 'antd/dist/antd.less', './blog/home/index.js'],
     output: {
-        filename: 'js/[name].js',
+        filename: 'js/home-bundle.js',
         path: path.resolve(__dirname, './public'),
         publicPath: '/'
     },
-    externals: {
-        'react': 'React',
-        'react-dom': 'ReactDOM',
-        'antd': 'antd'
-    },
+    devtool: 'inline-source-map',
     devServer: {
         hot: true,
         contentBase: path.resolve(__dirname, './public')
     },
     plugins: [
-        new webpack.optimize.UglifyJsPlugin({  // 用于压缩输出js代码
-            compress: {
-                warnings: false,
-                drop_console: true
-            }
+        new HtmlWebpackPlugin({
+            title: 'hello world',
+            inline: true,
+            color: true,
+            template: path.resolve(__dirname, './public/blog/index.html'),
+            filename: 'blog'
         }),
-        new ExtractTextPlugin({
-          filename: path.resolve(__dirname,'css/[name].[contenthash].css')
-        }),
+        new webpack.DefinePlugin({'process.env.NODE_ENV': JSON.stringify('development') }),
+        new webpack.HotModuleReplacementPlugin(),
+        new webpack.optimize.OccurrenceOrderPlugin(), // 按照引用程度来排序各个模块，引用的越频繁id就越短，达到减小文件大小的效果
         new webpack.BannerPlugin("Copyright Hazyzh All rights reserved.")
     ],
     module: {
         rules: [
-            {
-                test: /.js$/,
-                use: ['babel-loader'],
-                exclude: /node_modules/
-            },
             {
                 test: /.less$/,
                 use: [
@@ -56,6 +44,11 @@ module.exports = {
                     },
                     'less-loader'
                 ]
+            },
+            {
+                test: /.js$/,
+                use: ['babel-loader'],
+                exclude: /node_modules/
             },
             {
                 test: /.(png|jpg|svg|gif)$/i,

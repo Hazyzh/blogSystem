@@ -36,4 +36,8 @@
 
 ### v1.0.3
 
+`2017.08.06`
+* 开发主页配置了开发环境，引入了 `react-router` 很多内容都在 `react-router-dom` 中，改变还是很大的。
+* 配置了server都环境变量判断，和 BrowserRouter 丢失页面问题。
+
 ---
