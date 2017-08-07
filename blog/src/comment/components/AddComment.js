@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Row, Col, Input, Form, Button, message, Avatar, Icon } from 'antd'
+import { Row, Col, Input, Form, Button, message, Avatar, Icon, Modal } from 'antd'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 const FormItem = Form.Item
 
@@ -86,7 +86,11 @@ class AddComment extends Component {
                     this.getCommnet()
                     callback()
                 } else {
-                    message.warning(data.data.message)
+                    const modal = Modal.error({
+                       title: '发表失败',
+                       content: data.data.message
+                     })
+                     setTimeout(() => modal.destroy(), 3000)
                 }
                 this.setState({
                     isAdd: false
@@ -94,7 +98,7 @@ class AddComment extends Component {
             }).catch(err => {
                 console.log(err)
                 if(callback)callback()
-                
+
                 this.setState({
                     isAdd: false
                 })
@@ -153,7 +157,7 @@ class AddComment extends Component {
                         <Button
                             type="primary"
                             disabled={this.state.isAdd}
-                            onClick={e => this.addComment(getFieldValue('addComment'), 0, resetFields(['addComment']))}
+                            onClick={e => this.addComment(getFieldValue('addComment'), 0, () => resetFields(['addComment']))}
                             size="large" >
                             发表评论
                         </Button>

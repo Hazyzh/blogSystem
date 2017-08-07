@@ -14,7 +14,7 @@ const addBlogComment = (req, res) => {
         res.json({
             code: -1,
             content: '',
-            message: 'unsign'
+            message: '您还没有登录信息，暂时无法评论。请在右侧登录后再评论。'
         })
     } else {
         let { name, description, headUrl, profileUrl, userSource, userUID } = userInfo
