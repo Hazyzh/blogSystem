@@ -3,12 +3,7 @@ import { Anchor } from 'antd'
 const { Link } = Anchor
 
 import axios from 'axios'
-
-function htmlDecode(input){
-    var e = document.createElement('div');
-    e.innerHTML = input;
-    return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
-}
+import { htmlDecode } from 'Utils/index.js'
 
 class Catalog extends Component {
     constructor(props) {

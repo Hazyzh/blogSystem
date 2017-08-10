@@ -22,6 +22,21 @@ var mds = fs.readdirSync('md'),
     fileLength = 0
 
     // console.log(mds)
+var tagsInfo = [],
+    tagsAddItem = (tag) => {
+        let i = 0
+        for (let n = 0; n < tagsInfo.length; n++) {
+            if(tagsInfo[n].val == tag){
+                i++
+                tagsInfo[n].count++
+                break
+            }
+        }
+        if(!i) {
+            tagsInfo.push({count: 1,val: tag})
+        }
+    }
+
 
 // 判断文件是否存在
 function gendir(name, callback) {
@@ -82,13 +97,27 @@ function generationHtml(fileName) {
             mdStr = data.replace(reg, '')
             config.outTags = config.tags.split(',')
 
+        config.outTags.forEach(d=>tagsAddItem(d))
+
         var content = marked(mdStr, {renderer: renderer})
         let catalog = JSON.stringify(headInfo)
         let mysql = 'update myblog set title=?,keywords=?,tags=?,relationBlog=?,generateFlag=1,catalog=? where blogId=?'
         connection.query(mysql, [config.title, config.keywords, config.tags, config.relationBlog, catalog, fileName.split('.')[0]], (err, results) => {
            if(err) throw err
            console.log('mysql has change ****', newstate)
-           if(newstate == 0) {connection.end()}
+           if(newstate == 0) {
+               var taginfo = JSON.stringify(tagsInfo)
+               let tagsql = 'update tagsinfo set tagsInfo=? where id=1'
+               connection.query(tagsql, [taginfo], (err, results) => {
+                   if(err) {
+                       console.log(err)
+                   } else {
+                       console.log('update succeed tagsinfo')
+                   }
+               })
+
+               connection.end()
+           }
         })
 
         let output = ejs.render(template, {

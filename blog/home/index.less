@@ -1,3 +1,13 @@
+body{
+    font: 17px/1.5 "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif;
+    background: #fff;
+}
+.line{
+    display: block;
+    width: 95%;
+    margin: auto;
+    border-bottom: 1px dashed #ccc;
+}
 // header
 .header-box{
     height: 70px;
@@ -36,4 +46,152 @@
 .main-content{
     width: 1200px;
     margin: 30px auto 10px;
+}
+// 推荐博客
+.lastest-blog{
+    font-family: Georgia, serif;
+    border-radius: 15px;
+    .ant-card-body{padding: 0px;}
+    .lastest-title{
+        height: 60px;
+        overflow: hidden;
+        .tag-content{
+            color: #fff;
+            display: inline-block;
+            font-size: 14px;
+            float: left;
+            padding: 0px 30px;
+            background: #71afae;
+            line-height: 60px;
+            height: 60px;
+            i{
+                margin-right: 10px;
+            }
+        }
+        .read-count{
+            line-height: 60px;
+            text-align: right;
+            padding-right: 30px;
+        }
+        .tag-after{
+            float: left;
+            width: 0;
+            height: 0;
+            border-top: 0 solid transparent;
+            border-bottom: 30px solid transparent;
+            border-left: 60px solid #71afae;
+            transform: rotate(-90deg);
+            margin-top: 15px;
+            margin-left: -16px;
+        }
+        .read-title{
+            line-height: 60px;
+            text-align: right;
+            padding-right: 30px;
+            color: #999;
+        }
+    }
+    // 博客内容
+    .blog-content{
+        padding: 20px 40px;
+        h3{font-size: 35px;}
+        .time{color: #9d9d9d;i{margin-right: 10px;}}
+        .content{
+            .box{
+                margin-top: 20px;
+                margin-left: 20px;
+                li{
+                    &:before{
+                        content: '';
+                        width: 5px;
+                        height: 5px;
+                        background-color: #71afae;
+                        position: absolute;
+                        margin-left: -10px;
+                        margin-top: 5px;
+                        border-radius: 50%;
+                    }
+                    span{padding-left: 15px;}
+                }
+            }
+            height: 100px;
+            overflow: hidden;
+        }
+        .blog-addr{
+            margin-left: 50px;
+            font-size: 20px;
+            text-align: right;
+            margin-top: 10px;
+            a{
+                color: #999;
+                &:hover{color: #71afae;}
+            }
+            i{margin-left: 15px;}
+        }
+    }
+}
+// 近期博客
+.blogs{
+    margin-top: 20px;
+    h3{
+        font-family: Georgia, serif;
+        margin-bottom: 20px;
+        padding: 0px 30px;
+        a{
+            float: right;
+        }
+    }
+    .content{
+        ul{
+            padding: 20px 30px;
+            li{
+                margin-top: 10px;
+                font-family: Georgia, serif;
+                &:before{
+                    content: '';
+                    width: 10px;
+                    height: 10px;
+                    // background-color: #71afae;
+                    border: 1px groove #71afae;
+                    box-shadow: 1px 1px 0px #eee;
+                    position: absolute;
+                    margin-left: -10px;
+                    margin-top: 8px;
+                    border-radius: 50%;
+                }
+                .time{
+                    color: #999;
+                    padding: 0px 10px;
+                }
+                .title{
+                    letter-spacing: 2px;
+                    color: #4a75b5;
+                    &:hover{color: #e58c7c}
+                }
+                .last-title{margin-left: 10px;}
+                .ant-tag{margin: 0px 10px;}
+            }
+        }
+    }
+}
+// 分类
+.aside{
+    font-family: Georgia, serif;
+    h3{
+        margin: 20px;
+        font-size: 20px;
+    }
+    .tags-box{margin: 10px 20px;}
+    span{padding: 10px;}
+}
+// 尾部
+.footer-box{
+    background: #fafafa;
+    border-top: 1px solid #fff;
+    .footer-container{
+        text-align: center;
+        color: #b0b0b0;
+        font-weight: 300;
+        // text-shadow: 1px 0px 1px #999;
+    }
 }

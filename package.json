@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "newblog": "node blog/generation.js",
-    "render": "node blog/generationBlog.js && node server",
+    "render": "node blog/generationBlog.js",
     "start": "webpack-dev-server --open",
     "dev": "export NODE_ENV=development && node server.js",
     "devhome": "export NODE_ENV=development && export NODE_HOME=blog && node server.js",

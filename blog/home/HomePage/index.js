@@ -1,16 +1,11 @@
 import React from 'react'
-import {
-  BrowserRouter as Router,
-  Route,
-  Link
-} from 'react-router-dom'
+import { Route } from 'react-router-dom'
 
 import { Layout } from 'antd'
-const { Footer, Sider } = Layout
 
 import Header from './Header'
 import Content from './Content'
-
+import Footer from './Footer'
 
 const About = () => (
   <div>
@@ -24,15 +19,17 @@ const Tags = () => (
   </div>
 )
 
+
+
 const HomePage = () => (
-    <Layout>
+    <Layout style={{background: '#f5f5f5'}}>
         <Header />
-        <Layout className="main-content">
+        <Layout  className="main-content" style={{background: '#f5f5f5'}}>
              <Route exact path="/" component={Content}/>
              <Route path="/tags" component={Tags}/>
              <Route path="/about" component={About}/>
         </Layout>
-        <Footer>Footer</Footer>
+        <Footer />
     </Layout>
 )
 

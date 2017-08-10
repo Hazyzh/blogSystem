@@ -9,7 +9,8 @@ var app = express(),
 var connection = require('./blog/mysqlForServer.js'),
     socket = require('./blog/blogSocket.js'),
     getLoginInfo = require('./blog/loginOauth.js'),
-    blogComment = require('./blog/blogComment.js')
+    blogComment = require('./blog/blogComment.js'),
+    blogHomepage = require('./blog/homePage.js')
 
 if(process.env.NODE_ENV == 'development') {
     var webpack = require('webpack')
@@ -37,7 +38,8 @@ if(process.env.NODE_ENV == 'development') {
             noInfo: true,
             publicPath: config.output.publicPath,
             filename: '/blog',
-            headers: { 'Content-type': 'text/html; charset=utf-8' }
+            headers: { 'Content-type': 'text/html; charset=utf-8' },
+            mimeTypes: { "text/html": [ " " ] }
         }))
     }
     app.use(webpackHotMiddleware(compiler))
@@ -85,6 +87,10 @@ app.get('/oauth', getLoginInfo)
 app.get('/blog_comment/:blogId', blogComment.get)
 app.post('/blog_comment', blogComment.post)
 app.delete('/blog_comment', blogComment.delete)
+// 博客首页
+app.get('/get_lastest_blog', blogHomepage.getLastest)
+// 博客标签
+app.get('/get_tags_info', blogHomepage.getTagsinfo)
 
 app.get('/*', (req, res) => {
     res.send('404 !!')

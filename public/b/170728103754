@@ -136,13 +136,13 @@
     <body>
         <header>
             <div class="header-content">
-                <a href="/b" class="home-logo">
+                <a href="/blog" class="home-logo">
                     <img src="/static/imgs/home.png" />
                 </a>
                 <div class="blog-info">
-                    <a href="#">主页</a>
-                    <a href="#">标签分类</a>
-                    <a href="#">个人中心</a>
+                    <a href="/blog">主页</a>
+                    <a href="/blog/tags">标签分类</a>
+                    <a href="/blog/about">个人中心</a>
                 </div>
             </div>
         </header>
@@ -152,13 +152,15 @@
                 
                     <span class="tags">标签属性</span>
                 
+                    <span class="tags">随笔</span>
+                
                 <span class="time">2017年07月28日 10:37:54</span>
                 <span class="count-total" id="countNumbers"></span>
             </span>
             <span class="line"></span>
             <div class="blog-container clearleft">
                 <article class="blog-content">
-                    <h3 id="hazyzh-h3-1"><code>&lt;a&gt;标签的&#39;download&#39;属性</code></h3><p><em>html5</em> 中a标签增加了download选项，<code>&lt;a href=&quot;/images/logo.jpg&quot; download=&quot;logo&quot;&gt;</code>
+                    <h3 id="hazyzh-h3-1"><code>a标签的&#39;download&#39;属性</code></h3><p><em>html5</em> 中a标签增加了download选项，<code>&lt;a href=&quot;/images/logo.jpg&quot; download=&quot;logo&quot;&gt;</code>
 设置了download就可以当作资源下载，而不是出现文件预览图。</p>
 <pre><code class="lang-javascript">    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">download</span>(<span class="hljs-params">name, url</span>) </span>{
         <span class="hljs-keyword">var</span> s = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">"a"</span>)

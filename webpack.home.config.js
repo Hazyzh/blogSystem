@@ -9,6 +9,11 @@ module.exports = {
         path: path.resolve(__dirname, './public'),
         publicPath: '/'
     },
+    resolve:{
+        alias: {
+            Utils: path.resolve(__dirname, './blog/utils')
+        }
+    },
     devtool: 'inline-source-map',
     devServer: {
         hot: true,
@@ -19,7 +24,7 @@ module.exports = {
             title: 'hello world',
             inline: true,
             color: true,
-            template: path.resolve(__dirname, './public/blog/index.html'),
+            template: path.resolve(__dirname, './public/blog/index0.html'),
             filename: 'blog'
         }),
         new webpack.DefinePlugin({'process.env.NODE_ENV': JSON.stringify('development') }),

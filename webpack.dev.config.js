@@ -9,6 +9,11 @@ module.exports = {
         path: path.resolve(__dirname, './public'),
         publicPath: '/'
     },
+    resolve:{
+        alias: {
+            Utils: path.resolve(__dirname, './blog/utils')
+        }
+    },
     devtool: 'inline-source-map',
     devServer: {
         hot: true,
