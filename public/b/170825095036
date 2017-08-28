@@ -199,7 +199,30 @@
         <span class="hljs-built_in">return</span> res
     }
 </code></pre>
-<h4 id="hazyzh-h4-3">Regular Expression Matching</h4>
+<h4 id="hazyzh-h4-3">Regular Expression Matching</h4><p><code>实现正则，
+    &#39;.&#39; Matches any single character.
+    &#39;*&#39; Matches zero or more of the preceding element.
+    isMatch(&quot;aa&quot;,&quot;a&quot;) → false isMatch(&quot;ab&quot;, &quot;.*&quot;) → true     isMatch(&quot;aab&quot;, &quot;c*a*b&quot;) → true</code>
+刚开始看到这题目还是比较懵的，感觉要判断的好多，后面从递归判断做就有思路了，从正则表达式入手，先判断第二位是不是 * ，如果不是就判断第一位然后截取一位递归，如果是就先去除正则前两位递归，不行再判断第一个是不是相等然后循环递归</p>
+<pre><code class="lang-javascript">
+    <span class="hljs-keyword">var</span> isMatch = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">s, p</span>) </span>{
+        <span class="hljs-keyword">if</span>(p[<span class="hljs-number">0</span>] === <span class="hljs-literal">undefined</span>) <span class="hljs-keyword">return</span> s[<span class="hljs-number">0</span>] === <span class="hljs-literal">undefined</span>
+        <span class="hljs-keyword">if</span> (p[<span class="hljs-number">1</span>] != <span class="hljs-string">'*'</span>) {
+           <span class="hljs-keyword">if</span> (s[<span class="hljs-number">0</span>] === p[<span class="hljs-number">0</span>] || (p[<span class="hljs-number">0</span>] === <span class="hljs-string">'.'</span> &amp;&amp; s[<span class="hljs-number">0</span>] !== <span class="hljs-literal">undefined</span>)) 
+               <span class="hljs-keyword">return</span> isMatch(s.substr(<span class="hljs-number">1</span>), p.substr(<span class="hljs-number">1</span>))
+           <span class="hljs-keyword">else</span> 
+               <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">if</span> (isMatch(s, p.substr(<span class="hljs-number">2</span>)))<span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>
+            <span class="hljs-keyword">let</span> index = <span class="hljs-number">0</span>
+            <span class="hljs-keyword">while</span>(index &lt;= s.length &amp;&amp; (s[index] === p[<span class="hljs-number">0</span>] || p[<span class="hljs-number">0</span>] === <span class="hljs-string">'.'</span>)){
+                <span class="hljs-keyword">if</span>(isMatch(s.substr(++index), p.substr(<span class="hljs-number">2</span>))) <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>
+            }
+            <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>
+        }
+    }
+</code></pre>
+
                     <div id="comment" class="comment"></div>
                 </article>
                 <aside class="blog-aside" id="asideContent">
