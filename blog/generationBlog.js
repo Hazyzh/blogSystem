@@ -130,7 +130,14 @@ function generationHtml(fileName) {
         fs.writeFile(`./public/b/${fileName.split('.')[0]}`, output, (err) => {
             if(!err) {
                 console.log(`${fileName} has parsed !`)
+            } else {
+                console.log(err)
+            }
+        })
 
+        fs.writeFile(`../../appidi0x590ecbp/hazy/b/${fileName.split('.')[0]}`, output, (err) => {
+            if(!err) {
+                console.log(`${fileName} in hazyzh blog has parsed !`)
             } else {
                 console.log(err)
             }

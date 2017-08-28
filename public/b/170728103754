@@ -169,16 +169,16 @@
         s.click()
     }
 </code></pre>
-<h3 id="hazyzh-h3-2">canvas生成图片</h3><pre><code class="lang-javascript"><span class="hljs-built_in">var</span> myCanvas = document.getElementById(<span class="hljs-string">'mycanvas'</span>),
-    ctx = myCanvas.getContext(<span class="hljs-string">'2d'</span>)
+<h3 id="hazyzh-h3-2">canvas生成图片</h3><pre><code class="lang-javascript">    <span class="hljs-built_in">var</span> myCanvas = document.getElementById(<span class="hljs-string">'mycanvas'</span>),
+        ctx = myCanvas.getContext(<span class="hljs-string">'2d'</span>)
 
-    <span class="hljs-params">...</span>
+        <span class="hljs-params">...</span>
 
-<span class="hljs-built_in">var</span> <span class="hljs-built_in">data</span> = myCanvas.toDataURL(<span class="hljs-string">"image/png"</span>),
-     s=document.createElement(<span class="hljs-string">"a"</span>)
-     s.download=<span class="hljs-string">"chart.png"</span>
-     s.href=<span class="hljs-built_in">data</span>.replace(<span class="hljs-string">"image/png"</span>,<span class="hljs-string">"image/octet-stream"</span>)
-     s.click()
+    <span class="hljs-built_in">var</span> <span class="hljs-built_in">data</span> = myCanvas.toDataURL(<span class="hljs-string">"image/png"</span>),
+         s=document.createElement(<span class="hljs-string">"a"</span>)
+         s.download=<span class="hljs-string">"chart.png"</span>
+         s.href=<span class="hljs-built_in">data</span>.replace(<span class="hljs-string">"image/png"</span>,<span class="hljs-string">"image/octet-stream"</span>)
+         s.click()
 </code></pre>
 
                     <div id="comment" class="comment"></div>
