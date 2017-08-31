@@ -3,6 +3,9 @@ const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
+// 自己博客都路径
+const myblogPath = path.resolve('/Users/user1/Desktop/hazyzh/appidi0x590ecbp/hazy')
+
 module.exports = {
     entry: {
         bundle: './blog/src/index.js',
@@ -10,7 +13,7 @@ module.exports = {
     },
     output: {
         filename: 'js/[name].js',
-        path: path.resolve(__dirname, './public'),
+        path: myblogPath,
         publicPath: '/'
     },
     resolve:{
