@@ -124,7 +124,7 @@ class AddComment extends Component {
     render() {
         const { getFieldDecorator, getFieldValue, resetFields } = this.props.form
         var state = encodeURIComponent('weibo,'+window.location.pathname + '#comment')
-        var url = 'https://api.weibo.com/oauth2/authorize?client_id=1475313306&redirect_uri=http:%2F%2Fwww.hazyzh.com%2Foauth'+'&state='+state
+        var url = 'https://api.weibo.com/oauth2/authorize?client_id=1475313306&redirect_uri=https:%2F%2Fwww.hazyzh.com%2Foauth'+'&state='+state
 
         return (
             <div className="comment-box">

@@ -67,6 +67,7 @@ function generationHtml(fileName) {
     let newstate = fileLength
     // mard 渲染标题规则
     let headInfo = [],
+        description = '',
         index1 = 0,
         index2 = 0,
         count = 0,
@@ -79,12 +80,14 @@ function generationHtml(fileName) {
                 text: text,
                 children: []
             })
+            description += text + ' '
         } else if (level == 4) {
             let last = headInfo[headInfo.length - 1]
             last && last.children.push({
                 id: `#hazyzh-h4-${++index2}`,
                 text: text
             })
+            description += text + ' '
         } else {
             return `<h${level}>${text}</h${level}>`
         }
@@ -101,6 +104,7 @@ function generationHtml(fileName) {
 
         var content = marked(mdStr, {renderer: renderer})
         let catalog = JSON.stringify(headInfo)
+        config.description = description
         let mysql = 'update myblog set title=?,keywords=?,tags=?,relationBlog=?,generateFlag=1,catalog=? where blogId=?'
         connection.query(mysql, [config.title, config.keywords, config.tags, config.relationBlog, catalog, fileName.split('.')[0]], (err, results) => {
            if(err) throw err

@@ -3,6 +3,8 @@ import { Row, Col, Input, Form, Button, message, Avatar, Icon, Popconfirm } from
 import moment from 'moment'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 
+const getHttps = (url) => url.replace(/^https?:/, '')
+
 class CommentDetails extends Component {
     state = {
         usercomment: '',
@@ -58,7 +60,7 @@ class CommentDetails extends Component {
                             <Avatar
                                 shape="square"
                                 size="large"
-                                src={commentInfo.commentUserHead} />
+                                src={getHttps(commentInfo.commentUserHead)} />
                         </a>
                     </Col>
                     <Col span={6}>

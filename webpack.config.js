@@ -1,9 +1,14 @@
 const path = require('path')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+// css 打包出来
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const extractLESS = new ExtractTextPlugin({
+  filename: 'css/[name].css',
+  allChunks: true
+})
 
-// 自己博客都路径
+// 自己博客的路径
 const myblogPath = path.resolve('/Users/user1/Desktop/hazyzh/appidi0x590ecbp/hazy')
 
 module.exports = {
@@ -37,9 +42,7 @@ module.exports = {
                 drop_console: true
             }
         }),
-        new ExtractTextPlugin({
-          filename: path.resolve(__dirname,'css/[name].[contenthash].css')
-        }),
+        extractLESS,
         new webpack.BannerPlugin("Copyright Hazyzh All rights reserved.")
     ],
     module: {
@@ -51,8 +54,9 @@ module.exports = {
             },
             {
                 test: /.less$/,
-                use: [
-                    'style-loader',
+                use: extractLESS.extract({
+                fallback: 'style-loader',
+                  use: [
                     'css-loader',
                     {
                         loader: "postcss-loader",
@@ -63,7 +67,8 @@ module.exports = {
                         }
                     },
                     'less-loader'
-                ]
+                  ]
+                })
             },
             {
                 test: /.(png|jpg|svg|gif)$/i,
