@@ -55,7 +55,7 @@ class ContentLayout extends Component {
 
     render(){
         const { lastestBlog, lastestBlogs, tagsinfo } = this.state
-        const catalog = lastestBlog.catalog && JSON.parse(lastestBlog.catalog) || []
+        const catalog = lastestBlog.catalog && JSON.parse(lastestBlog.catalog).slice(0, 3) || []
         const len = tagsinfo.length
         return (
             <Content>

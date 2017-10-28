@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv=Content-Type content="text/html;charset=utf-8">
+        <meta name="keywords" contect="setTimeout,setInterval,事件回掉,nodejs的setInterval区别">
+        <meta name="author" contect="hazyzh">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+        <title>setTimeout与setInterval的区别和nodejs中的差异</title>
+        <meta name="description" content="setTimeout与setInterval nodejs中的差异 参考资料 ">
+        <link rel="shortcut icon" href="/favicon.ico"  type="image/x-icon">
+        <style>
+            *{
+                margin: 0px;padding: 0px;
+            }
+            body{
+                font: 17px/1.5 "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif;
+                background: white;
+                margin: 0;
+                color: #33333d;
+                overflow-y: scroll;
+                overflow-x: hidden;
+            }
+            header{
+                height: 70px;
+                line-height: 70px;
+                overflow: hidden;
+                background: #fafafa;
+                box-shadow: 0px 2px 10px 0px rgba(0,0,0,0.1), 0 1px rgba(0,0,0,0.1);
+                -webkit-box-shadow: 0px 2px 10px 0px rgba(0,0,0,0.1), 0 1px rgba(0,0,0,0.1);
+                -moz-box-shadow: 0px 2px 10px 0px rgba(0,0,0,0.1), 0 1px rgba(0,0,0,0.1);
+            }
+            .header-content .home-logo{
+                float: left;
+                display: block;
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                margin-top: 10px;
+                overflow: hidden;
+                box-shadow: 1px 1px 1px #171411;
+                -webkit-box-shadow: 1px 1px 1px #171411;
+                -moz-box-shadow: 1px 1px 1px #171411;
+            }
+            .header-content .blog-info{
+                float: right;
+            }
+            .header-content .blog-info a{
+                color: #999;
+                text-decoration: none;
+                margin-right: 20px;
+            }
+            .header-content .blog-info a:hover{
+                color: #71afae
+            }
+            .header-content a img{
+                width: 100%;
+                height: 100%;
+            }
+
+            h1{
+                margin: 20px 0px;
+            }
+
+            p{
+                font-weight: 300;
+                letter-spacing: 1px;
+                font-family: "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif;
+            }
+            #content,.header-content{
+                width: 1200px;
+                margin: auto;
+            }
+            #content img{
+                width: 100%;
+            }
+            #content li{
+                list-style: circle;
+                margin-left: 20px;
+            }
+
+            pre{
+                background: #eee;
+                font-size: 17px;
+                padding: 20px 0;
+                border-radius: 10px;
+                overflow: auto;
+                font-weight: 300;
+                text-shadow: 0 1px white;
+                font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+                white-space: pre;
+                word-spacing: normal;
+                word-break: normal;
+                word-wrap: normal;
+                line-height: 1.5;
+            }
+            .info-title{
+                display: block;
+                margin: 10px;
+            }
+            .info-title .tags{
+                background: #eee;
+                padding: 5px;
+                border-radius: 3px;
+                margin-right: 5px;
+                cursor: pointer;
+            }
+            .info-title .time{
+                font-size: 14px;
+                color: #999;
+            }
+            .line{
+                display: block;
+                width: 100%;
+                height: 1px;
+                background: #eee;
+            }
+            /*文章内容*/
+            .blog-content{
+                width: 800px;
+                float: left;
+            }
+            .blog-aside{
+                width: 400px;
+                float: right;
+            }
+            .clearleft{
+                clear:both;
+                zoom:1;
+            }
+            .clearleft:after{
+                display: table;
+                content: "";
+                clear: both;
+            }
+            .count-total{float: right;margin-right: 30px;}
+        </style>
+        <link rel="stylesheet" href="/styles/ocean.css">
+        <link href="https://cdn.bootcss.com/antd/2.12.2/antd.min.css" rel="stylesheet">
+        <link href="https://cdn.bootcss.com/animate.css/3.5.2/animate.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="/css/bundle.css">
+    </head>
+    <body>
+        <header>
+            <div class="header-content">
+                <a href="/blog" class="home-logo">
+                    <img src="/static/imgs/home.png" />
+                </a>
+                <div class="blog-info">
+                    <a href="/blog">主页</a>
+                    <a href="/blog/tags">标签分类</a>
+                    <a href="/blog/about">个人中心</a>
+                </div>
+            </div>
+        </header>
+        <div id="content">
+            <h1>setTimeout与setInterval的区别和nodejs中的差异</h1>
+            <span class="info-title clearleft">
+                
+                    <span class="tags">定时器区别</span>
+                
+                    <span class="tags"> nodejs差异</span>
+                
+                <span class="time">2017年10月02日 01:39:11</span>
+                <span class="count-total" id="countNumbers"></span>
+            </span>
+            <span class="line"></span>
+            <div class="blog-container clearleft">
+                <article class="blog-content">
+                    <h3 id="hazyzh-h3-1">setTimeout与setInterval</h3><p><code>setTimeout</code> 和 <code>setInterval</code> 是我们在 <code>javaScript</code> 中经常用到的定时器,
+<code>setTimeout</code> 方法用于在指定的毫秒数后调用函数或计算表达式,<code>setInterval</code> 可按照指定的周期不停的调用函数或计算表达式。</p>
+<p>但是当我们要循环调用某任务时候,处了用 <code>setInterval</code> 指定周期外，我们也可以用函数中嵌套<code>setTimeout</code> 回掉自己来实现, 可以看下面一段代码</p>
+<pre><code class="lang-javascript">    <span class="hljs-comment">// A</span>
+    <span class="hljs-selector-tag">function</span> <span class="hljs-selector-tag">myTimeout</span>() {
+        <span class="hljs-selector-tag">doStuff</span>()
+        <span class="hljs-selector-tag">setTimeout</span>(myTimeout, <span class="hljs-number">1000</span>)
+    }
+    <span class="hljs-selector-tag">myTimeout</span>()
+
+    <span class="hljs-comment">// B</span>
+    <span class="hljs-selector-tag">function</span> <span class="hljs-selector-tag">myTimeout</span>() {
+        <span class="hljs-selector-tag">doStuff</span>()
+    }
+    <span class="hljs-selector-tag">myTimeout</span>()
+    <span class="hljs-selector-tag">setInterval</span>(myTimeout, <span class="hljs-number">1000</span>)
+</code></pre>
+<p>上面<code>A</code>, <code>B</code> 两个方法都是在循环执行 <code>myTimeout</code> 函数,可是它们之间有什么不同呢。我们大部分都知道这其实取决与 <code>doStuff</code> 所消耗的时间, 如下图所示如果 <code>doStuff</code> 消耗时间很短(<em>实际中大部分消耗时间都很短很难有所察觉</em>),两个方法效果近似</p>
+<p><img src="http://hazyzh.oss-cn-shenzhen.aliyuncs.com/imgs/settimeout/settimeout.png" alt="setTimeout与setInterval区别"></p>
+<p>当<code>doStuff</code>是一个很复杂的计算，需要消耗很长时间时候，我们就可以分析出<code>A</code> 方法（<em>用setTimeout回掉</em>）能够保障每一次任务结束到下一次任务开始的时间间隔为我们预期的值，但是<code>B</code>(<em>setInterval</em>)却能保证任务开始到下一次任务开始之间的间隔为我们预期的值，(<em>当然如果<code>doStuff</code>执行时间比我们预期间隔还长，<code>setInterval</code>还有可能会直接放弃某次任务，这种罕见情况我们暂不考虑</em>)</p>
+<p>为了感受其中的差异，这里定义一个模拟任务执行的函数</p>
+<pre><code class="lang-javascript">    <span class="hljs-keyword">function</span> wait(<span class="hljs-built_in">time</span>) {
+        var start = <span class="hljs-built_in">Date</span>.<span class="hljs-built_in">now</span>()
+        <span class="hljs-keyword">while</span>(<span class="hljs-built_in">Date</span>.<span class="hljs-built_in">now</span>() - start &lt; <span class="hljs-built_in">time</span>){}
+    }
+</code></pre>
+<p><code>wait</code>什么也没做，但是却可以阻塞进程<code>time</code>毫秒的时间,然后我们定义 <code>doStuff</code>，让它每次执行阻塞进程<code>500ms</code>,而且可以输出间隔时间信息，以及本次执行结束到下次执行开始的时间间隔</p>
+<pre><code class="lang-javascript">    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">doStuff</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'doStuff___start'</span>, <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>().getSeconds()) <span class="hljs-comment">//每次输出当前的秒数</span>
+
+        <span class="hljs-built_in">console</span>.timeEnd(<span class="hljs-string">'timeout'</span>) <span class="hljs-comment">//每次输出这次执行与上一次执行结束的时间间隔</span>
+        wait(<span class="hljs-number">500</span>)
+        <span class="hljs-built_in">console</span>.time(<span class="hljs-string">'timeout'</span>)
+    }
+</code></pre>
+<p>然后我们分别运行<code>A</code>, <code>B</code>两种方法</p>
+<pre><code>
+    <span class="hljs-comment">/*
+     * A方法 setTimeout
+     */</span>
+    <span class="hljs-comment">// doStuff___start 36</span>
+    <span class="hljs-comment">// timeout: 1002.865966796875ms</span>
+    <span class="hljs-comment">// doStuff___start 37</span>
+    <span class="hljs-comment">// timeout: 1004.380859375ms</span>
+    <span class="hljs-comment">// doStuff___start 39</span>
+    <span class="hljs-comment">// timeout: 1001.550048828125ms</span>
+    <span class="hljs-comment">// doStuff___start 40</span>
+    <span class="hljs-comment">// timeout: 1001.051025390625ms</span>
+    <span class="hljs-comment">// doStuff___start 42</span>
+    <span class="hljs-comment">// timeout: 1001.637939453125ms</span>
+
+    <span class="hljs-comment">/*
+     * B方法 setInterval
+     */</span>
+    <span class="hljs-comment">// doStuff___start 50</span>
+    <span class="hljs-comment">// timeout: 500.412109375ms</span>
+    <span class="hljs-comment">// doStuff___start 51</span>
+    <span class="hljs-comment">// timeout: 500.51806640625ms</span>
+    <span class="hljs-comment">// doStuff___start 52</span>
+    <span class="hljs-comment">// timeout: 500.099853515625ms</span>
+    <span class="hljs-comment">// doStuff___start 53</span>
+    <span class="hljs-comment">// timeout: 499.873291015625ms</span>
+    <span class="hljs-comment">// doStuff___start 54</span>
+    <span class="hljs-comment">// timeout: 500.439697265625ms</span>
+</code></pre><p>可以看到 <code>A</code> 方法(<em>用setTimeout回掉</em>),我们保证了每次进程结束到下一次进程开始的间隔为预期值，但是从每次进程开始的时间间隔(<em>我们这里精确到了秒</em>)是会改变的，而<code>B</code> 方法(<em>setInterval</em>)表现的和我们预期的相同，正好与<code>A</code>相反。</p>
+<h3 id="hazyzh-h3-2">nodejs中的差异</h3><p>目前为止所以的表现都合理，至少很符合预期。可是当我在 <code>nodejs(v8.1.4)</code> 中测试时候，却发现不管我用 <code>setTimeout</code> 还是 <code>setInterval</code>，他们总是能表现出同样的效果(<em>都是上面A方法的效果【用setTimeout回掉】</em>)。这一点让我很困惑,经过一番探究，在 <code>nodejs</code> 关于 <code>timers</code> 的代码中找到了答案。</p>
+<p><code>nodejs</code> 关于定时器的源码在 <a href="https://github.com/nodejs/node/blob/master/lib/timers.js">node/lib/timer</a> 文件中，进入就关于定时器的一些设计解释，因为 <code>node</code> 是做服务端代码，在内部 <code>TCP, I/O..</code> 等大部分事件都会创建一个定时器，任何时间都可能存在大量的定时器任务，所以设计一个高效的定时器是很有必要的。</p>
+<p><code>nodejs</code>实现定时器也很巧妙, 为了可以轻松取消添加事件，nodejs使用了双向链表将 <code>timer</code> 插入和移除操作复杂度降低，具体实现在 <a href="https://github.com/nodejs/node/blob/v9.0.0-proposal/lib/internal/linkedlist.js">node/lib/internal/linkedlist.js</a> 文件中, 链表缺点自然是去查找元素，但是<code>node</code> ,把同一个时间间隔的 <code>timer</code> 维护在同一个双向链表中，这样就不需要去查找，因为先插入的总是先执行，具体的分析可以参考这篇文章 <a href="https://segmentfault.com/a/1190000005082085">通过源码解析 Node.js 中高效的 timer</a>.</p>
+<p>回归主题，在 <code>nodejs</code> 关于 <code>timer</code> 的源码下，我们可以找到执行定时器的代码</p>
+<pre><code class="lang-javascript">    <span class="hljs-comment">// setInterval 会返回 createRepeatTimeout 的返回值</span>
+    exports.setInterval = function(callback, <span class="hljs-keyword">repeat</span>, arg1, arg2, arg3) {
+      ...
+      <span class="hljs-keyword">return</span> createRepeatTimeout(callback, <span class="hljs-keyword">repeat</span>, <span class="hljs-keyword">args</span>);
+    }
+
+    <span class="hljs-comment">//  createRepeatTimeout函数生成timer</span>
+    function createRepeatTimeout(callback, <span class="hljs-keyword">repeat</span>, <span class="hljs-keyword">args</span>) {
+      <span class="hljs-keyword">repeat</span> *= 1; <span class="hljs-comment">// coalesce to number or NaN</span>
+      <span class="hljs-keyword">if</span> (!(<span class="hljs-keyword">repeat</span> &gt;= 1 &amp;&amp; <span class="hljs-keyword">repeat</span> &lt;= TIMEOUT_MAX))
+        <span class="hljs-keyword">repeat</span> = 1; <span class="hljs-comment">// 这里间隔如果小于1或者大于TIMEOUT_MAX（2^31-1）都会按照1计算</span>
+      <span class="hljs-keyword">var</span> <span class="hljs-keyword">timer</span> = new Timeout(<span class="hljs-keyword">repeat</span>, callback, <span class="hljs-keyword">args</span>);
+      <span class="hljs-keyword">timer</span>._repeat = <span class="hljs-keyword">repeat</span>; <span class="hljs-comment">// 追加了_repeat属性表示要循环调用</span>
+      ...
+
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">timer</span>;
+    }
+
+
+    <span class="hljs-comment">// 函数回掉时，可以看到执行时在ontimeout函数中</span>
+    function tryOnTimeout(<span class="hljs-keyword">timer</span>, <span class="hljs-keyword">list</span>) {
+        ...
+             try {
+                ontimeout(<span class="hljs-keyword">timer</span>);
+                threw = false;
+              } finally {
+                <span class="hljs-keyword">if</span> (timerAsyncId !== null) {
+                  <span class="hljs-keyword">if</span> (!threw)
+                  ...
+                }
+        ...
+    }
+
+    <span class="hljs-comment">// ontimeout执行</span>
+    function ontimeout(<span class="hljs-keyword">timer</span>) {
+      <span class="hljs-keyword">var</span> <span class="hljs-keyword">args</span> = <span class="hljs-keyword">timer</span>._timerArgs;
+      <span class="hljs-keyword">var</span> callback = <span class="hljs-keyword">timer</span>._onTimeout;
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> callback !== 'function')
+        <span class="hljs-keyword">return</span> promiseResolve(callback, <span class="hljs-keyword">args</span>[0]);
+      <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">args</span>)
+        <span class="hljs-keyword">timer</span>._onTimeout();
+      <span class="hljs-keyword">else</span> {
+        switch (<span class="hljs-keyword">args</span>.length) {
+          case 1:
+            <span class="hljs-keyword">timer</span>._onTimeout(<span class="hljs-keyword">args</span>[0]);
+            <span class="hljs-keyword">break</span>;
+          case 2:
+            <span class="hljs-keyword">timer</span>._onTimeout(<span class="hljs-keyword">args</span>[0], <span class="hljs-keyword">args</span>[1]);
+            <span class="hljs-keyword">break</span>;
+          case 3:
+            <span class="hljs-keyword">timer</span>._onTimeout(<span class="hljs-keyword">args</span>[0], <span class="hljs-keyword">args</span>[1], <span class="hljs-keyword">args</span>[2]);
+            <span class="hljs-keyword">break</span>;
+          default:
+            Function.prototype.apply.call(callback, <span class="hljs-keyword">timer</span>, <span class="hljs-keyword">args</span>);
+        }
+      }
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">timer</span>._repeat) <span class="hljs-comment">// 追加timer</span>
+        rearm(<span class="hljs-keyword">timer</span>);
+    }
+</code></pre>
+<p>上面代码分析，可以看到追加循环调用是在 <code>ontimeout</code> 函数中，它里面一大堆判断参数个数的内容可以不管，最后的<code>if(timer._repeat) rearm(timer)</code>判断是否要循环调用，可以看到它是在上面 <code>timer._onTimeout</code> 执行完之后才去执行的。这和我们开始写的<code>A</code>方法（<em>用setTimeout回掉</em>）基本类似，至此在 <code>nodejs</code> 表现出的不同就可以理解了。</p>
+<p>看 <code>issues</code> , 关于这个问题也有很多讨论，还是有不少人想把它改会我们熟悉的方式的</p>
+<ul>
+<li><a href="https://github.com/nodejs/node/issues/7554">setTimeout interval should not include duration of callback </a></li>
+<li><a href="https://github.com/nodejs/node/issues/7554">setInterval interval includes duration of callback</a></li>
+</ul>
+<p>具体最后要怎样还是要看后面的版本修改了。</p>
+<h3 id="hazyzh-h3-3">参考资料</h3><ul>
+<li><a href="https://github.com/nodejs/node/blob/master/lib/timers.js">nodejs源码</a></li>
+<li><a href="https://stackoverflow.com/questions/729921/settimeout-or-setinterval">setTimeout or setInterval?</a></li>
+<li><a href="https://segmentfault.com/a/1190000004034739">JavaScript的setTimeout和setInterval的深入理解</a></li>
+</ul>
+
+                    <div id="comment" class="comment"></div>
+                </article>
+                <aside class="blog-aside" id="asideContent">
+                </aside>
+            </div>
+        </div>
+        <script src="https://cdn.bootcss.com/react/15.6.1/react.min.js"></script>
+        <script src="https://cdn.bootcss.com/react/15.6.1/react-dom.min.js"></script>
+        <script src="https://cdn.bootcss.com/antd/2.12.2/antd.min.js"></script>
+        <script type="text/javascript" src="/js/bundle.js"></script>
+    </body>
+</html>

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv=Content-Type content="text/html;charset=utf-8">
+        <meta name="keywords" contect="react, redux-thunk, redux-promise, javascript">
+        <meta name="author" contect="hazyzh">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+        <title>简单粗暴实现redux的thunk和promise中间件</title>
+        <meta name="description" content="异步处理 改造 dispatch 加入 Thunk 能力 加入处理 Promise 能力 测试和思考 ">
+        <link rel="shortcut icon" href="/favicon.ico"  type="image/x-icon">
+        <style>
+            *{
+                margin: 0px;padding: 0px;
+            }
+            body{
+                font: 17px/1.5 "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif;
+                background: white;
+                margin: 0;
+                color: #33333d;
+                overflow-y: scroll;
+                overflow-x: hidden;
+            }
+            header{
+                height: 70px;
+                line-height: 70px;
+                overflow: hidden;
+                background: #fafafa;
+                box-shadow: 0px 2px 10px 0px rgba(0,0,0,0.1), 0 1px rgba(0,0,0,0.1);
+                -webkit-box-shadow: 0px 2px 10px 0px rgba(0,0,0,0.1), 0 1px rgba(0,0,0,0.1);
+                -moz-box-shadow: 0px 2px 10px 0px rgba(0,0,0,0.1), 0 1px rgba(0,0,0,0.1);
+            }
+            .header-content .home-logo{
+                float: left;
+                display: block;
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                margin-top: 10px;
+                overflow: hidden;
+                box-shadow: 1px 1px 1px #171411;
+                -webkit-box-shadow: 1px 1px 1px #171411;
+                -moz-box-shadow: 1px 1px 1px #171411;
+            }
+            .header-content .blog-info{
+                float: right;
+            }
+            .header-content .blog-info a{
+                color: #999;
+                text-decoration: none;
+                margin-right: 20px;
+            }
+            .header-content .blog-info a:hover{
+                color: #71afae
+            }
+            .header-content a img{
+                width: 100%;
+                height: 100%;
+            }
+
+            h1{
+                margin: 20px 0px;
+            }
+
+            p{
+                font-weight: 300;
+                letter-spacing: 1px;
+                font-family: "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif;
+            }
+            #content,.header-content{
+                width: 1200px;
+                margin: auto;
+            }
+            #content img{
+                width: 100%;
+            }
+            #content li{
+                list-style: circle;
+                margin-left: 20px;
+            }
+
+            pre{
+                background: #eee;
+                font-size: 17px;
+                padding: 20px 0;
+                border-radius: 10px;
+                overflow: auto;
+                font-weight: 300;
+                text-shadow: 0 1px white;
+                font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+                white-space: pre;
+                word-spacing: normal;
+                word-break: normal;
+                word-wrap: normal;
+                line-height: 1.5;
+            }
+            .info-title{
+                display: block;
+                margin: 10px;
+            }
+            .info-title .tags{
+                background: #eee;
+                padding: 5px;
+                border-radius: 3px;
+                margin-right: 5px;
+                cursor: pointer;
+            }
+            .info-title .time{
+                font-size: 14px;
+                color: #999;
+            }
+            .line{
+                display: block;
+                width: 100%;
+                height: 1px;
+                background: #eee;
+            }
+            /*文章内容*/
+            .blog-content{
+                width: 800px;
+                float: left;
+            }
+            .blog-aside{
+                width: 400px;
+                float: right;
+            }
+            .clearleft{
+                clear:both;
+                zoom:1;
+            }
+            .clearleft:after{
+                display: table;
+                content: "";
+                clear: both;
+            }
+            .count-total{float: right;margin-right: 30px;}
+        </style>
+        <link rel="stylesheet" href="/styles/ocean.css">
+        <link href="https://cdn.bootcss.com/antd/2.12.2/antd.min.css" rel="stylesheet">
+        <link href="https://cdn.bootcss.com/animate.css/3.5.2/animate.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="/css/bundle.css">
+    </head>
+    <body>
+        <header>
+            <div class="header-content">
+                <a href="/blog" class="home-logo">
+                    <img src="/static/imgs/home.png" />
+                </a>
+                <div class="blog-info">
+                    <a href="/blog">主页</a>
+                    <a href="/blog/tags">标签分类</a>
+                    <a href="/blog/about">个人中心</a>
+                </div>
+            </div>
+        </header>
+        <div id="content">
+            <h1>简单粗暴实现redux的thunk和promise中间件</h1>
+            <span class="info-title clearleft">
+                
+                    <span class="tags">react redux</span>
+                
+                <span class="time">2017年10月28日 18:17:58</span>
+                <span class="count-total" id="countNumbers"></span>
+            </span>
+            <span class="line"></span>
+            <div class="blog-container clearleft">
+                <article class="blog-content">
+                    <h3 id="hazyzh-h3-1">异步处理</h3><p>我们使用 <code>redux</code> 处理数据流时候, 一个比较令人头疼的问题就是关于异步操作。<code>Action</code> 发出以后，过一段时间再执行 <code>Reducer</code>，这就是异步。在哪个阶段处理异步, <code>Reducer</code> 作为一个纯函数, 不适合承担此类功能, 理论上也承担不了, <code>Action</code> 存放一个对象, 作为消息的载体自己更不能进行异步操作。想一想就发现可以在 <code>dispatch</code> 这个发送 <code>Action</code> 的方法上做文章。如果我们能在异步操作的不同阶段发送不同的 <code>Action</code> 我们就可以完成异步操作了。</p>
+<p><img src="http://hazyzh.oss-cn-shenzhen.aliyuncs.com/imgs/redux/thunk-promise.png" alt="redux-promise"></p>
+<h3 id="hazyzh-h3-2">改造 dispatch</h3><p>基于我们之前实现的简单 <code>redux</code>, 对于它的 <code>dispatch</code> 函数进行处理。使它具有处理我们异步逻辑的能力。</p>
+<p>有时候看源码总能感觉到作者对代码逻辑处理的很优雅, 以及对于功能的可扩展性把握的很好，但是往往这些优美的代码，理解起来需要很多其他方面的知识基础, 这也是很多人看源码困难很大的原因。我们这里对与 <code>redux</code> 中间件的处理在后续再去讨论, 这里我们就以一种比较蠢的方法简单粗暴的实现我们想要的功能</p>
+<h4 id="hazyzh-h4-1">加入 Thunk 能力</h4><pre><code class="lang-javascript">
+    ...
+    const dispatch1 = store.dispatch
+    store.dispatch = <span class="hljs-built_in">arg</span> =&gt; {
+        <span class="hljs-keyword">if</span> (typeof <span class="hljs-built_in">arg</span> === <span class="hljs-string">'function'</span>) <span class="hljs-keyword">return</span> <span class="hljs-built_in">arg</span>(store.dispatch, getState)
+        dispatch1(<span class="hljs-built_in">arg</span>)
+    }
+    ...
+</code></pre>
+<p>这里逻辑异常简单, 先把原来的 <code>dispatch</code> 函数存储起来, 判断 <code>dispatch</code> 传入的参数类型, 如果参数类型为 <code>function</code> 则执行改函数并返回, 传入 <code>store</code> 的 <code>dispatch</code> 和 <code>getState</code> 作为参数, 使得 <code>dispatch</code> 具有处理函数参数的能力。</p>
+<h4 id="hazyzh-h4-2">加入处理 Promise 能力</h4><p>其实上面的 <code>thunk</code> 我们已经有了处理异步的能力, 但是每次我们要自己去手动触发三个 <code>action</code>, 工作量还是很大的。现在 <code>ajax</code> 很多都会包装为 <code>promise</code> 对象, 因此我们可以对与 <code>dispatch</code> 增加一层判断, 使得它具有处理具有 <code>promise</code> 属性的 <code>action</code> 的能力。</p>
+<pre><code class="lang-javascript">
+    ...
+    const dispatch2 = store.dispatch
+
+    store.dispatch = <span class="hljs-built_in">action</span> =&gt; {
+        <span class="hljs-keyword">if</span> (isPromise(<span class="hljs-built_in">action</span>.payload)) {
+            const { <span class="hljs-built_in">type</span>, payload, <span class="hljs-built_in">params</span> } = <span class="hljs-built_in">action</span>
+            dispatch2({
+                <span class="hljs-built_in">type</span>: `${<span class="hljs-built_in">type</span>}<span class="hljs-variable">_PENDDING</span>`,
+                <span class="hljs-built_in">params</span>
+            })
+            payload.<span class="hljs-keyword">then</span>(
+                resolve =&gt; {
+                    dispatch2({
+                        <span class="hljs-built_in">type</span>: `${<span class="hljs-built_in">type</span>}<span class="hljs-variable">_SUCCESS</span>`,
+                        content: resolve,
+                        <span class="hljs-built_in">params</span>
+                    })
+                },
+                reject =&gt; {
+                    dispatch2({
+                        <span class="hljs-built_in">type</span>: `${<span class="hljs-built_in">type</span>}<span class="hljs-variable">_ERROR</span>`,
+                        content: reject,
+                        <span class="hljs-built_in">params</span>
+                    })
+                }
+            )
+        } <span class="hljs-keyword">else</span> {
+            dispatch2(<span class="hljs-built_in">action</span>)
+        }
+    }
+    ...
+</code></pre>
+<p>我们规定 <code>action</code> 要把 <code>promise</code> 对象放入 <code>payload</code> 属性中。当接收到 <code>payload</code> 属性为 <code>promise</code> 对象的 <code>action</code> 时候, 我们这里硬编码直接触发该 <code>type</code> 加 <code>_PENDDING</code> 事件。等到该 <code>promise</code> 状态改变后, 我们根据它成功与否分别触发 <code>_SUCCESS</code> 和 <code>_ERROR</code> 事件, 这样我们就可以把异步逻辑包装为 <code>promise</code> 对象放在 <code>action</code> 中, 然后我们在 <code>reducer</code> 中分别处理这几种类型的事件即可。</p>
+<h3 id="hazyzh-h3-3">测试和思考</h3><p>我们现在可以在项目(<a href="https://github.com/Hazyzh/reacts-ggsddu">reacts-ggsddu</a>)中分别去 <code>dispatch</code> 一个函数和一个带有 <code>promise</code> 对象的 <code>action</code> 可以看到分别的请求效果。 一个简易的异步处理方法已经实现了。</p>
+<p>但是反观对 <code>dispatch</code> 的改造没有什么统一性, 代码很难维护和扩展, redux 是可以配置中间件来扩展配置的。我们后面再去研究。</p>
+
+                    <div id="comment" class="comment"></div>
+                </article>
+                <aside class="blog-aside" id="asideContent">
+                </aside>
+            </div>
+        </div>
+        <script src="https://cdn.bootcss.com/react/15.6.1/react.min.js"></script>
+        <script src="https://cdn.bootcss.com/react/15.6.1/react-dom.min.js"></script>
+        <script src="https://cdn.bootcss.com/antd/2.12.2/antd.min.js"></script>
+        <script type="text/javascript" src="/js/bundle.js"></script>
+    </body>
+</html>

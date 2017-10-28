@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv=Content-Type content="text/html;charset=utf-8">
+        <meta name="keywords" contect="react, redux, redux解读, javascript">
+        <meta name="author" contect="hazyzh">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+        <title>动手实现redux</title>
+        <meta name="description" content="前言 实例回顾 redux 属性分析 动手实现 实现 createStore 实现 reducer 实现 Provider 实现connect 参考 ">
+        <link rel="shortcut icon" href="/favicon.ico"  type="image/x-icon">
+        <style>
+            *{
+                margin: 0px;padding: 0px;
+            }
+            body{
+                font: 17px/1.5 "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif;
+                background: white;
+                margin: 0;
+                color: #33333d;
+                overflow-y: scroll;
+                overflow-x: hidden;
+            }
+            header{
+                height: 70px;
+                line-height: 70px;
+                overflow: hidden;
+                background: #fafafa;
+                box-shadow: 0px 2px 10px 0px rgba(0,0,0,0.1), 0 1px rgba(0,0,0,0.1);
+                -webkit-box-shadow: 0px 2px 10px 0px rgba(0,0,0,0.1), 0 1px rgba(0,0,0,0.1);
+                -moz-box-shadow: 0px 2px 10px 0px rgba(0,0,0,0.1), 0 1px rgba(0,0,0,0.1);
+            }
+            .header-content .home-logo{
+                float: left;
+                display: block;
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                margin-top: 10px;
+                overflow: hidden;
+                box-shadow: 1px 1px 1px #171411;
+                -webkit-box-shadow: 1px 1px 1px #171411;
+                -moz-box-shadow: 1px 1px 1px #171411;
+            }
+            .header-content .blog-info{
+                float: right;
+            }
+            .header-content .blog-info a{
+                color: #999;
+                text-decoration: none;
+                margin-right: 20px;
+            }
+            .header-content .blog-info a:hover{
+                color: #71afae
+            }
+            .header-content a img{
+                width: 100%;
+                height: 100%;
+            }
+
+            h1{
+                margin: 20px 0px;
+            }
+
+            p{
+                font-weight: 300;
+                letter-spacing: 1px;
+                font-family: "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif;
+            }
+            #content,.header-content{
+                width: 1200px;
+                margin: auto;
+            }
+            #content img{
+                width: 100%;
+            }
+            #content li{
+                list-style: circle;
+                margin-left: 20px;
+            }
+
+            pre{
+                background: #eee;
+                font-size: 17px;
+                padding: 20px 0;
+                border-radius: 10px;
+                overflow: auto;
+                font-weight: 300;
+                text-shadow: 0 1px white;
+                font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+                white-space: pre;
+                word-spacing: normal;
+                word-break: normal;
+                word-wrap: normal;
+                line-height: 1.5;
+            }
+            .info-title{
+                display: block;
+                margin: 10px;
+            }
+            .info-title .tags{
+                background: #eee;
+                padding: 5px;
+                border-radius: 3px;
+                margin-right: 5px;
+                cursor: pointer;
+            }
+            .info-title .time{
+                font-size: 14px;
+                color: #999;
+            }
+            .line{
+                display: block;
+                width: 100%;
+                height: 1px;
+                background: #eee;
+            }
+            /*文章内容*/
+            .blog-content{
+                width: 800px;
+                float: left;
+            }
+            .blog-aside{
+                width: 400px;
+                float: right;
+            }
+            .clearleft{
+                clear:both;
+                zoom:1;
+            }
+            .clearleft:after{
+                display: table;
+                content: "";
+                clear: both;
+            }
+            .count-total{float: right;margin-right: 30px;}
+        </style>
+        <link rel="stylesheet" href="/styles/ocean.css">
+        <link href="https://cdn.bootcss.com/antd/2.12.2/antd.min.css" rel="stylesheet">
+        <link href="https://cdn.bootcss.com/animate.css/3.5.2/animate.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="/css/bundle.css">
+    </head>
+    <body>
+        <header>
+            <div class="header-content">
+                <a href="/blog" class="home-logo">
+                    <img src="/static/imgs/home.png" />
+                </a>
+                <div class="blog-info">
+                    <a href="/blog">主页</a>
+                    <a href="/blog/tags">标签分类</a>
+                    <a href="/blog/about">个人中心</a>
+                </div>
+            </div>
+        </header>
+        <div id="content">
+            <h1>动手实现redux</h1>
+            <span class="info-title clearleft">
+                
+                    <span class="tags">react</span>
+                
+                    <span class="tags"> redux</span>
+                
+                <span class="time">2017年10月27日 16:50:43</span>
+                <span class="count-total" id="countNumbers"></span>
+            </span>
+            <span class="line"></span>
+            <div class="blog-container clearleft">
+                <article class="blog-content">
+                    <h3 id="hazyzh-h3-1">前言</h3><p><a href="https://github.com/Hazyzh/reacts-ggsddu">reacts-ggsddu</a> 用来一些文章, 记录一些关于 <code>react</code> 学习路上的心得和体会</p>
+<ul>
+<li><a href="https://github.com/Hazyzh/reacts-ggsddu/blob/master/docs/my-redux.MD">动手实现redux</a></li>
+</ul>
+<h3 id="hazyzh-h3-2">实例回顾</h3><p> <img src="https://hazyzh.oss-cn-shenzhen.aliyuncs.com/imgs/redux/effect.gif" alt="effect"></p>
+<p>假如按钮和界面不在同一组件, 经常用 <code>redux</code> 去实现上面功能, 可以想象到如下代码</p>
+<pre><code class="lang-javascript">    ...
+    const Test = ({ colorTheme, authorName }) =&gt;
+        <span class="hljs-variable">&lt;div
+            className='texts'
+            style={{color: colorTheme}} &gt;</span>
+            Hello World - { authorName }
+        &lt;/div&gt;
+
+    const mapStateToProps = <span class="hljs-keyword">state</span> =&gt; ({
+        colorTheme: <span class="hljs-keyword">state</span>.colorTheme,
+        authorName: <span class="hljs-keyword">state</span>.authorName
+    })
+
+    ...
+</code></pre>
+<p>用过 <code>mapStateToProps</code> 从顶层拿到属性然后展示, 在另一个组建通过 <code>mapDispatchToProps</code> 去触发 <code>action</code> 改变 <code>state</code>, 那么我们如何自己实现 <code>redux</code> 的功能呢</p>
+<h3 id="hazyzh-h3-3">redux 属性分析</h3><p>关于我们常用到的内容, 首先我们要考虑 <code>createStore</code> 方法, 使得可以创建出来我们后面要用到的 <code>store</code> , 可以接受 <code>action</code> 去处理改变 <code>state</code>, 并且去触发其他事件，比如组建渲染。 <code>Provider</code> 组建，可以传入一个 <code>store</code> 向下分发我们的 <code>store</code>,使得子组建可以获取到我们 <code>store</code> 内的属性和方法。一个 <code>connect</code> 方法，使得子组建可以获取到 <code>store</code> 里面的内容, 并根据 <code>state</code> 改变及时刷新渲染。</p>
+<h3 id="hazyzh-h3-4">动手实现</h3><h4 id="hazyzh-h4-1">实现 createStore</h4><pre><code class="lang-javascript">
+    <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> reducer =&gt; {
+        <span class="hljs-keyword">let</span> state = <span class="hljs-literal">null</span>
+        <span class="hljs-keyword">let</span> listeners = []
+
+        <span class="hljs-keyword">const</span> subscribe = <span class="hljs-function"><span class="hljs-params">listener</span> =&gt;</span> {
+            listeners.push(listener)
+            <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+                listeners = listeners.filter(<span class="hljs-function"><span class="hljs-params">d</span> =&gt;</span> d !== listener)
+            }
+        }
+
+        <span class="hljs-keyword">const</span> getState = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> state
+
+        <span class="hljs-keyword">const</span> dispatch = <span class="hljs-function"><span class="hljs-params">action</span> =&gt;</span> {
+            state = reducer(state, action)
+            listeners.forEach(<span class="hljs-function"><span class="hljs-params">listener</span> =&gt;</span> listener())
+        }
+
+        dispatch()
+
+        <span class="hljs-keyword">return</span> { getState, dispatch, subscribe }
+    }
+</code></pre>
+<p>这个模块直接 <code>export</code> 创建 <code>store</code> 的函数,考虑到要暴露出去的三个函数, 我们用函数内部的变量 <code>state</code> 来存储我们的数据, <code>getState</code> 时候直接返回当前的值就可以了, 同样用内部变量 <code>listeners</code> 来存储订阅者, 订阅者则由 <code>dispatch</code> 函数添加, 返回取消订阅的函数。 <code>dispatch</code> 则根据 <code>action</code> 返回新的 <code>state</code> 同时通知订阅者执行相关逻辑。最后返回包含这三个函数的对象。改对象接受 <code>reducer</code> 作为参数, 内部执行一次 <code>dispatch</code> 则是为了初始化 <code>state</code></p>
+<h4 id="hazyzh-h4-2">实现 reducer</h4><pre><code class="lang-javascript">
+    const initState = {
+        <span class="hljs-built_in">..</span>.
+    }
+
+    <span class="hljs-builtin-name">export</span><span class="hljs-built_in"> default </span>(state, action) =&gt; {
+
+        <span class="hljs-keyword">if</span> (!state) return initState
+
+        switch (action.type) {
+            <span class="hljs-built_in">..</span>.
+        }
+    }
+</code></pre>
+<p>关于 <code>reducer</code> 则简单的实现了根据不同的 <code>action</code>, 返回不同的 <code>state</code>, 只是刚开始判断了如果没有 <code>state</code>, 即初始化时候返回设置好的初始化值。</p>
+<h4 id="hazyzh-h4-3">实现 Provider</h4><pre><code class="lang-javascrpit">
+    <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Provider</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
+        getChildContext () {
+            <span class="hljs-keyword">return</span> {
+                store: <span class="hljs-keyword">this</span>.props.store
+            }
+        }
+
+        ...
+    }
+</code></pre>
+<p>这里必须提一下 <code>react</code> 的 <code>context</code> 这个属性, 可以让我们不通过 <code>props</code> 去获取到上层组建的属性, 不过关于写法却有一些特殊的规定而且在后面的版本可能被移除, 具体信息可以参考<a href="https://reactjs.org/docs/context.html">Context</a>. 我们用 <code>context</code> 把创建的 <code>store</code> 存入顶层组建中, 这样就可以在后序组建中去获取到相关内容了。</p>
+<h4 id="hazyzh-h4-4">实现connect</h4><pre><code class="lang-javascript">
+    <span class="hljs-keyword">const</span> connect = <span class="hljs-function">(<span class="hljs-params">mapStateToProps, mapDispatchToProps</span>) =&gt;</span> (WrappedComponent) =&gt; {
+        <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">InnerComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span></span>{
+            <span class="hljs-keyword">constructor</span> (props, context) {
+                <span class="hljs-keyword">super</span>(props)
+                <span class="hljs-keyword">const</span> { getState, dispatch, subscribe } = context.store
+
+                <span class="hljs-keyword">this</span>.state = {
+                    ...props,
+                    ...mapStateToProps(getState()),
+                    ...mapDispatchToProps(dispatch)
+                }
+
+                subscribe(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-keyword">this</span>._updateStore())
+            }
+
+            _updateStore  = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+                <span class="hljs-keyword">const</span> { getState, dispatch } = <span class="hljs-keyword">this</span>.context.store
+
+                <span class="hljs-keyword">const</span> allProps = {
+                    ...this.props,
+                    ...mapStateToProps(getState()),
+                    ...mapDispatchToProps(dispatch)
+                }
+
+                <span class="hljs-keyword">this</span>.setState({ ...allProps })
+            }
+
+            render () {
+                <span class="hljs-keyword">return</span> (
+                    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">WrappedComponent</span>
+                        {<span class="hljs-attr">...this.state</span>} /&gt;</span>
+                )
+            }
+        }
+
+        InnerComponent.contextTypes = { store: PropTypes.object }
+
+        return InnerComponent
+    }</span>
+</code></pre>
+<p>高阶组件这个概念我们在官网上也可以看的到 <a href="https://reactjs.org/docs/context.html">Higher-Order Components</a>, 简单理解就是传入一个组件返回一个新的组件, 它内部做什么事情则有你自己定义, 我们这里实现 <code>connect</code>, 则也算是高阶函数返回一个高阶组件, 接受两个函数作为参数, <code>mapStateToProps</code> 和 <code>mapDispatchToProps</code> 看形参的名字就很熟悉, 我们分别传入当前的 <code>state</code> 和 <code>dispatch</code> 函数, 得到的返回值则通过 <code>props</code> 传递给入参函数, 内部函数则通过 <code>context</code> 获取到顶部的 <code>store</code>, 同时用 <code>subscribe</code>
+ 添加订阅者每次更新 <code>state</code> 时候则重新渲染当前组件。</p>
+<p> <img src="https://hazyzh.oss-cn-shenzhen.aliyuncs.com/imgs/height-order-component.png" alt="height-order-component."></p>
+<p>至此我们的简易得逻辑已经实现, 代码github上有【<a href="https://github.com/Hazyzh/reacts-ggsddu">reacts-ggsddu</a>】, 可以下载本地运行感受一下</p>
+<h3 id="hazyzh-h3-5">参考</h3><ul>
+<li><a href="http://huziketang.com/books/react/">React.js 小书</a></li>
+</ul>
+
+                    <div id="comment" class="comment"></div>
+                </article>
+                <aside class="blog-aside" id="asideContent">
+                </aside>
+            </div>
+        </div>
+        <script src="https://cdn.bootcss.com/react/15.6.1/react.min.js"></script>
+        <script src="https://cdn.bootcss.com/react/15.6.1/react-dom.min.js"></script>
+        <script src="https://cdn.bootcss.com/antd/2.12.2/antd.min.js"></script>
+        <script type="text/javascript" src="/js/bundle.js"></script>
+    </body>
+</html>
