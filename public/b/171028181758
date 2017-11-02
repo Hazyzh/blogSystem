@@ -156,7 +156,9 @@
             <h1>简单粗暴实现redux的thunk和promise中间件</h1>
             <span class="info-title clearleft">
                 
-                    <span class="tags">react redux</span>
+                    <span class="tags">react</span>
+                
+                    <span class="tags"> redux</span>
                 
                 <span class="time">2017年10月28日 18:17:58</span>
                 <span class="count-total" id="countNumbers"></span>
