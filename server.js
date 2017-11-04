@@ -12,6 +12,8 @@ var connection = require('./blog/mysqlForServer.js'),
     blogComment = require('./blog/blogComment.js'),
     blogHomepage = require('./blog/homePage.js')
 
+
+
 if(process.env.NODE_ENV == 'development') {
     var webpack = require('webpack')
         webpackDevMiddleware = require('webpack-dev-middleware'),
@@ -34,6 +36,13 @@ if(process.env.NODE_ENV == 'development') {
         config = require('./webpack.home.config.js')
         config.entry.unshift("webpack-hot-middleware/client")
         var compiler = webpack(config)
+
+		app.use((req, res, next) => {
+			console.log(req.path)
+			if (req.path.startsWith('/blog')) req.url = '/blog'
+			next()
+		})
+
         app.use(webpackDevMiddleware(compiler, {
             noInfo: true,
             publicPath: config.output.publicPath,
@@ -55,7 +64,6 @@ app.use(express.static('public',{
     setHeaders: headFunction
 }))
 
-
 function headFunction(res, pathname) {
     if (path.dirname(pathname) == path.join(__dirname, './public/b')) {
         res.setHeader('Content-type', 'text/html; charset=utf-8')
@@ -66,10 +74,6 @@ function headFunction(res, pathname) {
         console.log(blogId)
     }
 }
-
-app.get('/blog/*',(req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'blog/index.html'))
-})
 
 
 // 获取文章目录列表
@@ -91,7 +95,8 @@ app.delete('/blog_comment', blogComment.delete)
 app.get('/get_lastest_blog', blogHomepage.getLastest)
 // 博客标签
 app.get('/get_tags_info', blogHomepage.getTagsinfo)
-
+// tags 页获取数据
+app.get('/tags_blogs_list', blogHomepage.getTagsBlogsList)
 app.get('/*', (req, res) => {
     res.send('404 !!')
 })

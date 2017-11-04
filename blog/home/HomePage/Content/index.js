@@ -3,6 +3,7 @@ import { Layout, Card, Row, Col, Icon, Tag, message } from 'antd'
 const { Content } = Layout
 import axios from 'axios'
 import { htmlDecode } from 'Utils/index.js'
+import { Link } from 'react-router-dom'
 
 class ContentLayout extends Component {
 
@@ -31,6 +32,7 @@ class ContentLayout extends Component {
             }
 
         }).catch(err => {
+			console.log(err)
             message.error('获取信息错误')
         })
     }
@@ -96,7 +98,7 @@ class ContentLayout extends Component {
                         <div className="blogs">
                             <h3>
                                 近期文章
-                                <a href="#"> 归档>> </a>
+                                <Link to="tags"> 归档>> </Link>
                             </h3>
                             <i className="line"></i>
                             <div className="content">
@@ -111,7 +113,7 @@ class ContentLayout extends Component {
                                         ))
                                     }
                                     <li>
-                                        <a className="title last-title">查看更多>></a>
+										<Link to="tags"> <span className="title last-title">查看更多>></span> </Link>
                                     </li>
                                 </ul>
                             </div>
@@ -124,7 +126,15 @@ class ContentLayout extends Component {
                             <div className="tags-box">
                                 {
                                     tagsinfo.map((d, i)=>(
-                                        <Tag key={i} color={`rgba(255, 0, 127, ${1-i/(len+1)})`}>{d.val}</Tag>
+                                        <Tag key={i} color={`rgba(255, 0, 127, ${1-i/(len+1)})`}>
+											<Link
+												to={{
+												  pathname: '/tags',
+												  state: {tag: d.val}
+											  }} >
+												{d.val}
+											</Link>
+										</Tag>
                                     ))
                                 }
                             </div>

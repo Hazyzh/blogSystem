@@ -77,7 +77,14 @@
                 list-style: circle;
                 margin-left: 20px;
             }
-
+			p code {
+				padding: 3px 4px;
+				font-size: 90%;
+				color: #c7254e;
+				background-color: #f9f2f4;
+				border-radius: 4px;
+				font-family: Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+			}
             pre{
                 background: #eee;
                 font-size: 17px;
@@ -148,7 +155,7 @@
                 <div class="blog-info">
                     <a href="/blog">主页</a>
                     <a href="/blog/tags">标签分类</a>
-                    <a href="/blog/about">个人中心</a>
+                    <a href="/blog/about">关于</a>
                 </div>
             </div>
         </header>
