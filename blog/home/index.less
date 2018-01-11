@@ -181,7 +181,10 @@ body{
         margin: 20px;
         font-size: 20px;
     }
-    .tags-box{margin: 10px 20px;}
+    .tags-box{
+      margin: 10px 20px;
+      .ant-tag{margin-bottom: 8px!important;}
+    }
     span{padding: 10px;}
 }
 // 尾部
@@ -194,4 +197,53 @@ body{
         font-weight: 300;
         // text-shadow: 1px 0px 1px #999;
     }
+}
+// tags
+.tags-content{
+	min-height: 600px;
+	.time{
+		color: #999;
+		i{margin-right: 15px;}
+	}
+	.blog-item-info{
+		line-height: 30px;
+		margin: 10px 0 10px 35px;
+		.title{
+			margin-right: 20px;
+		}
+	}
+	.no-data{
+		text-align: center;
+		.icon{
+			font-size: 50px;
+		}
+		.tagss{
+			font-size: 20px;
+		}
+		.tip{
+			color: #999;
+			font-size: 30px;
+			margin-top: 30px;
+		}
+	}
+}
+// 关于
+.about-me{
+	.item-one{
+		box-shadow: 1px 1px 1px #d0d0d0;
+		padding: 20px;
+		margin-bottom: 20px;
+		color: #6f6969;
+	}
+	.item{
+		margin: 20px 0;
+	}
+	p{
+		padding: 0 20px;
+		line-height: 2;
+	}
+	.end{
+		text-align: right;
+		color: #d0cece;
+	}
 }

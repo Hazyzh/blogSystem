@@ -2,11 +2,11 @@
 <html>
     <head>
         <meta http-equiv=Content-Type content="text/html;charset=utf-8">
-        <meta name="keywords" contect="<%=config.keywords %>">
+        <meta name="keywords" contect="curl,linux">
         <meta name="author" contect="hazyzh">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
-        <title><%=config.title %></title>
-        <meta name="description" content="<%=config.description%>">
+        <title>终端curl发送请求格式</title>
+        <meta name="description" content="目的 格式 get post/put/delete cookie header ">
         <link rel="shortcut icon" href="/favicon.ico"  type="image/x-icon">
         <style>
             *{
@@ -160,18 +160,35 @@
             </div>
         </header>
         <div id="content">
-            <h1><%=config.title %></h1>
+            <h1>终端curl发送请求格式</h1>
             <span class="info-title clearleft">
-                <%for (var i=0;i<config.outTags.length;i++){%>
-                    <span class="tags"><%=config.outTags[i]%></span>
-                <%}%>
-                <span class="time"><%=config.time %></span>
+                
+                    <span class="tags">curl</span>
+                
+                    <span class="tags">curl格式</span>
+                
+                    <span class="tags">模拟请求</span>
+                
+                <span class="time">2017年12月22日 15:28:34</span>
                 <span class="count-total" id="countNumbers"></span>
             </span>
             <span class="line"></span>
             <div class="blog-container clearleft">
                 <article class="blog-content">
-                    <%-content%>
+                    <h3 id="hazyzh-h3-1">目的</h3><p>有时候想简单测试下某个接口，在本地终端下 <code>curl</code> 直接发送请求，是个很简洁的方法，这里记录下基本格式。</p>
+<h3 id="hazyzh-h3-2">格式</h3><p>记录些常见用法</p>
+<h4 id="hazyzh-h4-1">get</h4><pre><code class="lang-linux">  # 直接把信息放在网站后面
+  curl example.com/<span class="hljs-keyword">form</span>.cgi?<span class="hljs-keyword">data</span>=xxx
+</code></pre>
+<h4 id="hazyzh-h4-2">post/put/delete</h4><pre><code class="lang-linux">  <span class="hljs-comment"># 把数据和网址分开</span>
+  <span class="hljs-string">curl </span>-X <span class="hljs-string">POST </span><span class="hljs-built_in">--data</span> <span class="hljs-string">"data=xxx"</span> <span class="hljs-string">example.</span><span class="hljs-string">com/</span><span class="hljs-string">form.</span><span class="hljs-string">cgi</span>
+</code></pre>
+<h4 id="hazyzh-h4-3">cookie</h4><pre><code class="lang-linux">  # 使用`--cookie`参数，可以让curl发送cookie。
+  curl --cookie <span class="hljs-string">"name=xxx"</span> www.example.com
+</code></pre>
+<h4 id="hazyzh-h4-4">header</h4><pre><code class="lang-linux">  curl --<span class="hljs-selector-tag">header</span> <span class="hljs-string">"Content-Type:application/json"</span> http:<span class="hljs-comment">//example.com</span>
+</code></pre>
+
                     <div id="comment" class="comment"></div>
                 </article>
                 <aside class="blog-aside" id="asideContent">

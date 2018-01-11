@@ -2,11 +2,11 @@
 <html>
     <head>
         <meta http-equiv=Content-Type content="text/html;charset=utf-8">
-        <meta name="keywords" contect="下载">
+        <meta name="keywords" contect="react, redux-thunk, redux-promise, javascript">
         <meta name="author" contect="hazyzh">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
-        <title>a标签的下载属性</title>
-        <meta name="description" content="&lt;code&gt;a标签的&amp;#39;download&amp;#39;属性&lt;/code&gt; canvas生成图片 ">
+        <title>简单粗暴实现redux的thunk和promise中间件</title>
+        <meta name="description" content="异步处理 改造 dispatch 加入 Thunk 能力 加入处理 Promise 能力 测试和思考 ">
         <link rel="shortcut icon" href="/favicon.ico"  type="image/x-icon">
         <style>
             *{
@@ -160,39 +160,70 @@
             </div>
         </header>
         <div id="content">
-            <h1>a标签的下载属性</h1>
+            <h1>简单粗暴实现redux的thunk和promise中间件</h1>
             <span class="info-title clearleft">
                 
-                    <span class="tags">标签属性</span>
+                    <span class="tags">react</span>
                 
-                    <span class="tags">随笔</span>
+                    <span class="tags"> redux</span>
                 
-                <span class="time">2017年07月28日 10:37:54</span>
+                <span class="time">2017年10月28日 18:17:58</span>
                 <span class="count-total" id="countNumbers"></span>
             </span>
             <span class="line"></span>
             <div class="blog-container clearleft">
                 <article class="blog-content">
-                    <h3 id="hazyzh-h3-1"><code>a标签的&#39;download&#39;属性</code></h3><p><em>html5</em> 中a标签增加了download选项，<code>&lt;a href=&quot;/images/logo.jpg&quot; download=&quot;logo&quot;&gt;</code>
-设置了download就可以当作资源下载，而不是出现文件预览图。</p>
-<pre><code class="lang-javascript">    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">download</span>(<span class="hljs-params">name, url</span>) </span>{
-        <span class="hljs-keyword">var</span> s = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">"a"</span>)
-        s.download = name
-        s.href=<span class="hljs-built_in">url</span>
-        s.click()
+                    <h3 id="hazyzh-h3-1">异步处理</h3><p>我们使用 <code>redux</code> 处理数据流时候, 一个比较令人头疼的问题就是关于异步操作。<code>Action</code> 发出以后，过一段时间再执行 <code>Reducer</code>，这就是异步。在哪个阶段处理异步, <code>Reducer</code> 作为一个纯函数, 不适合承担此类功能, 理论上也承担不了, <code>Action</code> 存放一个对象, 作为消息的载体自己更不能进行异步操作。想一想就发现可以在 <code>dispatch</code> 这个发送 <code>Action</code> 的方法上做文章。如果我们能在异步操作的不同阶段发送不同的 <code>Action</code> 我们就可以完成异步操作了。</p>
+<p><img src="http://hazyzh.oss-cn-shenzhen.aliyuncs.com/imgs/redux/thunk-promise.png" alt="redux-promise"></p>
+<h3 id="hazyzh-h3-2">改造 dispatch</h3><p>基于我们之前实现的简单 <code>redux</code>, 对于它的 <code>dispatch</code> 函数进行处理。使它具有处理我们异步逻辑的能力。</p>
+<p>有时候看源码总能感觉到作者对代码逻辑处理的很优雅, 以及对于功能的可扩展性把握的很好，但是往往这些优美的代码，理解起来需要很多其他方面的知识基础, 这也是很多人看源码困难很大的原因。我们这里对与 <code>redux</code> 中间件的处理在后续再去讨论, 这里我们就以一种比较蠢的方法简单粗暴的实现我们想要的功能</p>
+<h4 id="hazyzh-h4-1">加入 Thunk 能力</h4><pre><code class="lang-javascript">
+    ...
+    const dispatch1 = store.dispatch
+    store.dispatch = <span class="hljs-built_in">arg</span> =&gt; {
+        <span class="hljs-keyword">if</span> (typeof <span class="hljs-built_in">arg</span> === <span class="hljs-string">'function'</span>) <span class="hljs-keyword">return</span> <span class="hljs-built_in">arg</span>(store.dispatch, getState)
+        dispatch1(<span class="hljs-built_in">arg</span>)
     }
+    ...
 </code></pre>
-<h3 id="hazyzh-h3-2">canvas生成图片</h3><pre><code class="lang-javascript">    <span class="hljs-built_in">var</span> myCanvas = document.getElementById(<span class="hljs-string">'mycanvas'</span>),
-        ctx = myCanvas.getContext(<span class="hljs-string">'2d'</span>)
+<p>这里逻辑异常简单, 先把原来的 <code>dispatch</code> 函数存储起来, 判断 <code>dispatch</code> 传入的参数类型, 如果参数类型为 <code>function</code> 则执行改函数并返回, 传入 <code>store</code> 的 <code>dispatch</code> 和 <code>getState</code> 作为参数, 使得 <code>dispatch</code> 具有处理函数参数的能力。</p>
+<h4 id="hazyzh-h4-2">加入处理 Promise 能力</h4><p>其实上面的 <code>thunk</code> 我们已经有了处理异步的能力, 但是每次我们要自己去手动触发三个 <code>action</code>, 工作量还是很大的。现在 <code>ajax</code> 很多都会包装为 <code>promise</code> 对象, 因此我们可以对与 <code>dispatch</code> 增加一层判断, 使得它具有处理具有 <code>promise</code> 属性的 <code>action</code> 的能力。</p>
+<pre><code class="lang-javascript">
+    ...
+    const dispatch2 = store.dispatch
 
-        <span class="hljs-params">...</span>
-
-    <span class="hljs-built_in">var</span> <span class="hljs-built_in">data</span> = myCanvas.toDataURL(<span class="hljs-string">"image/png"</span>),
-         s=document.createElement(<span class="hljs-string">"a"</span>)
-         s.download=<span class="hljs-string">"chart.png"</span>
-         s.href=<span class="hljs-built_in">data</span>.replace(<span class="hljs-string">"image/png"</span>,<span class="hljs-string">"image/octet-stream"</span>)
-         s.click()
+    store.dispatch = <span class="hljs-built_in">action</span> =&gt; {
+        <span class="hljs-keyword">if</span> (isPromise(<span class="hljs-built_in">action</span>.payload)) {
+            const { <span class="hljs-built_in">type</span>, payload, <span class="hljs-built_in">params</span> } = <span class="hljs-built_in">action</span>
+            dispatch2({
+                <span class="hljs-built_in">type</span>: `${<span class="hljs-built_in">type</span>}<span class="hljs-variable">_PENDDING</span>`,
+                <span class="hljs-built_in">params</span>
+            })
+            payload.<span class="hljs-keyword">then</span>(
+                resolve =&gt; {
+                    dispatch2({
+                        <span class="hljs-built_in">type</span>: `${<span class="hljs-built_in">type</span>}<span class="hljs-variable">_SUCCESS</span>`,
+                        content: resolve,
+                        <span class="hljs-built_in">params</span>
+                    })
+                },
+                reject =&gt; {
+                    dispatch2({
+                        <span class="hljs-built_in">type</span>: `${<span class="hljs-built_in">type</span>}<span class="hljs-variable">_ERROR</span>`,
+                        content: reject,
+                        <span class="hljs-built_in">params</span>
+                    })
+                }
+            )
+        } <span class="hljs-keyword">else</span> {
+            dispatch2(<span class="hljs-built_in">action</span>)
+        }
+    }
+    ...
 </code></pre>
+<p>我们规定 <code>action</code> 要把 <code>promise</code> 对象放入 <code>payload</code> 属性中。当接收到 <code>payload</code> 属性为 <code>promise</code> 对象的 <code>action</code> 时候, 我们这里硬编码直接触发该 <code>type</code> 加 <code>_PENDDING</code> 事件。等到该 <code>promise</code> 状态改变后, 我们根据它成功与否分别触发 <code>_SUCCESS</code> 和 <code>_ERROR</code> 事件, 这样我们就可以把异步逻辑包装为 <code>promise</code> 对象放在 <code>action</code> 中, 然后我们在 <code>reducer</code> 中分别处理这几种类型的事件即可。</p>
+<h3 id="hazyzh-h3-3">测试和思考</h3><p>我们现在可以在项目(<a href="https://github.com/Hazyzh/reacts-ggsddu">reacts-ggsddu</a>)中分别去 <code>dispatch</code> 一个函数和一个带有 <code>promise</code> 对象的 <code>action</code> 可以看到分别的请求效果。 一个简易的异步处理方法已经实现了。</p>
+<p>但是反观对 <code>dispatch</code> 的改造没有什么统一性, 代码很难维护和扩展, redux 是可以配置中间件来扩展配置的。我们后面再去研究。</p>
 
                     <div id="comment" class="comment"></div>
                 </article>

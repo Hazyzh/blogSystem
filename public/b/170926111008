@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv=Content-Type content="text/html;charset=utf-8">
+        <meta name="keywords" contect="js事件循环,js异步流程，nodejs,eventloop,microtasks">
+        <meta name="author" contect="hazyzh">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+        <title>javascript之event-loop</title>
+        <meta name="description" content="前言 调用栈 事件循环和任务队列 Microtask 与 Macrotask 疑问 ">
+        <link rel="shortcut icon" href="/favicon.ico"  type="image/x-icon">
+        <style>
+            *{
+                margin: 0px;padding: 0px;
+            }
+            body{
+                font: 17px/1.5 "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif;
+                background: white;
+                margin: 0;
+                color: #33333d;
+                overflow-y: scroll;
+                overflow-x: hidden;
+            }
+            header{
+                height: 70px;
+                line-height: 70px;
+                overflow: hidden;
+                background: #fafafa;
+                box-shadow: 0px 2px 10px 0px rgba(0,0,0,0.1), 0 1px rgba(0,0,0,0.1);
+                -webkit-box-shadow: 0px 2px 10px 0px rgba(0,0,0,0.1), 0 1px rgba(0,0,0,0.1);
+                -moz-box-shadow: 0px 2px 10px 0px rgba(0,0,0,0.1), 0 1px rgba(0,0,0,0.1);
+            }
+            .header-content .home-logo{
+                float: left;
+                display: block;
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                margin-top: 10px;
+                overflow: hidden;
+                box-shadow: 1px 1px 1px #171411;
+                -webkit-box-shadow: 1px 1px 1px #171411;
+                -moz-box-shadow: 1px 1px 1px #171411;
+            }
+            .header-content .blog-info{
+                float: right;
+            }
+            .header-content .blog-info a{
+                color: #999;
+                text-decoration: none;
+                margin-right: 20px;
+            }
+            .header-content .blog-info a:hover{
+                color: #71afae
+            }
+            .header-content a img{
+                width: 100%;
+                height: 100%;
+            }
+
+            h1{
+                margin: 20px 0px;
+            }
+
+            p{
+                font-weight: 300;
+                letter-spacing: 1px;
+                font-family: "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif;
+            }
+            #content,.header-content{
+                width: 1200px;
+                margin: auto;
+            }
+            #content img{
+                width: 100%;
+            }
+            #content li{
+                list-style: circle;
+                margin-left: 20px;
+            }
+			p code {
+				padding: 3px 4px;
+				font-size: 90%;
+				color: #c7254e;
+				background-color: #f9f2f4;
+				border-radius: 4px;
+				font-family: Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+			}
+            pre{
+                background: #eee;
+                font-size: 17px;
+                padding: 20px 0;
+                border-radius: 10px;
+                overflow: auto;
+                font-weight: 300;
+                text-shadow: 0 1px white;
+                font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+                white-space: pre;
+                word-spacing: normal;
+                word-break: normal;
+                word-wrap: normal;
+                line-height: 1.5;
+            }
+            .info-title{
+                display: block;
+                margin: 10px;
+            }
+            .info-title .tags{
+                background: #eee;
+                padding: 5px;
+                border-radius: 3px;
+                margin-right: 5px;
+                cursor: pointer;
+            }
+            .info-title .time{
+                font-size: 14px;
+                color: #999;
+            }
+            .line{
+                display: block;
+                width: 100%;
+                height: 1px;
+                background: #eee;
+            }
+            /*文章内容*/
+            .blog-content{
+                width: 800px;
+                float: left;
+            }
+            .blog-aside{
+                width: 400px;
+                float: right;
+            }
+            .clearleft{
+                clear:both;
+                zoom:1;
+            }
+            .clearleft:after{
+                display: table;
+                content: "";
+                clear: both;
+            }
+            .count-total{float: right;margin-right: 30px;}
+        </style>
+        <link rel="stylesheet" href="/styles/ocean.css">
+        <link href="https://cdn.bootcss.com/antd/2.12.2/antd.min.css" rel="stylesheet">
+        <link href="https://cdn.bootcss.com/animate.css/3.5.2/animate.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="/css/bundle.css">
+    </head>
+    <body>
+        <header>
+            <div class="header-content">
+                <a href="/blog" class="home-logo">
+                    <img src="/static/imgs/home.png" />
+                </a>
+                <div class="blog-info">
+                    <a href="/blog">主页</a>
+                    <a href="/blog/tags">标签分类</a>
+                    <a href="/blog/about">关于</a>
+                </div>
+            </div>
+        </header>
+        <div id="content">
+            <h1>javascript之event-loop</h1>
+            <span class="info-title clearleft">
+                
+                    <span class="tags">event-loop</span>
+                
+                    <span class="tags"> 疑问</span>
+                
+                <span class="time">2017年09月26日 11:10:08</span>
+                <span class="count-total" id="countNumbers"></span>
+            </span>
+            <span class="line"></span>
+            <div class="blog-container clearleft">
+                <article class="blog-content">
+                    <h3 id="hazyzh-h3-1">前言</h3><p>越简单的事情，越难以说清楚，最近看到一些事件循环的问题，对 js 的 event loop 又研究了一下，这里总结一点东西 （<em>虽然最后问题还是没解决</em>）</p>
+<h3 id="hazyzh-h3-2">调用栈</h3><p>调用一个函数时，返回地址（<em>return address</em>）、参数（<em>arguments</em>）、本地变量（<em>local variables</em>）等都会被推入栈中。如果在当前正在运行的函数中调用另一个函数，则该函数的相关内容也会以同样的方式推到栈顶。函数内部参数或者该参数的指针会被放入调用函数的调用帧中，这样子看函数内容可以用到哪些参数或者变量就很明显了，就看调用帧中有没有改参数。</p>
+<p>可以根据下面例子感受一下，内容出自 (Understanding the Node.js Event Loop)[<a href="https://blog.risingstack.com/node-js-at-scale-understanding-node-js-event-loop/">https://blog.risingstack.com/node-js-at-scale-understanding-node-js-event-loop/</a>]</p>
+<pre><code class="lang-javascript">    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">main</span> (<span class="hljs-params"></span>) </span>{
+      <span class="hljs-keyword">const</span> hypotenuse = getLengthOfHypotenuse(<span class="hljs-number">3</span>, <span class="hljs-number">4</span>)
+      <span class="hljs-built_in">console</span>.log(hypotenuse)
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getLengthOfHypotenuse</span>(<span class="hljs-params">a, b</span>) </span>{
+      <span class="hljs-keyword">const</span> squareA = square(a)
+      <span class="hljs-keyword">const</span> squareB = square(b)
+      <span class="hljs-keyword">const</span> sumOfSquares = squareA + squareB
+      <span class="hljs-keyword">return</span> <span class="hljs-built_in">Math</span>.sqrt(sumOfSquares)  
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">square</span>(<span class="hljs-params">number</span>) </span>{  
+      <span class="hljs-keyword">return</span> number * number  
+    }
+
+    main()
+</code></pre>
+<p><code>main</code> 函数首先被调用:</p>
+<p><img src="https://hazyzh.oss-cn-shenzhen.aliyuncs.com/imgs/eventloop/the-main-function.png" alt="the-main-function"></p>
+<p>接着以 3 和 4 为参数调用 <code>getLengthOfHypotenuse</code> 函数</p>
+<p><img src="https://hazyzh.oss-cn-shenzhen.aliyuncs.com/imgs/eventloop/The-getLengthOfHypotenuse-function.png" alt="The-getLengthOfHypotenuse-function"></p>
+<p>接着是 <code>square(a)</code></p>
+<p><img src="https://hazyzh.oss-cn-shenzhen.aliyuncs.com/imgs/eventloop/The-square-a--function-1.png" alt="The-square-a--function-1"></p>
+<p><code>square(a)</code> 返回后，从栈中弹出，其返回值赋值给 <code>squareA</code>。然后 <code>squareA</code> 被添加到 <code>getLengthOfHypotenuse</code> 的调用帧中</p>
+<p><img src="https://hazyzh.oss-cn-shenzhen.aliyuncs.com/imgs/eventloop/variable_a.png" alt="variable_a"></p>
+<p>下一个 <code>square(a)</code> 也是同样的流程</p>
+<p><img src="https://hazyzh.oss-cn-shenzhen.aliyuncs.com/imgs/eventloop/The-square-b-function-1-1.png" alt="The-square-b-function-1-1"></p>
+<p><img src="https://hazyzh.oss-cn-shenzhen.aliyuncs.com/imgs/eventloop/variable_b.png" alt="variable_b"></p>
+<p>然后计算表达式 <code>squareA + squareB</code> 的值</p>
+<p><img src="https://hazyzh.oss-cn-shenzhen.aliyuncs.com/imgs/eventloop/sumOfSqaures.png" alt="sumOfSqaures"></p>
+<p>接着调用 <code>Math.sqrt</code> 方法</p>
+<p><img src="https://hazyzh.oss-cn-shenzhen.aliyuncs.com/imgs/eventloop/Math.sqrt.png" alt="Math.sqrt"></p>
+<p>现在，<code>getLengthOfHypotenuse</code> 最后的工作就是将值返回</p>
+<p><img src="https://hazyzh.oss-cn-shenzhen.aliyuncs.com/imgs/eventloop/The-return-function.png" alt="The-return-function"></p>
+<p><code>getLengthOfHypotenuse</code> 返回值被赋值给 <code>main</code> 中的 <code>hypotenuse</code></p>
+<p><img src="https://hazyzh.oss-cn-shenzhen.aliyuncs.com/imgs/eventloop/hypotenuse.png" alt="hypotenuse"></p>
+<p><code>hypotenuse</code> 的值作为参数被 <code>console.log</code> 调用</p>
+<p><img src="https://hazyzh.oss-cn-shenzhen.aliyuncs.com/imgs/eventloop/console-log.png" alt="console-log"></p>
+<p>最终，<code>main</code> 返回，不带任何值，并从栈中弹出，栈变为空</p>
+<p><img src="https://hazyzh.oss-cn-shenzhen.aliyuncs.com/imgs/eventloop/finally.png" alt="finally"></p>
+<h3 id="hazyzh-h3-3">事件循环和任务队列</h3><p><code>Javascript</code> 是单线程、事件驱动型语言。这意味着，我们可以为事件添加监听器，当某一事件触发时，监听器执行提供的回调，然后这些回调也可以将其他任务入列，其余亦可依此类推。</p>
+<p><img src="https://hazyzh.oss-cn-shenzhen.aliyuncs.com/imgs/eventloop/638135-20160721111145247-341211472.png" alt="任务队列"></p>
+<p>这张老图简单却也比较清晰的说了事件循环干的事情，每一次循环都把事件取出来依次执行。</p>
+<h3 id="hazyzh-h3-4">Microtask 与 Macrotask</h3><p>但是每次循环任务队列也有一些细节，不止一个任务队列，<code>microtask</code>（小型任务） 与 <code>macrotask</code>（巨型任务）各有一个任务队列。</p>
+<p>按照 <a href="https://html.spec.whatwg.org/multipage/webappapis.html#task-queue">WHATWG</a> 规范，每一次事件循环（one cycle of the event loop），只处理一个 (macro)task。待该 macrotask 完成后，所有的 microtask 会在同一次循环中处理。处理这些 microtask 时，还可以将更多的 <code>microtask</code> 入队，它们会一一执行，直到整个 <code>microtask</code> 队列处理完。</p>
+<p><img src="https://hazyzh.oss-cn-shenzhen.aliyuncs.com/imgs/eventloop/t01134d053300881c3b.png" alt="eventloop"></p>
+<p>在 nodejs 中 Microtask 比如下面：</p>
+<ul>
+<li>process.nextTick</li>
+<li>promises</li>
+<li>Object.observe</li>
+</ul>
+<p>macrotasks 比如下面</p>
+<ul>
+<li>setTimeout</li>
+<li>setInterval</li>
+<li>setImmediate</li>
+<li>I/O</li>
+</ul>
+<h3 id="hazyzh-h3-5">疑问</h3><p>根据这些资料，对事件循环已经有了大概的了解，下面代码</p>
+<pre><code class="lang-javascript">    var i = <span class="hljs-number">0</span>
+    setTimeout(() =&gt;{
+     console.log(<span class="hljs-number">1</span>, ++i)
+     Promise.resolve('--------&gt;1').then(<span class="hljs-name">data</span> =&gt; console.log(<span class="hljs-name">data</span>, ++i))
+    }, <span class="hljs-number">0</span>)
+    setTimeout(<span class="hljs-name">function</span>() {
+     console.log(<span class="hljs-number">2</span>, ++i)
+     Promise.resolve('--------&gt;2').then(<span class="hljs-name">data</span> =&gt; console.log(<span class="hljs-name">data</span>, ++i))
+    }, <span class="hljs-number">0</span>)
+</code></pre>
+<p>上面代码照说应该是，两个 setTimeout 进入 Tasks（macrotasks） 中，然后每次执行一个回掉事件，其中的 Promise 进入 macrotasks 执行完promise后开始下一个 setTimeout， 因此应该打印</p>
+<p><code>(1, 1) -&gt; (-----&gt;1, 2) -&gt; (2, 3) -&gt; (-----&gt; 2, 4)</code></p>
+<p>这个结果在我浏览器环境下是按照预期执行的，但是在nodejs(v8.1.4)中却存在不确定性，有一定几率会出现</p>
+<p><code>(1, 1) -&gt; (2, 2) -&gt; (-----&gt;1, 3) -&gt; (-----&gt; 2, 4)</code></p>
+<p>看了一些文章提到</p>
+<pre><code class="lang-javascript">    bool <span class="hljs-keyword">more</span>;
+     <span class="hljs-keyword">do</span> {
+       v8_platform.PumpMessageLoop(isolate);
+       <span class="hljs-keyword">more</span> = uv_run(env.event_loop(), UV_RUN_ONCE);
+
+       <span class="hljs-keyword">if</span> (<span class="hljs-keyword">more</span> == false) {
+         v8_platform.PumpMessageLoop(isolate);
+         EmitBeforeExit(&amp;env);
+
+         <span class="hljs-comment">// Emit `beforeExit` if the loop became alive either after emitting</span>
+         <span class="hljs-comment">// event, or after running some callbacks.</span>
+         <span class="hljs-keyword">more</span> = uv_loop_alive(env.event_loop());
+         <span class="hljs-keyword">if</span> (uv_run(env.event_loop(), UV_RUN_NOWAIT) != 0)
+           <span class="hljs-keyword">more</span> = true;
+       }
+     } <span class="hljs-keyword">while</span> (<span class="hljs-keyword">more</span> == true);
+</code></pre>
+<p>uv_run函数就是libuv层事件循环的入口，开始执行我们上面定义的循环，不过node采用了一些异常保护措施，这次只先试着执行一次，出现异常了触发一个事件（参考注释），loop还有可能继续被触发，因为我们在调用EmitBeforeExit 时也将会调用node::MakeCallback(),具体涉及到源码部分，现在还是不怎么能看的懂，感觉部分情况下node没有等macrotasks执行完毕再去执行下一个task中的任务，这些需要后面再去探索了。</p>
+
+                    <div id="comment" class="comment"></div>
+                </article>
+                <aside class="blog-aside" id="asideContent">
+                </aside>
+            </div>
+        </div>
+        <script src="https://cdn.bootcss.com/react/15.6.1/react.min.js"></script>
+        <script src="https://cdn.bootcss.com/react/15.6.1/react-dom.min.js"></script>
+        <script src="https://cdn.bootcss.com/antd/2.12.2/antd.min.js"></script>
+        <script type="text/javascript" src="/js/bundle.js"></script>
+    </body>
+</html>

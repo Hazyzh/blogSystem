@@ -6,6 +6,7 @@
         <meta name="author" contect="hazyzh">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
         <title>leetcode记录</title>
+        <meta name="description" content="前言 个人 题目 Palindrome Number Container With Most Water Regular Expression Matching Is Circular Submission Details ">
         <link rel="shortcut icon" href="/favicon.ico"  type="image/x-icon">
         <style>
             *{
@@ -72,7 +73,18 @@
             #content img{
                 width: 100%;
             }
-
+            #content li{
+                list-style: circle;
+                margin-left: 20px;
+            }
+			p code {
+				padding: 3px 4px;
+				font-size: 90%;
+				color: #c7254e;
+				background-color: #f9f2f4;
+				border-radius: 4px;
+				font-family: Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+			}
             pre{
                 background: #eee;
                 font-size: 17px;
@@ -132,6 +144,7 @@
         <link rel="stylesheet" href="/styles/ocean.css">
         <link href="https://cdn.bootcss.com/antd/2.12.2/antd.min.css" rel="stylesheet">
         <link href="https://cdn.bootcss.com/animate.css/3.5.2/animate.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="/css/bundle.css">
     </head>
     <body>
         <header>
@@ -142,7 +155,7 @@
                 <div class="blog-info">
                     <a href="/blog">主页</a>
                     <a href="/blog/tags">标签分类</a>
-                    <a href="/blog/about">个人中心</a>
+                    <a href="/blog/about">关于</a>
                 </div>
             </div>
         </header>
@@ -160,7 +173,7 @@
             <span class="line"></span>
             <div class="blog-container clearleft">
                 <article class="blog-content">
-                    <h3 id="hazyzh-h3-1">前言</h3><p><img src="http://oqqyvkd0p.bkt.clouddn.com/WechatIMG25.jpeg" alt="探索"></p>
+                    <h3 id="hazyzh-h3-1">前言</h3><p><img src="//hazyzh.oss-cn-shenzhen.aliyuncs.com/imgs/WechatIMG25.jpeg" alt="探索"></p>
 <p>无意间发现 <a href="https://leetcode.com/"><strong>LeetCode</strong></a> 这个网站，一下子就陷进去了，大学时候看舍友参加 <em>acm</em> 一天到晚刷题，对算法总有点特殊的情怀。本以为我永远是接触不到这个了，没想到 leetcode 却让我感觉到 <em>Accepted</em> 这个单词的特殊魅力。</p>
 <h3 id="hazyzh-h3-2">个人</h3><p>首先自己并不是为了找工作去刷题的，纯粹享受做题的过程和ac的快感。题目全部用 <code>JavaScript</code> 做的，基本上每天一题的节奏。开始总是想着怎么把答案解出来就好，经常 <em>TLE</em> ,感觉一路做下来自己慢慢会考虑复杂度，逻辑严谨性也在逐步加强，对特殊值的考虑越来越多，相比于算法能力的提升我更欣喜看到自己逻辑严谨性加强，感觉这对自己后面的道路帮助会很大。</p>
 <h3 id="hazyzh-h3-3">题目</h3><p>这里记录自己对一些题目的思路和想法</p>
@@ -208,9 +221,9 @@
     <span class="hljs-keyword">var</span> isMatch = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">s, p</span>) </span>{
         <span class="hljs-keyword">if</span>(p[<span class="hljs-number">0</span>] === <span class="hljs-literal">undefined</span>) <span class="hljs-keyword">return</span> s[<span class="hljs-number">0</span>] === <span class="hljs-literal">undefined</span>
         <span class="hljs-keyword">if</span> (p[<span class="hljs-number">1</span>] != <span class="hljs-string">'*'</span>) {
-           <span class="hljs-keyword">if</span> (s[<span class="hljs-number">0</span>] === p[<span class="hljs-number">0</span>] || (p[<span class="hljs-number">0</span>] === <span class="hljs-string">'.'</span> &amp;&amp; s[<span class="hljs-number">0</span>] !== <span class="hljs-literal">undefined</span>)) 
+           <span class="hljs-keyword">if</span> (s[<span class="hljs-number">0</span>] === p[<span class="hljs-number">0</span>] || (p[<span class="hljs-number">0</span>] === <span class="hljs-string">'.'</span> &amp;&amp; s[<span class="hljs-number">0</span>] !== <span class="hljs-literal">undefined</span>))
                <span class="hljs-keyword">return</span> isMatch(s.substr(<span class="hljs-number">1</span>), p.substr(<span class="hljs-number">1</span>))
-           <span class="hljs-keyword">else</span> 
+           <span class="hljs-keyword">else</span>
                <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>
         } <span class="hljs-keyword">else</span> {
             <span class="hljs-keyword">if</span> (isMatch(s, p.substr(<span class="hljs-number">2</span>)))<span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>
@@ -221,6 +234,72 @@
             <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>
         }
     }
+</code></pre>
+<h4 id="hazyzh-h4-4">Is Circular</h4><p>看到一个面试题，JSON.stringify 是 <code>JavaScript</code> 的一个方法返回一个json格式的字符串，效果如下</p>
+<pre><code class="lang-javascrpit">
+    const obj = {<span class="hljs-selector-tag">a</span>:<span class="hljs-number">1</span>, <span class="hljs-selector-tag">b</span>:<span class="hljs-number">2</span>}
+    JSON.stringify(obj) <span class="hljs-comment">// =&gt; '{"a":1,"b":2}'</span>
+</code></pre>
+<p>当要转化的对象有“环”存在时（子节点属性赋值了父节点的引用），为了避免死循环，JSON.stringify 会抛出异常，例如：</p>
+<pre><code class="lang-javascript">    var arr = [<span class="hljs-number">1</span>]
+    arr.<span class="hljs-keyword">push(arr)
+</span>    JSON.<span class="hljs-keyword">stringify(arr) </span>// =&gt; Uncaught TypeError: Converting circular <span class="hljs-keyword">structure </span>to JSON
+</code></pre>
+<p>写一个函数判断参数是否包含 <code>环</code>,自己想到的是用 <code>map</code> 对象把是对象的值做为键存储值，然后判断值是否存在来判断是否回环， 要注意每一次要用一个新的 map 对象，避免同级别相互引用判断错误的情况</p>
+<pre><code class="lang-javscrpit">
+    <span class="hljs-keyword">let</span> isCircular = (o) =&gt; {
+        <span class="hljs-keyword">var</span> flag = <span class="hljs-literal">false</span>
+        const <span class="hljs-function"><span class="hljs-keyword">func</span> = <span class="hljs-params">(obj, <span class="hljs-built_in">map</span> = new Map<span class="hljs-params">()</span></span></span>) =&gt; {
+            <span class="hljs-built_in">map</span>.<span class="hljs-keyword">set</span>(obj, <span class="hljs-literal">true</span>)
+            <span class="hljs-type">Object</span>.values(obj).forEach(d=&gt; {
+                <span class="hljs-keyword">if</span> (flag) <span class="hljs-keyword">return</span>
+                <span class="hljs-keyword">if</span> (typeof d == 'object') {
+                    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">map</span>.<span class="hljs-keyword">get</span>(d)) {
+                        flag = <span class="hljs-literal">true</span>
+                        <span class="hljs-keyword">return</span>
+                    } <span class="hljs-keyword">else</span> {
+                        <span class="hljs-keyword">let</span> newmap = new <span class="hljs-type">Map</span>(<span class="hljs-built_in">map</span>)
+                        <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(d, newmap)</span></span>
+                    }
+                }
+            })
+        }
+        <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(o)</span></span>
+        <span class="hljs-keyword">return</span> flag
+    }
+</code></pre>
+<h4 id="hazyzh-h4-5">Submission Details</h4><p><code>给一个数字，写一个函数根据数字生成所有形式良好的括号组合
+    2 =&gt; [&quot;()()&quot;, &quot;(())&quot;]
+    3 =&gt; 
+        [
+          &quot;((()))&quot;,
+          &quot;(()())&quot;,
+          &quot;(())()&quot;,
+          &quot;()(())&quot;,
+          &quot;()()()&quot;
+        ]</code></p>
+<p>想了一下有一个思路，就是根据 <code>()</code> 里面的包含几个子 <code>()</code> 来得出所有情况。 比如给出的数字是5, 那么循环到5，第n 就有 <code>( [func(n)的结果] )</code> * <code>func(4-n)的结果</code> 。</p>
+<p>一直想着以一个优雅的方式处理边界的问题，但是想半天都没结果，只能写的丑陋点了。</p>
+<pre><code class="lang-javascript">    <span class="hljs-keyword">var</span> generateParenthesis = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">n</span>) </span>{
+        <span class="hljs-keyword">if</span>(n == <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> []
+        <span class="hljs-keyword">if</span>(n == <span class="hljs-number">1</span>) <span class="hljs-keyword">return</span> [<span class="hljs-string">'()'</span>]
+        <span class="hljs-keyword">let</span> arr = []
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; n; i++) {
+            <span class="hljs-keyword">if</span>( i == <span class="hljs-number">0</span>) {
+                arr = arr.concat(generateParenthesis([n<span class="hljs-number">-1</span>]).map(<span class="hljs-function"><span class="hljs-params">d</span> =&gt;</span> <span class="hljs-string">'()'</span> + d ))
+            } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (i == n<span class="hljs-number">-1</span>){
+                arr = arr.concat(generateParenthesis([n<span class="hljs-number">-1</span>]).map(<span class="hljs-function"><span class="hljs-params">d</span> =&gt;</span> <span class="hljs-string">'('</span> + d + <span class="hljs-string">')'</span>))
+            } <span class="hljs-keyword">else</span> {
+                generateParenthesis(i).forEach(<span class="hljs-function"><span class="hljs-params">d</span> =&gt;</span> {
+                    <span class="hljs-keyword">let</span> eachres = <span class="hljs-string">'('</span> + d +<span class="hljs-string">')'</span>
+                    generateParenthesis(n- i <span class="hljs-number">-1</span>).forEach(<span class="hljs-function"><span class="hljs-params">c</span> =&gt;</span> {
+                        arr.push(eachres + c)
+                    })
+                })
+            }
+        }
+        <span class="hljs-keyword">return</span> arr
+    };
 </code></pre>
 
                     <div id="comment" class="comment"></div>

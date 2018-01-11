@@ -9,7 +9,7 @@ var nameArr = ["马行空","马春花","徐铮","商宝震","何思豪","阎基"
 
 function startSocketServer(server) {
     const io = socket(server)
-    const  nsp = io.of('/b')
+    const nsp = io.of('/b')
 
     var roomsdata = {}
 

@@ -2,11 +2,11 @@
 <html>
     <head>
         <meta http-equiv=Content-Type content="text/html;charset=utf-8">
-        <meta name="keywords" contect="<%=config.keywords %>">
+        <meta name="keywords" contect="github,ssh">
         <meta name="author" contect="hazyzh">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
-        <title><%=config.title %></title>
-        <meta name="description" content="<%=config.description%>">
+        <title>ssh</title>
+        <meta name="description" content="记录一下ssh配置 ssh免密登录 可能出现的问题 ">
         <link rel="shortcut icon" href="/favicon.ico"  type="image/x-icon">
         <style>
             *{
@@ -160,18 +160,61 @@
             </div>
         </header>
         <div id="content">
-            <h1><%=config.title %></h1>
+            <h1>ssh</h1>
             <span class="info-title clearleft">
-                <%for (var i=0;i<config.outTags.length;i++){%>
-                    <span class="tags"><%=config.outTags[i]%></span>
-                <%}%>
-                <span class="time"><%=config.time %></span>
+                
+                    <span class="tags">ssh</span>
+                
+                    <span class="tags">linux</span>
+                
+                <span class="time">2017年08月29日 17:40:44</span>
                 <span class="count-total" id="countNumbers"></span>
             </span>
             <span class="line"></span>
             <div class="blog-container clearleft">
                 <article class="blog-content">
-                    <%-content%>
+                    <h3 id="hazyzh-h3-1">记录一下ssh配置</h3><p>git提交代码时候总是会用到 <code>ssh key</code> 这里记录一些命令方便后面修改</p>
+<pre><code class="lang-linux">    GNU/Linux / macOS下生成<span class="hljs-type">key</span>
+    ssh-keygen -t rsa  -b <span class="hljs-number">4096</span> -C <span class="hljs-string">"GitLab"</span>
+    <span class="hljs-comment">// 密码可以设置为空，如果要区分不同git 记得取不同名称</span>
+</code></pre>
+<p>生成完成后会有对应 <code>name</code> 和 <code>name.pub</code> 文件,然后去复制pub文件</p>
+<pre><code class="lang-linux"><span class="hljs-symbol">    macOS:</span>
+    pbcopy &lt; <span class="hljs-regexp">~/.ssh/</span>id_rsa.pub
+    GNU/Linux (requires the xclip <span class="hljs-keyword">package</span>):
+    xclip -sel clip &lt; <span class="hljs-regexp">~/.ssh/</span>id_rsa.pub
+</code></pre>
+<p>在git里面添加 <code>pubkey</code> 的内容,本地可以设置不同地址用不同的key</p>
+<pre><code class="lang-linux">
+    # GitLab.com<span class="hljs-built_in"> server
+</span>    Host gitlab.com.                 # 别名
+    HostName                            # 主机名
+   <span class="hljs-built_in"> Port </span>                              # 端口
+   <span class="hljs-built_in"> User </span>                               #用户名
+    RSAAuthentication <span class="hljs-literal">yes</span>             #用来设置是否开启RSA密钥验证，只针对SSH1
+    IdentityFile ~/.ssh/id_ras     # 密钥文件的路径
+
+    # Private GitLab<span class="hljs-built_in"> server
+</span>    Host gitlab.company.com
+    RSAAuthentication <span class="hljs-literal">yes</span>
+    IdentityFile ~/.ssh/config/private-key-filename
+</code></pre>
+<h3 id="hazyzh-h3-2">ssh免密登录</h3><p>本地生产秘钥步骤同上。然后把 <code>pub</code> 结尾的key复制到 <code>server</code> 端的 <code>~／.ssh/.authorized_keys</code> 文件内，然后重启<code>server</code> 端 <code>ssh</code> 服务。</p>
+<pre><code>    $ sudo<span class="hljs-built_in"> service </span>ssh restart
+    # 或者
+    $ sudo /etc/init.d/ssh restart
+</code></pre><h4 id="hazyzh-h4-1">可能出现的问题</h4><p>正常的大站点都会禁止root免密登录之类的，但是我这种自己的小网站也不管那么多了，登录不了可查看 <code>server</code> 端 <code>/var/log/secure</code> 文件信息。常见的问题有</p>
+<p>文件权限问题</p>
+<pre><code>
+    chmod 600 ~<span class="hljs-string">/.ssh/authorized_keys</span>
+    chmod 700 ~<span class="hljs-string">/.ssh</span>
+    chmod g-w <span class="hljs-string">/root</span> <span class="hljs-params">(.ssh的父目录)</span>
+</code></pre><p><code>sshd_config</code> 文件配置问题, 配置文件 <code>/etc/ssh/sshd_config</code> 的相关选项，这样写很不安全，不过我个人的到无所谓了</p>
+<pre><code>    PermitRootLogin <span class="hljs-keyword">yes</span> <span class="hljs-comment">// 允许root登录</span>
+    PermitEmptyPasswords <span class="hljs-keyword">yes</span> <span class="hljs-comment">// 空密码</span>
+    AuthorizedKeysFile   /root/.ssh/authorized_keys  <span class="hljs-comment">// 验证文件位置</span>
+</code></pre><p> 还有就是我生成秘钥时候自己写了名字，在 <code>config</code> 文件中配置了,但是登录还是一直要输入密码，后面我换成 <code>id_rsa.pub</code> 的内容到 <code>server</code> 端的 <code>authorized_keys</code> 文件中就可以了，不知道是哪里被限制了。</p>
+
                     <div id="comment" class="comment"></div>
                 </article>
                 <aside class="blog-aside" id="asideContent">

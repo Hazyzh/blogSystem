@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv=Content-Type content="text/html;charset=utf-8">
+        <meta name="keywords" contect="react.js, reudx, reselect, promise-middleware">
+        <meta name="author" contect="hazyzh">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+        <title>记忆化状态reselect的思考</title>
+        <meta name="description" content="缓存数据 记忆化斐波那契函数 Reselect 创建记忆化的选择器 实例中应用 小节 ">
+        <link rel="shortcut icon" href="/favicon.ico"  type="image/x-icon">
+        <style>
+            *{
+                margin: 0px;padding: 0px;
+            }
+            body{
+                font: 17px/1.5 "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif;
+                background: white;
+                margin: 0;
+                color: #33333d;
+                overflow-y: scroll;
+                overflow-x: hidden;
+            }
+            header{
+                height: 70px;
+                line-height: 70px;
+                overflow: hidden;
+                background: #fafafa;
+                box-shadow: 0px 2px 10px 0px rgba(0,0,0,0.1), 0 1px rgba(0,0,0,0.1);
+                -webkit-box-shadow: 0px 2px 10px 0px rgba(0,0,0,0.1), 0 1px rgba(0,0,0,0.1);
+                -moz-box-shadow: 0px 2px 10px 0px rgba(0,0,0,0.1), 0 1px rgba(0,0,0,0.1);
+            }
+            .header-content .home-logo{
+                float: left;
+                display: block;
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                margin-top: 10px;
+                overflow: hidden;
+                box-shadow: 1px 1px 1px #171411;
+                -webkit-box-shadow: 1px 1px 1px #171411;
+                -moz-box-shadow: 1px 1px 1px #171411;
+            }
+            .header-content .blog-info{
+                float: right;
+            }
+            .header-content .blog-info a{
+                color: #999;
+                text-decoration: none;
+                margin-right: 20px;
+            }
+            .header-content .blog-info a:hover{
+                color: #71afae
+            }
+            .header-content a img{
+                width: 100%;
+                height: 100%;
+            }
+
+            h1{
+                margin: 20px 0px;
+            }
+
+            p{
+                font-weight: 300;
+                letter-spacing: 1px;
+                font-family: "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif;
+            }
+            #content,.header-content{
+                width: 1200px;
+                margin: auto;
+            }
+            #content img{
+                width: 100%;
+            }
+            #content li{
+                list-style: circle;
+                margin-left: 20px;
+            }
+			p code {
+				padding: 3px 4px;
+				font-size: 90%;
+				color: #c7254e;
+				background-color: #f9f2f4;
+				border-radius: 4px;
+				font-family: Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+			}
+            pre{
+                background: #eee;
+                font-size: 17px;
+                padding: 20px 0;
+                border-radius: 10px;
+                overflow: auto;
+                font-weight: 300;
+                text-shadow: 0 1px white;
+                font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+                white-space: pre;
+                word-spacing: normal;
+                word-break: normal;
+                word-wrap: normal;
+                line-height: 1.5;
+            }
+            .info-title{
+                display: block;
+                margin: 10px;
+            }
+            .info-title .tags{
+                background: #eee;
+                padding: 5px;
+                border-radius: 3px;
+                margin-right: 5px;
+                cursor: pointer;
+            }
+            .info-title .time{
+                font-size: 14px;
+                color: #999;
+            }
+            .line{
+                display: block;
+                width: 100%;
+                height: 1px;
+                background: #eee;
+            }
+            /*文章内容*/
+            .blog-content{
+                width: 800px;
+                float: left;
+            }
+            .blog-aside{
+                width: 400px;
+                float: right;
+            }
+            .clearleft{
+                clear:both;
+                zoom:1;
+            }
+            .clearleft:after{
+                display: table;
+                content: "";
+                clear: both;
+            }
+            .count-total{float: right;margin-right: 30px;}
+        </style>
+        <link rel="stylesheet" href="/styles/ocean.css">
+        <link href="https://cdn.bootcss.com/antd/2.12.2/antd.min.css" rel="stylesheet">
+        <link href="https://cdn.bootcss.com/animate.css/3.5.2/animate.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="/css/bundle.css">
+    </head>
+    <body>
+        <header>
+            <div class="header-content">
+                <a href="/blog" class="home-logo">
+                    <img src="/static/imgs/home.png" />
+                </a>
+                <div class="blog-info">
+                    <a href="/blog">主页</a>
+                    <a href="/blog/tags">标签分类</a>
+                    <a href="/blog/about">关于</a>
+                </div>
+            </div>
+        </header>
+        <div id="content">
+            <h1>记忆化状态reselect的思考</h1>
+            <span class="info-title clearleft">
+                
+                    <span class="tags">reselect</span>
+                
+                    <span class="tags"> 性能优化</span>
+                
+                <span class="time">2017年11月08日 17:54:59</span>
+                <span class="count-total" id="countNumbers"></span>
+            </span>
+            <span class="line"></span>
+            <div class="blog-container clearleft">
+                <article class="blog-content">
+                    <h3 id="hazyzh-h3-1">缓存数据</h3><p>我们写后端代码的时候, 为了在密集查询时候尽量少的去操作数据库, 一个方法就是在中间插入一个缓存层,当查询的数据可以在缓存中查询到时候就直接用缓存里面的数据,如果数据改变了再去修改缓存里面的数据。</p>
+<p>随着前端近些年的飞速发展,前端项目(<em>特别在spa</em>)应用中,前端需要储存越来越多的数据内容,就像一个小型的数据库。对前端而言这些数据我们都是直接存在内存中的, 所以查询对我们来说并不是什么难事, 但是页面上要展示的内容往往是需要基础数据经过复杂计算得到的结果,每次重新计算都会消耗大量的性能。一种方法是我们去建立一些存贮结果变量, 每次原始值发生改变时候我们再去重新计算然后重新赋值。但是我们又要去维护这些新的变量，在代码维护和后期功能迭代时候有可能会给我们带来很大的困扰。但是每次都从新计算却会大量消耗我们计算机的性能。</p>
+<h3 id="hazyzh-h3-2">记忆化斐波那契函数</h3><p>有做过这样一个题目,<a href="https://scriptoj.com/problems/102">斐波那契数列</a>指的是类似于以下的数列：<code>1, 1, 2, 3, 5, 8, 13, ....</code>,也就是第 <code>n</code> 个数由数列的前两个相加而来：<code>f(n) = f(n - 1) + f(n -2)</code>, 请你完成 <code>fibonacci</code> 函数，接受 <code>n</code> 作为参数，可以获取数列中第 <code>n</code> 个数。测试程序会从按顺序依次获取斐波那契数列中的数，请注意程序不要超时，也不要添加额外的全局变量。</p>
+<p>这个题目比较经典也很好理解, 我当时简单的想到一个实现</p>
+<pre><code class="lang-javascript">const fibonacci = n =&gt;{
+    let [<span class="hljs-selector-tag">a</span>, b] = [<span class="hljs-number">0</span>, <span class="hljs-number">1</span>]
+    while(n--){[<span class="hljs-selector-tag">a</span>, b] = [<span class="hljs-selector-tag">b</span>, <span class="hljs-selector-tag">a</span> + b]}
+    return <span class="hljs-selector-tag">a</span>
+}
+</code></pre>
+<p>看起来似乎没什么问题,但是当我提交答案时候总是提示超时。当时去网上搜索发现还有用 <code>数学公式和二分矩阵方法</code> 计算的，当时以为题目是在考察这些还感觉考察的有些偏。后面仔细看看了题目，上面说测试程序会依次获取数列中的数。突然想到我这个方法每一次执行其实都是要从头开始计算一次，但是后面的数其实就是前两次计算结果的和。有没有什么办法可以把前面计算的数存储起来呢。后面想到这样一种实现。</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> fibonacci = <span class="hljs-function">(<span class="hljs-params">(<span class="hljs-params">memory = {}</span>) =&gt; n =&gt; {
+    <span class="hljs-keyword">if</span>(<span class="hljs-params">n &lt; 2</span>) <span class="hljs-keyword">return</span> n
+    <span class="hljs-keyword">if</span>(<span class="hljs-params">memory[n-2] === <span class="hljs-literal">undefined</span></span>){
+        memory[n-2] = fibonacci(<span class="hljs-params">n-2</span>)
+    }
+    <span class="hljs-keyword">if</span>(<span class="hljs-params">memory[n-1] === <span class="hljs-literal">undefined</span></span>){
+        memory[n-1] = fibonacci(<span class="hljs-params">n-1</span>)
+    }
+    <span class="hljs-keyword">return</span> memory[n] = memory[n-1] + memory[n-2]
+}</span>)<span class="hljs-params">()</span></span>
+</code></pre>
+<p>这里我们用 <code>iife</code> 返回了一个函数。但是它每次执行都会把值存在内部的 <code>memory</code> 变量里，我们下次计算新的值这些已经计算过的值就不用子再去计算了。这样就大大节省了计算量。</p>
+<h3 id="hazyzh-h3-3">Reselect</h3><p>我们用 <code>react</code> 构建日常应用时候, 通常会用 <code>redux</code> 来存储数据。我们页面上大部分展示都和 <code>redux</code> 中的数据有关，其中一部分是需要经过复杂的计算然后在进行展示。我们知道改变组件的<code>state</code>或者组件里用到的 <code>redux</code> 里面的值都会重新渲染我们的我们的组件。如果我们页面里的值是经过复杂计算的得到的,每次重新渲染都会消耗大量的性能。能不能每次计算后都把结果缓存起来只有当计算条件发生改变了我们再重新计算呢。 <code>reselect</code> 可以帮助我们去实现这个功能。</p>
+<h4 id="hazyzh-h4-1">创建记忆化的选择器</h4><p><code>Reselect</code> 提供的了个 <code>createSelector</code> 函数, 它可以帮助我们创建一个 <code>记忆化的选择器</code>, <code>createSelector</code> 第一个参数是由数据选择器函数组成的数组作,然后最后一个参数为数据转换器函数它的参数正是前面这些选择器选择到的值。简单的看如下</p>
+<pre><code class="lang-javascript">import { createSelector } from <span class="hljs-string">'reselect'</span>
+
+store = {
+    <span class="hljs-selector-tag">a</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-selector-tag">b</span>: <span class="hljs-number">2</span>
+}
+
+const getA = store =&gt; store<span class="hljs-selector-class">.a</span>
+const getB = store =&gt; store<span class="hljs-selector-class">.b</span>
+
+const getSum = createSelector(
+    [getA, getB],
+    (<span class="hljs-selector-tag">a</span>, b) =&gt; <span class="hljs-selector-tag">a</span> + <span class="hljs-selector-tag">b</span>
+)
+
+<span class="hljs-function"><span class="hljs-title">getSum</span><span class="hljs-params">(store)</span></span> <span class="hljs-comment">// 3</span>
+</code></pre>
+<p>可以看到最后的数据转换函数,它接受的参数就是前面这些数据选择函数选择到的内容,当然这些函数接收到的参数都是最后我们执行 <code>getSum</code> 函数时候传入的参数, 有 <code>getSum</code> 生产的函数就会具有<code>记忆</code>功能,只有当选择器函数的结果发生改变时候，它才会去执行最后的数据转换函数,否则则直接返回之前计算过的值。</p>
+<h4 id="hazyzh-h4-2">实例中应用</h4><p>假设我们有一组选择框,上面分别罗列了各个商品的名称和价钱,我们需要在底部展示我们当前选择商品的价格总和。这里我们用 <code>redux</code> 实现。
+我们在 <code>state</code> 中放置一个商品数组。类似<code>list = [{name: &#39;item1&#39;, price: 12, checked: false},...]</code>,这里我们直接用 <code>checked</code> 属性控制商品是否被选中。然后用两种方法去计算当前选中项的价格总和</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// input-selectors</span>
+<span class="hljs-keyword">const</span> getList = <span class="hljs-function"><span class="hljs-params">state</span> =&gt;</span> state.home.list
+<span class="hljs-comment">/**
+ * create select by reselect
+ * @type {object} state
+ */</span>
+<span class="hljs-keyword">const</span> getTotal1 = createSelector(
+    getList,
+    <span class="hljs-function"><span class="hljs-params">items</span> =&gt;</span> {
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'getTotal1 将要计算'</span>)
+        <span class="hljs-keyword">return</span> items.reduce(<span class="hljs-function">(<span class="hljs-params">acc, item</span>) =&gt;</span> acc + (item.checked ? item.price : <span class="hljs-number">0</span>), <span class="hljs-number">0</span>)
+    }
+)
+
+<span class="hljs-comment">/**
+ * create select smiple
+ * @param  {array} items
+ * @return {number} total checked value
+ */</span>
+<span class="hljs-keyword">const</span> getTotal2 = <span class="hljs-function"><span class="hljs-params">items</span> =&gt;</span> {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'getTotal2 将要计算'</span>)
+    <span class="hljs-keyword">return</span> items.reduce(<span class="hljs-function">(<span class="hljs-params">acc, item</span>) =&gt;</span> acc + (item.checked ? item.price : <span class="hljs-number">0</span>), <span class="hljs-number">0</span>)
+}
+</code></pre>
+<p>我们通过 <code>reselect</code> 创建一个记忆化函数 <code>getTotal1</code>。然后自己在简单的写一个计算总和的函数 <code>getTotal2</code>。我们在页面里加入一个 <code>input</code> 输入框它的值页关联到 <code>redux</code> 的 <code>state</code> 中。我们可以看到当 <code>getTotal1</code> 和 <code>getTotal2</code> 执行计算时候分别会 <code>log</code> 出相对应的信息。测试实际效果发现</p>
+<p><img src="http://hazyzh.oss-cn-shenzhen.aliyuncs.com/imgs/redux/reselect.gif" alt="reselect"></p>
+<p>当我们改变 <code>list</code>里面对值时候两个计算都会发生,但是当我们改变无关变量 <code>input</code> 的值时候，<code>reselect</code> 创造的选择计算器内部的计算就不会发生，这是因为它的数据源对应的列表并没有发生过变化。这样就节省了很大的计算量。</p>
+<h3 id="hazyzh-h3-4">小节</h3><p>实例在项目 <a href="https://github.com/Hazyzh/reacts-ggsddu"><code>react-ggsddu</code></a> 运行 <code>npm run reselect</code> 体验。</p>
+<p><code>reselect</code> 还有很多其他的 <code>api</code> 以及使用场景，在他的 <a href="https://github.com/reactjs/reselect">文档</a> 里面已经说的很清楚了。</p>
+<p>感觉有时候看有些题目已经算法之类的总感觉这些都是纯粹为了做题，但是后面自己发现很多思想和技巧其实都在这里面。</p>
+<p><code>every thing think twice</code></p>
+
+                    <div id="comment" class="comment"></div>
+                </article>
+                <aside class="blog-aside" id="asideContent">
+                </aside>
+            </div>
+        </div>
+        <script src="https://cdn.bootcss.com/react/15.6.1/react.min.js"></script>
+        <script src="https://cdn.bootcss.com/react/15.6.1/react-dom.min.js"></script>
+        <script src="https://cdn.bootcss.com/antd/2.12.2/antd.min.js"></script>
+        <script type="text/javascript" src="/js/bundle.js"></script>
+    </body>
+</html>
