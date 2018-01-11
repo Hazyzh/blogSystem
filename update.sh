@@ -6,6 +6,7 @@ echo "第二个参数为 commit 信息 必须填写"
 echo "--------------------------------"
 if [ ! -n "$2" ];then
 echo 必须输入更新原因
+exit 2
 fi
 
 if [ "$1" -eq "2" ];then
@@ -17,7 +18,7 @@ if [ "$1" -eq "2" ];then
 	git add .
 	git commit -m $2
 	git push origin master
-	ssh root@39.108.222.4
+	ssh root@120.79.2.13
 else
 	echo "现在为更新博客"
 
@@ -27,5 +28,5 @@ else
 	git add .
 	git commit -m $2
 	git push origin master
-	ssh root@39.108.222.4
+	ssh root@120.79.2.13
 fi

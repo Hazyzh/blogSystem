@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv=Content-Type content="text/html;charset=utf-8">
+        <meta name="keywords" contect="gzip压缩,前端性能优化,webpack的gzip压缩,gzip">
+        <meta name="author" contect="hazyzh">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+        <title>探索HTTP传输中gzip压缩的秘密</title>
+        <meta name="description" content="为什么要开启gZip http 与 gZip &lt;code&gt;gZip&lt;/code&gt; 文件怎么通讯 谁去压缩文件 哪些文件可以被 gZip 压缩 实践 参考资料 ">
+        <link rel="shortcut icon" href="/favicon.ico"  type="image/x-icon">
+        <style>
+            *{
+                margin: 0px;padding: 0px;
+            }
+            body{
+                font: 17px/1.5 "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif;
+                background: white;
+                margin: 0;
+                color: #33333d;
+                overflow-y: scroll;
+                overflow-x: hidden;
+            }
+            header{
+                height: 70px;
+                line-height: 70px;
+                overflow: hidden;
+                background: #fafafa;
+                box-shadow: 0px 2px 10px 0px rgba(0,0,0,0.1), 0 1px rgba(0,0,0,0.1);
+                -webkit-box-shadow: 0px 2px 10px 0px rgba(0,0,0,0.1), 0 1px rgba(0,0,0,0.1);
+                -moz-box-shadow: 0px 2px 10px 0px rgba(0,0,0,0.1), 0 1px rgba(0,0,0,0.1);
+            }
+            .header-content .home-logo{
+                float: left;
+                display: block;
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                margin-top: 10px;
+                overflow: hidden;
+                box-shadow: 1px 1px 1px #171411;
+                -webkit-box-shadow: 1px 1px 1px #171411;
+                -moz-box-shadow: 1px 1px 1px #171411;
+            }
+            .header-content .blog-info{
+                float: right;
+            }
+            .header-content .blog-info a{
+                color: #999;
+                text-decoration: none;
+                margin-right: 20px;
+            }
+            .header-content .blog-info a:hover{
+                color: #71afae
+            }
+            .header-content a img{
+                width: 100%;
+                height: 100%;
+            }
+
+            h1{
+                margin: 20px 0px;
+            }
+
+            p{
+                font-weight: 300;
+                letter-spacing: 1px;
+                font-family: "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif;
+            }
+            #content,.header-content{
+                width: 1200px;
+                margin: auto;
+            }
+            #content img{
+                width: 100%;
+            }
+            #content li{
+                list-style: circle;
+                margin-left: 20px;
+            }
+			p code {
+				padding: 3px 4px;
+				font-size: 90%;
+				color: #c7254e;
+				background-color: #f9f2f4;
+				border-radius: 4px;
+				font-family: Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+			}
+            pre{
+                background: #eee;
+                font-size: 17px;
+                padding: 20px 0;
+                border-radius: 10px;
+                overflow: auto;
+                font-weight: 300;
+                text-shadow: 0 1px white;
+                font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+                white-space: pre;
+                word-spacing: normal;
+                word-break: normal;
+                word-wrap: normal;
+                line-height: 1.5;
+            }
+            .info-title{
+                display: block;
+                margin: 10px;
+            }
+            .info-title .tags{
+                background: #eee;
+                padding: 5px;
+                border-radius: 3px;
+                margin-right: 5px;
+                cursor: pointer;
+            }
+            .info-title .time{
+                font-size: 14px;
+                color: #999;
+            }
+            .line{
+                display: block;
+                width: 100%;
+                height: 1px;
+                background: #eee;
+            }
+            /*文章内容*/
+            .blog-content{
+                width: 800px;
+                float: left;
+            }
+            .blog-aside{
+                width: 400px;
+                float: right;
+            }
+            .clearleft{
+                clear:both;
+                zoom:1;
+            }
+            .clearleft:after{
+                display: table;
+                content: "";
+                clear: both;
+            }
+            .count-total{float: right;margin-right: 30px;}
+        </style>
+        <link rel="stylesheet" href="/styles/ocean.css">
+        <link href="https://cdn.bootcss.com/antd/2.12.2/antd.min.css" rel="stylesheet">
+        <link href="https://cdn.bootcss.com/animate.css/3.5.2/animate.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="/css/bundle.css">
+    </head>
+    <body>
+        <header>
+            <div class="header-content">
+                <a href="/blog" class="home-logo">
+                    <img src="/static/imgs/home.png" />
+                </a>
+                <div class="blog-info">
+                    <a href="/blog">主页</a>
+                    <a href="/blog/tags">标签分类</a>
+                    <a href="/blog/about">关于</a>
+                </div>
+            </div>
+        </header>
+        <div id="content">
+            <h1>探索HTTP传输中gzip压缩的秘密</h1>
+            <span class="info-title clearleft">
+                
+                    <span class="tags">性能优化</span>
+                
+                    <span class="tags"> webpack</span>
+                
+                <span class="time">2018年01月11日 15:28:06</span>
+                <span class="count-total" id="countNumbers"></span>
+            </span>
+            <span class="line"></span>
+            <div class="blog-container clearleft">
+                <article class="blog-content">
+                    <h3 id="hazyzh-h3-1">为什么要开启gZip</h3><p><img src="https://hazyzh.oss-cn-shenzhen.aliyuncs.com/imgs/gzip/compress.jpg" alt="compress"></p>
+<p>我们给某人发送邮件时，我们在传输之前把自己的文件压缩一下，接收方收到文件后再去解压获取文件。这中操作对于我们来说都已经司空见惯。我们压缩文件的目的就是为了把传输文件的体积减小，加快传输速度。我们在 <code>http</code> 传输中开启 <code>gZip</code> 的目的也是如此，但是一般文章介绍 <code>gZip</code> 时候总是结合一些服务端配置(<code>nginx</code>)或者构建工具插件(<code>webpack</code>)来说，列出一大堆配置让人看的云里雾里，以至于到最后还没搞懂 <code>为什么用</code>，<code>怎么用</code> 这些问题。</p>
+<h3 id="hazyzh-h3-2">http 与 gZip</h3><p>我们下面去探讨一下这些问题</p>
+<h4 id="hazyzh-h4-1"><code>gZip</code> 文件怎么通讯</h4><p>我们传输压缩文件给别人时候一般都带着后缀名 <code>.rar</code>, <code>.zip</code>之类，对方在拿到文件后根据相应的后缀名选择不同的解压方式然后去解压文件。我们在 <code>http</code> 传输时候解压文件的这个角色的扮演者就是我们使用的浏览器，但是浏览器怎么分辨这个文件是什么格式，应该用什么格式去解压呢？</p>
+<p>在 <code>http／1.0</code> 协议中关于服务端发送的数据可以配置一个 <code>Content-Encoding</code> 字段，这个字段用于说明数据的压缩方法</p>
+<pre><code class="lang-linux"><span class="hljs-attribute">Content-Encoding</span>: gzip
+<span class="hljs-attribute">Content-Encoding</span>: compress
+<span class="hljs-attribute">Content-Encoding</span>: deflate
+</code></pre>
+<p>客户端在接受到返回的数据后去检查对应字段的信息，然后根据对应的格式去做相应的解码。客户端在请求时，可以用 <code>Accept-Encoding</code> 字段说明自己接受哪些压缩方法。</p>
+<pre><code class="lang-linux"><span class="hljs-keyword">Accept</span>-Encoding: gzip, deflate
+</code></pre>
+<p>
+我们在浏览器的控制台中可以看到请求的相关信息</p>
+<p><img src="https://hazyzh.oss-cn-shenzhen.aliyuncs.com/imgs/gzip/console.jpeg" alt="console"></p>
+<h5>兼容性</h5><p>提到浏览器作为一个前端就不由自主的会想一个问题，会不会有浏览器不支持呢。<code>HTTP/1.0</code> 是1996年5月发布的。好消息是基本不用考虑兼容性的问题，几乎所有浏览器都支持它。值得一提的是 <code>ie6</code>的早起版本中存在一个会破坏 <code>gZip</code>的错误，后面 <code>ie6</code>本身在 <code>WinXP SP2</code> 中修复了这个问题，而且用这个版本的用户数量也很少。</p>
+<h4 id="hazyzh-h4-2">谁去压缩文件</h4><p>这件事看起来貌似只能服务端来做，我们在网上看到最多的也是诸如 <code>nginx</code> 开启 <code>gZip</code> 配置之类的文章，但是现在前端流行 <code>spa</code> 应用, 用 <code>react</code>, <code>vue</code> 之类的框架时候总伴随这一套自己的脚手架,一般用 <code>webpack</code> 作为打包工具，其中可以配置插件 如<a href="https://github.com/webpack-contrib/compression-webpack-plugin">compression-webpack-plugin</a> 可以让我们把生成文件进行 <code>gZip</code> 等压缩并生成对应的压缩文件，而我们应用在构架时候有可能也会在服务区和前端文件中放置一层 <code>node</code> 应用来进行接口鉴权和文件转发。<code>nodejs</code>中我们熟悉的<code>express</code> 框架中也有一个<a href="https://github.com/expressjs/compression">compression</a> 中间件，可以开启<code>gZip</code>,一时间看的人眼花缭乱，到底应该用谁怎么用呢？</p>
+<h5>服务端响应请求时候压缩</h5><p>其实 <code>nginx</code> 压缩和 <code>node</code> 框架中用中间件去压缩都是一样的，当我们点击网页发送一个请求时候，我们的服务端会找到对应的文件，然后对文件进行压缩返回压缩后的内容【<em>当然可以利用缓存减少压缩次数</em>】，并配置好我们上面提到的 <code>Content-Encoding</code> 信息。对于一些应用在构架时候并没有上游代理层，比如服务端就一层 <code>node</code> 就可以直接用自己本身的压缩插件对文件进行压缩，如果上游配有有 <code>nginx</code> 转发处理层，最好交给 <code>nginx</code> 来处理这些，因为它们有专门为此构建的内容，可以更好的利用缓存并减小开销（很多使用c语言编写的）。</p>
+<p>我们看一些 <code>nginx</code> 中开启 <code>gZip</code> 压缩的一部分配置</p>
+<pre><code class="lang-linux"><span class="hljs-comment"># 开启gzip</span>
+gzip <span class="hljs-keyword">on</span>;
+<span class="hljs-comment"># 启用gzip压缩的最小文件，小于设置值的文件将不会压缩</span>
+gzip_min_length <span class="hljs-number">1</span>k;
+<span class="hljs-comment"># gzip 压缩级别，1-10，数字越大压缩的越好，也越占用CPU时间，后面会有详细说明</span>
+gzip_comp_level <span class="hljs-number">2</span>;
+<span class="hljs-comment"># 进行压缩的文件类型。javascript有多种形式。其中的值可以在 mime.types 文件中找到。</span>
+gzip_types <span class="hljs-built_in">text</span>/plain <span class="hljs-built_in">application</span>/javascript <span class="hljs-built_in">application</span>/x-javascript <span class="hljs-built_in">text</span>/css <span class="hljs-built_in">application</span>/xml <span class="hljs-built_in">text</span>/javascript;
+</code></pre>
+<h5>应用构建时候压缩</h5><p>既然服务端都可以做了为什么 <code>webpack</code> 在打包前端应用时候还有这样一个压缩插件呢，我们可以在上面 <code>nginx</code> 配置中看到 <code>gzip_comp_level 2</code> 这个配置项，上面也有注释写道 <code>1-10</code> 数字越大压缩效果越好，但是会耗费更多的CPU和时间，我们压缩文件除了减少文件体积大小外，也是为了减少传输时间，如果我们把压缩等级配置的很高，每次请求服务端都要压缩很久才回返回信息回来，不仅服务器开销会增大很多，请求方也会等的不耐烦。但是现在的 <code>spa</code> 应用既然文件都是打包生成的，那如果我们在打包时候就直接生成高压缩等级的文件，作为静态资源放在服务器上，接收到请求后直接把压缩的文件内容返回回去会怎么样呢？</p>
+<p><code>webpack</code> 的 <code>compression-webpack-plugin</code> 就是做这个事情的，配置起来也很简单只需要在装置中加入对应插件,简单配置如下</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> CompressionWebpackPlugin = <span class="hljs-built_in">require</span>(<span class="hljs-string">'compression-webpack-plugin'</span>);
+
+webpackConfig.plugins.push(
+    <span class="hljs-keyword">new</span> CompressionWebpackPlugin({
+      <span class="hljs-attr">asset</span>: <span class="hljs-string">'[path].gz[query]'</span>,
+      <span class="hljs-attr">algorithm</span>: <span class="hljs-string">'gzip'</span>,
+      <span class="hljs-attr">test</span>: <span class="hljs-keyword">new</span> <span class="hljs-built_in">RegExp</span>(<span class="hljs-string">'\\.(js|css)$'</span>),
+      <span class="hljs-attr">threshold</span>: <span class="hljs-number">10240</span>,
+      <span class="hljs-attr">minRatio</span>: <span class="hljs-number">0.8</span>
+    })
+)
+</code></pre>
+<p><code>webpack</code> 打包完成后生成打包文件外还会额外生成 <code>.gz</code> 后缀的压缩文件</p>
+<p><img src="https://hazyzh.oss-cn-shenzhen.aliyuncs.com/imgs/gzip/gz.jpeg" alt="gz-file"></p>
+<p>那么这个插件的压缩等级是多少呢，我们可以在<a href="https://github.com/webpack-contrib/compression-webpack-plugin/blob/master/src/index.js">源码</a>中看到默认的 <code>level</code> 是 <strong>9</strong></p>
+<pre><code class="lang-javascript">...
+const zlib = require(<span class="hljs-string">'zlib'</span>);
+<span class="hljs-keyword">this</span>.<span class="hljs-keyword">options</span>.algorithm = zlib[<span class="hljs-keyword">this</span>.<span class="hljs-keyword">options</span>.algorithm];
+...
+<span class="hljs-keyword">this</span>.<span class="hljs-keyword">options</span>.compressionOptions = {
+    level: <span class="hljs-keyword">options</span>.level || <span class="hljs-number">9</span>,
+    flush: <span class="hljs-keyword">options</span>.flush
+    ...
+}
+</code></pre>
+<p>可以看到压缩使用的是 <code>zlib</code> 库，而 <code>zlib</code> 分级来说，默认是 6 ，最高的级别就是<code>9 Best compression (also zlib.Z_BEST_COMPRESSION)</code>,因为我们只有在上线项目时候才回去打包构建一次，所以我们在构建时候使用最高级的压缩方式压缩多耗费一些时间对我们来说根本没任何损耗，而我们在服务器上也不用再去压缩文件，只需要找到相应已经压缩过的文件直接返回就可以了。</p>
+<h6>服务端怎么找到这些文件</h6><p>在应用层面解决这个问题还是比较简单的，比如上述压缩文件会产生<code>index.css</code>, <code>index.js</code>的压缩文件，在服务端简单处理可以判断这两个请求然后给予相对应的压缩文件。以 <code>node</code> 的 <code>express</code> 为例</p>
+<pre><code class="lang-javascript">...
+app.<span class="hljs-built_in">get</span>([<span class="hljs-string">'/index.js'</span>,<span class="hljs-string">'/index.css'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(req, res, next)</span> {</span>
+  req.url = req.url + <span class="hljs-string">'.gz'</span>
+  <span class="hljs-keyword">res</span>.<span class="hljs-keyword">set</span>(<span class="hljs-string">'Content-Encoding'</span>, <span class="hljs-string">'gzip'</span>)
+  <span class="hljs-keyword">res</span>.setHeader(<span class="hljs-string">"Content-Type"</span>, generateType(req.path)) // 这里要根据请求文件设置content-<span class="hljs-built_in">type</span>
+  <span class="hljs-keyword">next</span>()
+})
+</code></pre>
+<p>上面我们可以给请求返回 <code>gZip</code> 压缩后的数据了，当然上面的局限性太强也不可取，但是对于处理这个方面需求也已经有很多库存在,<code>express</code> 有 <a href="https://github.com/tkoenig89/express-static-gzip">express-static-gzip</a> 插件 <code>koa</code> 的 <code>koa-static</code> 则默认自带对 <code>gZip</code> 文件的检测，基本原理就是对请求先检测 <code>.gz</code>后缀的文件是否存在，再去根据结果返回不同的内容。</p>
+<h4 id="hazyzh-h4-3">哪些文件可以被 gZip 压缩</h4><p><code>gZip</code> 可以压缩所有的文件，但是这不代表我们要对所有文件进行压缩，我们写的代码（<code>css,js</code>）之类的文件会有很好的压缩效果，但是图片之类文件则不会被 <code>gzip</code> 压缩太多，因为它们已经内置了一些压缩，一些文件（比如一些已经被压缩的像.zip文件那种）再去压缩可能会让生成的文件体积更大一些。当然已经很小的文件也没有去压缩的必要了。</p>
+<h3 id="hazyzh-h3-3">实践</h3><p>能开启 <code>gZip</code> 肯定是要开启的，具体使用在请求时候实时压缩还是在构建时候去生成压缩文件，就要看自己具体业务情况。</p>
+<h3 id="hazyzh-h3-4">参考资料</h3><ul>
+<li><a href="https://stackoverflow.com/questions/20762094/how-are-zlib-gzip-and-zip-related-what-do-they-have-in-common-and-how-are-they/20765054#20765054">How are zlib, gzip and zip related? What do they have in common and how are they different?</a></li>
+<li><a href="https://stackoverflow.com/questions/38587698/webpack-gzip-vs-express-gzip?s=1|140.9128">webpack gzip vs express gzip
+</a></li>
+<li><a href="https://stackoverflow.com/questions/16691506/what-is-gzip-compression">What is gZip compression?
+</a></li>
+<li><a href="http://www.ruanyifeng.com/blog/2016/08/http.html">HTTP 协议</a></li>
+</ul>
+
+                    <div id="comment" class="comment"></div>
+                </article>
+                <aside class="blog-aside" id="asideContent">
+                </aside>
+            </div>
+        </div>
+        <script src="https://cdn.bootcss.com/react/15.6.1/react.min.js"></script>
+        <script src="https://cdn.bootcss.com/react/15.6.1/react-dom.min.js"></script>
+        <script src="https://cdn.bootcss.com/antd/2.12.2/antd.min.js"></script>
+        <script type="text/javascript" src="/js/bundle.js"></script>
+    </body>
+</html>

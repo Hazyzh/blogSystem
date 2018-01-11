@@ -6,6 +6,12 @@ import QueueAnim from 'rc-queue-anim'
 
 import { htmlDecode } from 'Utils/index.js'
 
+if (!String.prototype.trim) {
+  String.prototype.trim = function () {
+    return this.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
+  };
+}
+
 class Tags extends Component {
 
 	state = {
@@ -23,7 +29,7 @@ class Tags extends Component {
 	componentWillMount() {
 		let a = this.props.location.state || {}
 		let { tag } = a
-		tag && this.setState({ checklist: [tag] })
+		tag && this.setState({ checklist: [tag.trim()] })
 
 		this._getTagsInfo()
 		this._getBlogsInfo({pageNum: 1, tags: tag})
@@ -35,7 +41,7 @@ class Tags extends Component {
 			console.log(data)
 			if (data.code == 0) {
 				this.setState({
-					tagsinfo: JSON.parse(data.content.tagsInfo)
+					tagsinfo: JSON.parse(data.content.tagsInfo).map(d => ({...d, val: d.val.trim()}))
 				})
 			} else {
 				message.warning(data.message)
@@ -134,7 +140,7 @@ class Tags extends Component {
 													d.tags.split(',').map((d,i)=>
 														<Tag
 															key={i}
-															color={checklist.includes(d) ? "#f16d7a" : "#71afae"} >{d}</Tag>
+															color={checklist.includes(d.trim()) ? "#f16d7a" : "#71afae"} >{d}</Tag>
 													)
 												}
 											</div>

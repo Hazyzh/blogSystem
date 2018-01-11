@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv=Content-Type content="text/html;charset=utf-8">
+        <meta name="keywords" contect="curl,linux">
+        <meta name="author" contect="hazyzh">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+        <title>终端curl发送请求格式</title>
+        <meta name="description" content="目的 格式 get post/put/delete cookie header ">
+        <link rel="shortcut icon" href="/favicon.ico"  type="image/x-icon">
+        <style>
+            *{
+                margin: 0px;padding: 0px;
+            }
+            body{
+                font: 17px/1.5 "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif;
+                background: white;
+                margin: 0;
+                color: #33333d;
+                overflow-y: scroll;
+                overflow-x: hidden;
+            }
+            header{
+                height: 70px;
+                line-height: 70px;
+                overflow: hidden;
+                background: #fafafa;
+                box-shadow: 0px 2px 10px 0px rgba(0,0,0,0.1), 0 1px rgba(0,0,0,0.1);
+                -webkit-box-shadow: 0px 2px 10px 0px rgba(0,0,0,0.1), 0 1px rgba(0,0,0,0.1);
+                -moz-box-shadow: 0px 2px 10px 0px rgba(0,0,0,0.1), 0 1px rgba(0,0,0,0.1);
+            }
+            .header-content .home-logo{
+                float: left;
+                display: block;
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                margin-top: 10px;
+                overflow: hidden;
+                box-shadow: 1px 1px 1px #171411;
+                -webkit-box-shadow: 1px 1px 1px #171411;
+                -moz-box-shadow: 1px 1px 1px #171411;
+            }
+            .header-content .blog-info{
+                float: right;
+            }
+            .header-content .blog-info a{
+                color: #999;
+                text-decoration: none;
+                margin-right: 20px;
+            }
+            .header-content .blog-info a:hover{
+                color: #71afae
+            }
+            .header-content a img{
+                width: 100%;
+                height: 100%;
+            }
+
+            h1{
+                margin: 20px 0px;
+            }
+
+            p{
+                font-weight: 300;
+                letter-spacing: 1px;
+                font-family: "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif;
+            }
+            #content,.header-content{
+                width: 1200px;
+                margin: auto;
+            }
+            #content img{
+                width: 100%;
+            }
+            #content li{
+                list-style: circle;
+                margin-left: 20px;
+            }
+			p code {
+				padding: 3px 4px;
+				font-size: 90%;
+				color: #c7254e;
+				background-color: #f9f2f4;
+				border-radius: 4px;
+				font-family: Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+			}
+            pre{
+                background: #eee;
+                font-size: 17px;
+                padding: 20px 0;
+                border-radius: 10px;
+                overflow: auto;
+                font-weight: 300;
+                text-shadow: 0 1px white;
+                font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+                white-space: pre;
+                word-spacing: normal;
+                word-break: normal;
+                word-wrap: normal;
+                line-height: 1.5;
+            }
+            .info-title{
+                display: block;
+                margin: 10px;
+            }
+            .info-title .tags{
+                background: #eee;
+                padding: 5px;
+                border-radius: 3px;
+                margin-right: 5px;
+                cursor: pointer;
+            }
+            .info-title .time{
+                font-size: 14px;
+                color: #999;
+            }
+            .line{
+                display: block;
+                width: 100%;
+                height: 1px;
+                background: #eee;
+            }
+            /*文章内容*/
+            .blog-content{
+                width: 800px;
+                float: left;
+            }
+            .blog-aside{
+                width: 400px;
+                float: right;
+            }
+            .clearleft{
+                clear:both;
+                zoom:1;
+            }
+            .clearleft:after{
+                display: table;
+                content: "";
+                clear: both;
+            }
+            .count-total{float: right;margin-right: 30px;}
+        </style>
+        <link rel="stylesheet" href="/styles/ocean.css">
+        <link href="https://cdn.bootcss.com/antd/2.12.2/antd.min.css" rel="stylesheet">
+        <link href="https://cdn.bootcss.com/animate.css/3.5.2/animate.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="/css/bundle.css">
+    </head>
+    <body>
+        <header>
+            <div class="header-content">
+                <a href="/blog" class="home-logo">
+                    <img src="/static/imgs/home.png" />
+                </a>
+                <div class="blog-info">
+                    <a href="/blog">主页</a>
+                    <a href="/blog/tags">标签分类</a>
+                    <a href="/blog/about">关于</a>
+                </div>
+            </div>
+        </header>
+        <div id="content">
+            <h1>终端curl发送请求格式</h1>
+            <span class="info-title clearleft">
+                
+                    <span class="tags">curl</span>
+                
+                    <span class="tags">curl格式</span>
+                
+                    <span class="tags">模拟请求</span>
+                
+                <span class="time">2017年12月22日 15:28:34</span>
+                <span class="count-total" id="countNumbers"></span>
+            </span>
+            <span class="line"></span>
+            <div class="blog-container clearleft">
+                <article class="blog-content">
+                    <h3 id="hazyzh-h3-1">目的</h3><p>有时候想简单测试下某个接口，在本地终端下 <code>curl</code> 直接发送请求，是个很简洁的方法，这里记录下基本格式。</p>
+<h3 id="hazyzh-h3-2">格式</h3><p>记录些常见用法</p>
+<h4 id="hazyzh-h4-1">get</h4><pre><code class="lang-linux">  # 直接把信息放在网站后面
+  curl example.com/<span class="hljs-keyword">form</span>.cgi?<span class="hljs-keyword">data</span>=xxx
+</code></pre>
+<h4 id="hazyzh-h4-2">post/put/delete</h4><pre><code class="lang-linux">  <span class="hljs-comment"># 把数据和网址分开</span>
+  <span class="hljs-string">curl </span>-X <span class="hljs-string">POST </span><span class="hljs-built_in">--data</span> <span class="hljs-string">"data=xxx"</span> <span class="hljs-string">example.</span><span class="hljs-string">com/</span><span class="hljs-string">form.</span><span class="hljs-string">cgi</span>
+</code></pre>
+<h4 id="hazyzh-h4-3">cookie</h4><pre><code class="lang-linux">  # 使用`--cookie`参数，可以让curl发送cookie。
+  curl --cookie <span class="hljs-string">"name=xxx"</span> www.example.com
+</code></pre>
+<h4 id="hazyzh-h4-4">header</h4><pre><code class="lang-linux">  curl --<span class="hljs-selector-tag">header</span> <span class="hljs-string">"Content-Type:application/json"</span> http:<span class="hljs-comment">//example.com</span>
+</code></pre>
+
+                    <div id="comment" class="comment"></div>
+                </article>
+                <aside class="blog-aside" id="asideContent">
+                </aside>
+            </div>
+        </div>
+        <script src="https://cdn.bootcss.com/react/15.6.1/react.min.js"></script>
+        <script src="https://cdn.bootcss.com/react/15.6.1/react-dom.min.js"></script>
+        <script src="https://cdn.bootcss.com/antd/2.12.2/antd.min.js"></script>
+        <script type="text/javascript" src="/js/bundle.js"></script>
+    </body>
+</html>

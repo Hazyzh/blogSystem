@@ -100,7 +100,7 @@ function generationHtml(fileName) {
             mdStr = data.replace(reg, '')
             config.outTags = config.tags.split(',')
 
-        config.outTags.forEach(d=>tagsAddItem(d))
+        config.outTags.forEach(d=>tagsAddItem(d.trim()))
 
         var content = marked(mdStr, {renderer: renderer})
         let catalog = JSON.stringify(headInfo)

@@ -13,7 +13,6 @@ var connection = require('./blog/mysqlForServer.js'),
     blogHomepage = require('./blog/homePage.js')
 
 
-
 if(process.env.NODE_ENV == 'development') {
     var webpack = require('webpack')
         webpackDevMiddleware = require('webpack-dev-middleware'),
