@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv=Content-Type content="text/html;charset=utf-8">
+        <meta name="keywords" contect="比较运算符,类型转换,javascript">
+        <meta name="author" contect="hazyzh">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+        <title>从 (a==1&amp;&amp;a==2&amp;&amp;a==3) 成立中看javascript的隐式类型转换</title>
+        <meta name="description" content="关于 === 于 == 题目一些答案 大家来找茬？ 运算子是对象时候的valueOf toString 方法 利用数组的特性 利用with 关键字 和with类似修改window的get方法 es6的Symbol特性 小记 ">
+        <link rel="shortcut icon" href="/favicon.ico"  type="image/x-icon">
+        <style>
+            *{
+                margin: 0px;padding: 0px;
+            }
+            body{
+                font: 17px/1.5 "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif;
+                background: white;
+                margin: 0;
+                color: #33333d;
+                overflow-y: scroll;
+                overflow-x: hidden;
+            }
+            header{
+                height: 70px;
+                line-height: 70px;
+                overflow: hidden;
+                background: #fafafa;
+                box-shadow: 0px 2px 10px 0px rgba(0,0,0,0.1), 0 1px rgba(0,0,0,0.1);
+                -webkit-box-shadow: 0px 2px 10px 0px rgba(0,0,0,0.1), 0 1px rgba(0,0,0,0.1);
+                -moz-box-shadow: 0px 2px 10px 0px rgba(0,0,0,0.1), 0 1px rgba(0,0,0,0.1);
+            }
+            .header-content .home-logo{
+                float: left;
+                display: block;
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                margin-top: 10px;
+                overflow: hidden;
+                box-shadow: 1px 1px 1px #171411;
+                -webkit-box-shadow: 1px 1px 1px #171411;
+                -moz-box-shadow: 1px 1px 1px #171411;
+            }
+            .header-content .blog-info{
+                float: right;
+            }
+            .header-content .blog-info a{
+                color: #999;
+                text-decoration: none;
+                margin-right: 20px;
+            }
+            .header-content .blog-info a:hover{
+                color: #71afae
+            }
+            .header-content a img{
+                width: 100%;
+                height: 100%;
+            }
+
+            h1{
+                margin: 20px 0px;
+            }
+
+            p{
+                font-weight: 300;
+                letter-spacing: 1px;
+                font-family: "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif;
+            }
+            #content,.header-content{
+                width: 1200px;
+                margin: auto;
+            }
+            #content img{
+                width: 100%;
+            }
+            #content li{
+                list-style: circle;
+                margin-left: 20px;
+            }
+			p code {
+				padding: 3px 4px;
+				font-size: 90%;
+				color: #c7254e;
+				background-color: #f9f2f4;
+				border-radius: 4px;
+				font-family: Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+			}
+            pre{
+                background: #eee;
+                font-size: 17px;
+                padding: 20px 0;
+                border-radius: 10px;
+                overflow: auto;
+                font-weight: 300;
+                text-shadow: 0 1px white;
+                font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+                white-space: pre;
+                word-spacing: normal;
+                word-break: normal;
+                word-wrap: normal;
+                line-height: 1.5;
+            }
+            .info-title{
+                display: block;
+                margin: 10px;
+            }
+            .info-title .tags{
+                background: #eee;
+                padding: 5px;
+                border-radius: 3px;
+                margin-right: 5px;
+                cursor: pointer;
+            }
+            .info-title .time{
+                font-size: 14px;
+                color: #999;
+            }
+            .line{
+                display: block;
+                width: 100%;
+                height: 1px;
+                background: #eee;
+            }
+            /*文章内容*/
+            .blog-content{
+                width: 800px;
+                float: left;
+            }
+            .blog-aside{
+                width: 400px;
+                float: right;
+            }
+            .clearleft{
+                clear:both;
+                zoom:1;
+            }
+            .clearleft:after{
+                display: table;
+                content: "";
+                clear: both;
+            }
+            .count-total{float: right;margin-right: 30px;}
+        </style>
+        <link rel="stylesheet" href="/styles/ocean.css">
+        <link href="https://cdn.bootcss.com/antd/2.12.2/antd.min.css" rel="stylesheet">
+        <link href="https://cdn.bootcss.com/animate.css/3.5.2/animate.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="/css/bundle.css">
+    </head>
+    <body>
+        <header>
+            <div class="header-content">
+                <a href="/blog" class="home-logo">
+                    <img src="/static/imgs/home.png" />
+                </a>
+                <div class="blog-info">
+                    <a href="/blog">主页</a>
+                    <a href="/blog/tags">标签分类</a>
+                    <a href="/blog/about">关于</a>
+                </div>
+            </div>
+        </header>
+        <div id="content">
+            <h1>从 (a==1&amp;&amp;a==2&amp;&amp;a==3) 成立中看javascript的隐式类型转换</h1>
+            <span class="info-title clearleft">
+                
+                    <span class="tags">javascript</span>
+                
+                <span class="time">2018年01月25日 12:26:56</span>
+                <span class="count-total" id="countNumbers"></span>
+            </span>
+            <span class="line"></span>
+            <div class="blog-container clearleft">
+                <article class="blog-content">
+                    <blockquote>
+<p>最近的一道热门的题目 <code>Can (a ==1 &amp;&amp; a== 2 &amp;&amp; a==3) ever evaluate to true?</code>, 引起了很多人的关注与讨论，自己可以很容易想到一种实现，但是看大家讨论出来的答案，其中有很多有意思的，不得不佩服一些人的脑洞，其中很多原理也值得探讨。</p>
+<blockquote>
+<p>很多其他语言的程序员对于这样的结果，很多都归结于 <code>果然javascript</code> 之类，的确与一些语言不同，<code>javascript</code> 中除了 <code>==</code> 外还有 <code>===</code>，<code>===</code> 叫做严格运算符，<code>==</code> 叫做相等运算符。</p>
+</blockquote>
+</blockquote>
+<h3 id="hazyzh-h3-1">关于 === 于 ==</h3><p>其实 <code>JavaScript</code> 一共提供了8个比较运算符。</p>
+<pre><code> &lt;   小于运算符
+ &gt;   大于运算符
+ &lt;=  小于或等于运算符
+ =<span class="ruby">   大于或等于运算符
+</span> =<span class="ruby">=  相等运算符
+</span> =<span class="ruby">== 严格相等运算符
+</span> !=<span class="ruby">  不相等运算符
+</span> !=<span class="ruby">= 严格不相等运算符</span>
+</code></pre><p>比较操作涉及多不同类型的值时候，会涉及到很多隐式转换，其中规则繁多即便是经验老道的程序员也没办法完全记住，特别是用到 <code>==</code> 和 <code>!=</code> 运算时候。所以一些团队规定禁用 <code>==</code> 运算符换用<code>===</code> 严格相等。以工程标准衡量，<code>==</code> 带来的便利性抵不上其带来的成本，团队协作时候你看到别人代码中的 <code>==</code>,有些时候需要判断清楚作者的代码意图是确实需要转型，还是无所谓要不要转型只是随手写了，增加了一些额外的成本。但是我比较喜欢的一本书 <code>You don&#39;t know JS</code>,中作者也写道过一个我比较赞同的观点</p>
+<blockquote>
+<p>Many developers feel that === is more predictable, so they advocate always using that form and staying away from ==. I think this view is very shortsighted. I believe == is a powerful tool that helps your program, if you take the time to learn how it works.</p>
+</blockquote>
+<p>简译为</p>
+<blockquote>
+<p>很多开发者认为 === 的行为更加容易预测，从而主张使用 === 而远离 ==。我认为这种观点是非常短视的，如果你花点时间去搞清楚它的工作原理，== 将是你开发的强大工具。</p>
+</blockquote>
+<p>究竟谁对谁错也没有定论，但是去了解一些隐式转换的规则，对我们开发和调试bug都非常有帮助。这些规则规定很烦多，一个个看过来很无趣也不能全记住。我们下面从这个问题的一些答案中去探究其中的一小部分规则。</p>
+<h3 id="hazyzh-h3-2">题目一些答案</h3><h4 id="hazyzh-h4-1">大家来找茬？</h4><pre><code class="lang-javascript">var aﾠ = <span class="hljs-number">1</span>;
+var a = <span class="hljs-number">2</span>;
+var ﾠa = <span class="hljs-number">3</span>;
+if(aﾠ==<span class="hljs-number">1</span> &amp;&amp; a== <span class="hljs-number">2</span> &amp;&amp;ﾠa==<span class="hljs-number">3</span>) {
+    console.log(<span class="hljs-string">"Why hello there!"</span>)
+}
+</code></pre>
+<p>看到这个答案时候曾一度怀疑自己学的是假的 <code>javascript</code>，这个答案和隐式转换没有关系，可以说它能考察你的找茬能力，注意if里面的空格，它是一个Unicode空格字符，不被ECMA脚本解释为空格字符<code>(这意味着它是标识符的有效字符)</code>。所以它可以解释为</p>
+<pre><code class="lang-javascript">var <span class="hljs-attr">a_</span> = <span class="hljs-number">1</span>;
+var <span class="hljs-attr">a</span> = <span class="hljs-number">2</span>;
+var <span class="hljs-attr">_a</span> = <span class="hljs-number">3</span>;
+<span class="hljs-keyword">if</span>(<span class="hljs-attr">a_==1</span> &amp;&amp; <span class="hljs-attr">a==</span> <span class="hljs-number">2</span> &amp;&amp;<span class="hljs-attr">_a==3)</span> {
+    console.log(<span class="hljs-string">"Why hello there!"</span>)
+}
+</code></pre>
+<h4 id="hazyzh-h4-2">运算子是对象时候的valueOf toString 方法</h4><pre><code class="lang-javascript"><span class="hljs-keyword">const</span> a = {
+  <span class="hljs-attr">i</span>: <span class="hljs-number">1</span>,
+  <span class="hljs-attr">toString</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">return</span> a.i++;
+  }
+}
+
+<span class="hljs-keyword">if</span>(a == <span class="hljs-number">1</span> &amp;&amp; a == <span class="hljs-number">2</span> &amp;&amp; a == <span class="hljs-number">3</span>) {
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Hello World!'</span>);
+}
+</code></pre>
+<p>如果原始类型的值和对象比较，对象会转为原始类型的值，再进行比较。<code>(我想到的也是这种方法)</code>，对象转换成原始类型的值，算法是先调用<code>valueOf</code>方法；如果返回的还是对象，再接着调用<code>toString</code>方法。我们每次比较时候都会执行方法返回 <code>a</code> 的 <code>i</code> 属性同时也改变 <code>i</code> 的值,所以上面 <code>if</code> 执行完以后 <code>a</code> 的 <code>i</code> 属性已经变为了 4，<strong>这里也表现出了 == 比较是有可能会对变量带来副作用的</strong></p>
+<h4 id="hazyzh-h4-3">利用数组的特性</h4><pre><code class="lang-javascript">var a = [<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>];
+a.join = a.shift;
+console.log(a == <span class="hljs-number">1</span> &amp;&amp; a == <span class="hljs-number">2</span> &amp;&amp; a == <span class="hljs-number">3</span>);
+</code></pre>
+<p>这个答案还是比较巧妙的，我们知道 <code>array</code> 也属于对象，应该和对象的规则一样。关于 <code>array</code> 的原型链上的 <code>toString</code> 方法</p>
+<blockquote>
+<p>对于数组对象，toString 方法返回一个字符串，该字符串由数组中的每个元素的 toString() 返回值经调用 join() 方法连接（由逗号隔开）组成。</p>
+</blockquote>
+<p>可以看到数组 <code>toString</code> 会调用本身的 <code>join</code> 方法，这里把自己的<code>join</code>方法该写为<code>shift</code>,每次返回第一个元素，而且原数组删除第一个值，正好可以使判断成立。<strong>这里 == 比较也带来的副作用</strong></p>
+<h4 id="hazyzh-h4-4">利用with 关键字</h4><pre><code>var <span class="hljs-attr">i</span> = <span class="hljs-number">0</span>;
+
+<span class="hljs-keyword">with</span>({
+  get a() {
+    return ++i;
+  }
+}) {
+  <span class="hljs-keyword">if</span> (<span class="hljs-attr">a</span> == <span class="hljs-number">1</span> &amp;&amp; <span class="hljs-attr">a</span> == <span class="hljs-number">2</span> &amp;&amp; <span class="hljs-attr">a</span> == <span class="hljs-number">3</span>)
+    console.log(<span class="hljs-string">"wohoo"</span>);
+}
+</code></pre><p><code>with</code> 也是被严重建议不使用的对象，这里也是利用它的特性在代码块里面利用对象的 <code>get</code> 方法动态返回 <code>i</code>.</p>
+<h4 id="hazyzh-h4-5">和with类似修改window的get方法</h4><pre><code><span class="hljs-keyword">var</span> val = <span class="hljs-number">0</span>;
+<span class="hljs-built_in">Object</span>.defineProperty(<span class="hljs-built_in">window</span>, <span class="hljs-string">'a'</span>, {
+  <span class="hljs-attr">get</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">return</span> ++val;
+  }
+});
+<span class="hljs-keyword">if</span> (a == <span class="hljs-number">1</span> &amp;&amp; a == <span class="hljs-number">2</span> &amp;&amp; a == <span class="hljs-number">3</span>) {
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'yay'</span>);
+}
+</code></pre><p>我们知道我们用的全局变量也相当于 <code>window</code> 对象上的一个属性，这里用<code>defineProperty</code> 定义了 <code>a</code>的 <code>get</code> 也使得其动态返回值。和<code>with</code> 有一些类似。</p>
+<h4 id="hazyzh-h4-6">es6的Symbol特性</h4><pre><code class="lang-javascript"><span class="hljs-keyword">let</span> a = {[Symbol.toPrimitive]: <span class="hljs-function">(<span class="hljs-params">(<span class="hljs-params">i</span>) =&gt; (<span class="hljs-params"></span>) =&gt; ++i</span>) (<span class="hljs-params">0</span>)};
+
+<span class="hljs-params">console</span>.<span class="hljs-params">log</span>(<span class="hljs-params">a == 1 &amp;&amp; a == 2 &amp;&amp; a == 3</span>);</span>
+</code></pre>
+<p><code>ES6</code> 引入了一种新的原始数据类型<code>Symbol</code>，表示独一无二的值。我们之前在定义类的内部私有属性时候习惯用 <code>__xxx</code> ,这种命名方式避免别人定义相同的属性名覆盖原来的属性，有了 <code>Symbol</code> 之后我们完全可以用 <code>Symbol</code>值来代替这种方法，而且完全不用担心被覆盖。</p>
+<p>除了定义自己使用的 <code>Symbol</code> 值以外，<code>ES6</code> 还提供了 11 个内置的 <code>Symbol</code> 值，指向语言内部使用的方法。<code>Symbol.toPrimitive</code>就是其中一个，它指向一个方法，表示该对象被转为原始类型的值时，会调用这个方法，返回该对象对应的原始类型值。这里就是改变这个属性，把它的值改为一个 <code>闭包</code> 返回的函数。</p>
+<h3 id="hazyzh-h3-3">小记</h3><p>现实业务中一般不会有人去写出这种代码，但是这个题目感觉还是很有意思的，每个人开发脑洞后想出来的各种答案，还是能给人很多方面的思考。</p>
+
+                    <div id="comment" class="comment"></div>
+                </article>
+                <aside class="blog-aside" id="asideContent">
+                </aside>
+            </div>
+        </div>
+        <script src="https://cdn.bootcss.com/react/15.6.1/react.min.js"></script>
+        <script src="https://cdn.bootcss.com/react/15.6.1/react-dom.min.js"></script>
+        <script src="https://cdn.bootcss.com/antd/2.12.2/antd.min.js"></script>
+        <script type="text/javascript" src="/js/bundle.js"></script>
+    </body>
+</html>
