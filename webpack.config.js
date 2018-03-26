@@ -9,7 +9,7 @@ const extractLESS = new ExtractTextPlugin({
 })
 
 // 自己博客的路径
-const myblogPath = path.resolve('/Users/user1/Desktop/hazyzh/appidi0x590ecbp/hazy')
+const myblogPath = path.resolve('/Users/harry.hou/Desktop/hazyzh/myblog/hazy')
 
 module.exports = {
     entry: {

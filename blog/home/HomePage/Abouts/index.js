@@ -10,10 +10,10 @@ const About = () => (
 				My name is Hou ZengHao (侯增皓) . I was born in 1991s.
 			</p>
 			<p>
-				I am an IT developer focusing on web technology. Now I am employed by OutOfControl(in fect i like the other name LiYun) as an Node/JavaScript engineer.
+				I am an IT developer focusing on web technology. Now I am employed by RingCentral as an Node/JavaScript engineer.
 			</p>
 			<p>
-				I graduated  from  Southwest Minzu university and my major was computer science.
+				I graduated  from  Southwest Minzu university and my major is computer science.
 			</p>
 			<p>
 				In spare time, I like reading book, play basketball and taking a jogging outdoors.
