@@ -237,6 +237,7 @@
     <span class="hljs-comment">// timeout: 499.873291015625ms</span>
     <span class="hljs-comment">// doStuff___start 54</span>
     <span class="hljs-comment">// timeout: 500.439697265625ms</span>
+
 </code></pre><p>可以看到 <code>A</code> 方法(<em>用setTimeout回掉</em>),我们保证了每次进程结束到下一次进程开始的间隔为预期值，但是从每次进程开始的时间间隔(<em>我们这里精确到了秒</em>)是会改变的，而<code>B</code> 方法(<em>setInterval</em>)表现的和我们预期的相同，正好与<code>A</code>相反。</p>
 <h3 id="hazyzh-h3-2">nodejs中的差异</h3><p>目前为止所以的表现都合理，至少很符合预期。可是当我在 <code>nodejs(v8.1.4)</code> 中测试时候，却发现不管我用 <code>setTimeout</code> 还是 <code>setInterval</code>，他们总是能表现出同样的效果(<em>都是上面A方法的效果【用setTimeout回掉】</em>)。这一点让我很困惑,经过一番探究，在 <code>nodejs</code> 关于 <code>timers</code> 的代码中找到了答案。</p>
 <p><code>nodejs</code> 关于定时器的源码在 <a href="https://github.com/nodejs/node/blob/master/lib/timers.js">node/lib/timer</a> 文件中，进入就关于定时器的一些设计解释，因为 <code>node</code> 是做服务端代码，在内部 <code>TCP, I/O..</code> 等大部分事件都会创建一个定时器，任何时间都可能存在大量的定时器任务，所以设计一个高效的定时器是很有必要的。</p>

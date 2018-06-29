@@ -211,6 +211,7 @@
     <span class="hljs-string">./configure</span>
     make
     make install
+
 </code></pre>
 <p> 4.安装 <code>ssl</code></p>
 <pre><code class="lang-linux">    wget https:<span class="hljs-comment">//www.openssl.org/source/openssl-1.0.1t.tar.gz</span>
@@ -236,6 +237,7 @@
 </span>
     make
     make install
+
 </code></pre>
 <p> 6.启动</p>
 <p> 确保80端口没有被占用，我之前node是在监听80端口的，现在把服务先停止。</p>
@@ -244,6 +246,7 @@
     netstat -ano|grep <span class="hljs-number">80</span>
     <span class="hljs-comment"># 启动nginx</span>
     sudo <span class="hljs-regexp">/usr/</span>local<span class="hljs-regexp">/nginx/</span>nginx
+
 </code></pre>
 <p> 启动后再重新打开你的站点，看到 <code>Welcome to nginx!</code> 界面就安装好了。</p>
 <h4 id="hazyzh-h4-3">配置ssl证书</h4><p> 一般网上申请好证书，下载时候都会给你些配置提示，我这个阿里云的证书，下载时候就根据不同配置给了详细的答案。把证书下载下来，放到nginx文件中，我这里放在了一个新建的 <code>cert</code>文件夹中,然后配置nginx文件下的 <code>nginx.conf</code>开启 <code>https</code> .</p>
@@ -269,6 +272,7 @@
             <span class="hljs-attribute">index</span> index.html index.htm;
         }
     }
+
 </code></pre>
 <p>配置好之后重启你的nginx, <code>sudo /usr/local/nginx/nginx -s reload</code> 然后用<code>https</code> 访问你的站点,如果可以看到欢迎界面就说明成功了，我这里被坑了一下，因为服务器默认没有开启443端口的权限，我就一直访问不了，后面去阿里的控制台加了443端口权限就可以了。</p>
 <h4 id="hazyzh-h4-4">全站https</h4><p>说白了就是访问<code>http</code>的请求强行转到<code>https</code>上，还是配置nginx,把上面监听80端口的server重定向到https</p>
@@ -278,6 +282,7 @@
         <span class="hljs-attribute">server_name</span>  xxxx.com www.xxxx.com;
         <span class="hljs-attribute">rewrite</span><span class="hljs-regexp"> ^</span> https://<span class="hljs-variable">$http_host</span><span class="hljs-variable">$request_uri</span>? <span class="hljs-literal">permanent</span>;
     }
+
 </code></pre>
 <p>设置好后重启nginx,再去访问自己站点的<code>http</code>链接，应该可以看到自动跳转到了<code>https</code>,这一步应该问题不大，我这里遇到了一个奇怪的问题，访问主站点时候居然重定向到了这个网站<code>https://localhost</code>,还以为配置不对搞了半天不知道哪里的问题，后面把我的<code>chrome</code> 的缓存啥的清理一遍居然自己好了。</p>
 <h4 id="hazyzh-h4-5">反向代理到真正的服务</h4><p>这里主要就是把https的请求即监听433端口的那个<code>server</code>,代理到真正的处理后台上。我这里把<code>nodejs</code>监听的端口挑到了8080,还是配置nginx,修改上面433端口server配置里面<code>location /</code>里面到内容。</p>
@@ -296,6 +301,7 @@
         <span class="hljs-attribute">proxy_set_header</span> Upgrade <span class="hljs-variable">$http_upgrade</span>;
         <span class="hljs-attribute">proxy_set_header</span> Connection <span class="hljs-string">"upgrade"</span>;
     }
+
 </code></pre>
 <p>设置好之后重启nginx,如果正常的话配置就差不多可以了。</p>
 <h4 id="hazyzh-h4-6">第三方服务和一些问题</h4><p>因为我的网站还没做多久，所以历史问题还不严重，大概看一看就知道那些第三方链接不对，现在基本上服务商都提供<code>https</code>的资源了，把不合格的资源换成<code>https</code>试一试，可以请求的话就去改代码吧,这里遇到两个问题。</p>

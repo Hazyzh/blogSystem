@@ -193,6 +193,7 @@
         }
         <span class="hljs-built_in">return</span> <span class="hljs-built_in">num</span> == x || (x != <span class="hljs-number">0</span> &amp;&amp; Math.<span class="hljs-built_in">floor</span>(<span class="hljs-built_in">num</span> / <span class="hljs-number">10</span>) == x)
     };
+
 </code></pre>
 <h4 id="hazyzh-h4-2">Container With Most Water</h4><p><code>给定一个数组，想象成一个二位坐标系，数组中每一个元素 a[i] =&gt; n 就是坐标系上的一条线段[ (i,0) =&gt; (i,x) ]。找出任意两条线段与 x 轴组成的木桶，可以盛水最大的值。</code></p>
 <p>看到题目想了一下就想着两层循环去计算，果然就超时了，看了看别人的思路，开始就算出0到最后一个线段组成的木桶的面积，然后找出线段比较短的一条向中间靠拢，如果下一条线段比当前线段还短就忽略，反之就继续循环计算。想了想这样做也是合理的如果下一条线段比当前的还短那组成的面积肯定比较小。有了思路就好做了</p>
@@ -211,6 +212,7 @@
         }
         <span class="hljs-built_in">return</span> res
     }
+
 </code></pre>
 <h4 id="hazyzh-h4-3">Regular Expression Matching</h4><p><code>实现正则，
     &#39;.&#39; Matches any single character.
@@ -234,11 +236,13 @@
             <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>
         }
     }
+
 </code></pre>
 <h4 id="hazyzh-h4-4">Is Circular</h4><p>看到一个面试题，JSON.stringify 是 <code>JavaScript</code> 的一个方法返回一个json格式的字符串，效果如下</p>
 <pre><code class="lang-javascrpit">
     const obj = {<span class="hljs-selector-tag">a</span>:<span class="hljs-number">1</span>, <span class="hljs-selector-tag">b</span>:<span class="hljs-number">2</span>}
     JSON.stringify(obj) <span class="hljs-comment">// =&gt; '{"a":1,"b":2}'</span>
+
 </code></pre>
 <p>当要转化的对象有“环”存在时（子节点属性赋值了父节点的引用），为了避免死循环，JSON.stringify 会抛出异常，例如：</p>
 <pre><code class="lang-javascript">    var arr = [<span class="hljs-number">1</span>]
@@ -267,6 +271,7 @@
         <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(o)</span></span>
         <span class="hljs-keyword">return</span> flag
     }
+
 </code></pre>
 <h4 id="hazyzh-h4-5">Submission Details</h4><p><code>给一个数字，写一个函数根据数字生成所有形式良好的括号组合
     2 =&gt; [&quot;()()&quot;, &quot;(())&quot;]

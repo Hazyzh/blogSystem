@@ -253,6 +253,7 @@ const mapStateToProps = <span class="hljs-keyword">state</span> =&gt; ({
     ...,
     isLoading: <span class="hljs-keyword">state</span>.uiState.MY_ACTION_TYPE
 })
+
 </code></pre>
 <h3 id="hazyzh-h3-4">效果如下</h3><p><img src="https://hazyzh.oss-cn-shenzhen.aliyuncs.com/imgs/redux/WechatIMG42.jpeg" alt="promise-middleware"></p>
 <p>可以在项目 <a href="https://github.com/Hazyzh/reacts-ggsddu"><code>react-ggsddu</code></a> 运行 <code>npm run async-2</code> 体验。</p>

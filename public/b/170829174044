@@ -198,6 +198,7 @@
 </span>    Host gitlab.company.com
     RSAAuthentication <span class="hljs-literal">yes</span>
     IdentityFile ~/.ssh/config/private-key-filename
+
 </code></pre>
 <h3 id="hazyzh-h3-2">ssh免密登录</h3><p>本地生产秘钥步骤同上。然后把 <code>pub</code> 结尾的key复制到 <code>server</code> 端的 <code>~／.ssh/.authorized_keys</code> 文件内，然后重启<code>server</code> 端 <code>ssh</code> 服务。</p>
 <pre><code>    $ sudo<span class="hljs-built_in"> service </span>ssh restart
@@ -209,10 +210,12 @@
     chmod 600 ~<span class="hljs-string">/.ssh/authorized_keys</span>
     chmod 700 ~<span class="hljs-string">/.ssh</span>
     chmod g-w <span class="hljs-string">/root</span> <span class="hljs-params">(.ssh的父目录)</span>
+
 </code></pre><p><code>sshd_config</code> 文件配置问题, 配置文件 <code>/etc/ssh/sshd_config</code> 的相关选项，这样写很不安全，不过我个人的到无所谓了</p>
 <pre><code>    PermitRootLogin <span class="hljs-keyword">yes</span> <span class="hljs-comment">// 允许root登录</span>
     PermitEmptyPasswords <span class="hljs-keyword">yes</span> <span class="hljs-comment">// 空密码</span>
     AuthorizedKeysFile   /root/.ssh/authorized_keys  <span class="hljs-comment">// 验证文件位置</span>
+
 </code></pre><p> 还有就是我生成秘钥时候自己写了名字，在 <code>config</code> 文件中配置了,但是登录还是一直要输入密码，后面我换成 <code>id_rsa.pub</code> 的内容到 <code>server</code> 端的 <code>authorized_keys</code> 文件中就可以了，不知道是哪里被限制了。</p>
 
                     <div id="comment" class="comment"></div>

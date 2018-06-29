@@ -200,6 +200,7 @@ gzip_min_length <span class="hljs-number">1</span>k;
 gzip_comp_level <span class="hljs-number">2</span>;
 <span class="hljs-comment"># 进行压缩的文件类型。javascript有多种形式。其中的值可以在 mime.types 文件中找到。</span>
 gzip_types <span class="hljs-built_in">text</span>/plain <span class="hljs-built_in">application</span>/javascript <span class="hljs-built_in">application</span>/x-javascript <span class="hljs-built_in">text</span>/css <span class="hljs-built_in">application</span>/xml <span class="hljs-built_in">text</span>/javascript;
+
 </code></pre>
 <h5>应用构建时候压缩</h5><p>既然服务端都可以做了为什么 <code>webpack</code> 在打包前端应用时候还有这样一个压缩插件呢，我们可以在上面 <code>nginx</code> 配置中看到 <code>gzip_comp_level 2</code> 这个配置项，上面也有注释写道 <code>1-10</code> 数字越大压缩效果越好，但是会耗费更多的CPU和时间，我们压缩文件除了减少文件体积大小外，也是为了减少传输时间，如果我们把压缩等级配置的很高，每次请求服务端都要压缩很久才回返回信息回来，不仅服务器开销会增大很多，请求方也会等的不耐烦。但是现在的 <code>spa</code> 应用既然文件都是打包生成的，那如果我们在打包时候就直接生成高压缩等级的文件，作为静态资源放在服务器上，接收到请求后直接把压缩的文件内容返回回去会怎么样呢？</p>
 <p><code>webpack</code> 的 <code>compression-webpack-plugin</code> 就是做这个事情的，配置起来也很简单只需要在装置中加入对应插件,简单配置如下</p>

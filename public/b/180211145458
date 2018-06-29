@@ -307,6 +307,7 @@ traverse <span class="hljs-keyword">exit</span> a Identifier node!
         }
     }
 }
+
 </code></pre>
 <p>上面我们还提到了plugins是函数的情况，其实我们写的差距一般都是一个函数，这个入口函数上<code>babel</code>也会穿入一个<code>babel-types</code>,这是一个用于<code>AST</code> 节点的 <code>Lodash</code> 式工具库(类似<code>lodash</code>对于<code>js</code>的帮助), 它包含了构造、验证以及变换 AST 节点的方法。 该工具库包含考虑周到的工具方法，对编写处理AST逻辑非常有用。</p>
 <h3 id="hazyzh-h3-6">实际运用</h3><p>假如我们有如下代码</p>

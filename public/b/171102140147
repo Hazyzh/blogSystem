@@ -192,6 +192,7 @@
 
     myOperate1(<span class="hljs-number">3</span>) <span class="hljs-comment">// =&gt; 8</span>
     myOperate2(<span class="hljs-number">3</span>) <span class="hljs-comment">// =&gt; 4</span>
+
 </code></pre>
 <p>关于 <code>compose</code> 很多函数编程库里面都有实现, 这里我们不考虑一些特殊情况, 对于这个需求自己简单实现一下大概类似这样</p>
 <pre><code class="lang-javascript">    const compose = <span class="hljs-function"><span class="hljs-params">(...args)</span> =&gt;</span> args.reduce( <span class="hljs-function"><span class="hljs-params">(pre, d)</span> =&gt;</span> num =&gt; pre(d(num)) )
@@ -206,6 +207,7 @@
     next()
     <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'finish: '</span>, action)
 }
+
 </code></pre>
 <p>上面的代码我们可以感受很多函数编程的思想(<em>这也是我喜欢 <code>react</code> 一个很重要的原因</em>), 函数编程中有一个重要的概念 <code>柯里化</code>, 其实我们之前去实现 <code>compose</code> 函数时候细心的同学也能发现, 作为 <code>compose</code> 函数的参数, 这些函数应该都只接受一个参数, <code>redux</code> 规定的中间件写法是一个链式返回函数的写法, 中间的参数都已经固定了, 也就是我们只能在最后的代码框里书写中间件的业务逻辑, 在这个里面我们可以拿到哪些参数使用呢, 很明显就是上面链式返回函数里的参数。</p>
 <p><code>action</code> 我们很容易想到 <code>dispatch</code> 函数的参数就叫做 <code>action</code>, 但其实这里拿到的 <code>action</code> 应该是我们原始的内容经过 <code>redux</code> 的 <code>middleware</code> 一层一层处理到当前中间件时候的 <code>action</code>, 有了 <code>action</code> 我们要怎么处理它， 我们最原始的 <code>dispatch</code> 函数去哪里了, <code>store</code> 和 <code>next</code> 又指的是什么呢？带着问题我们继续看他后面是怎么处理的。</p>
@@ -223,6 +225,7 @@ const <span class="hljs-attr">middlewareAPI</span> = {
 <span class="hljs-attr">chain</span> = middlewares.<span class="hljs-built_in">map</span>(<span class="hljs-attr">middleware</span> =&gt; middleware(middlewareAPI))
 <span class="hljs-attr">dispatch</span> = compose(...chain)(store.dispatch)
 ...
+
 </code></pre>
 <p>这里 <code>middlewares</code> 就是我们创建 <code>store</code> 时候传入的中间件数组, 这里先是对 <code>middlewares</code> <code>map</code> 循环传入参数  <code>middlewareAPI</code> 得到返回值。 这里<code>middleware</code> 传入的第一个参数 <code>store</code> 已经找到了, 我们可以在 <code>store</code> 上取到 <code>getState</code> 和 <code>dispatch</code> 这两个函数。那么 <code>next</code> 函数又是传入的呢, 这里我们看到了熟悉的 <code>compose</code> 函数了, 我们来看看这里 <code>compose</code> 函数的实现。</p>
 <pre><code class="lang-javascript">
@@ -238,6 +241,7 @@ export <span class="hljs-keyword">default</span> <span class="hljs-function"><sp
 
   <span class="hljs-keyword">return</span> funcs.reduce((a, b) =&gt; (...args) =&gt; a(b(...args)))
 }
+
 </code></pre>
 <p>这里的 <code>funcs</code> 指的就是上面的 <code>chain</code> 数组, 这里多了对于中间件个数的判断, 最后通过 <code>reduce</code> 的实现已经和我们开篇讲的非常相似了。这里同样是把这些函数功能叠加起来, <code>a</code> 相当于排在前买呢对 <code>middleware</code>, <code>b</code> 则是靠后的 <code>middleware</code> , 可以看到 <code>a</code> 执行的参数传入的是 <code>b(...args)</code>, 所以对于 <code>a</code> 来说它获取到的 <code>next</code> 就是经过 <code>b</code> 处理过的 <code>dispatch</code>。</p>
 <p>有时候抽象的东西总是难以理解, 我们这里假设传入中间件一共有三个【我们熟悉的 thunk, promsie 和 logger】, 所以这里执行完效果应该如下</p>

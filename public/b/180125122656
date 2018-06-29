@@ -173,6 +173,8 @@
                 <article class="blog-content">
                     <blockquote>
 <p>最近的一道热门的题目 <code>Can (a ==1 &amp;&amp; a== 2 &amp;&amp; a==3) ever evaluate to true?</code>, 引起了很多人的关注与讨论，自己可以很容易想到一种实现，但是看大家讨论出来的答案，其中有很多有意思的，不得不佩服一些人的脑洞，其中很多原理也值得探讨。</p>
+</blockquote>
+<blockquote>
 <blockquote>
 <p>很多其他语言的程序员对于这样的结果，很多都归结于 <code>果然javascript</code> 之类，的确与一些语言不同，<code>javascript</code> 中除了 <code>==</code> 外还有 <code>===</code>，<code>===</code> 叫做严格运算符，<code>==</code> 叫做相等运算符。</p>
 </blockquote>

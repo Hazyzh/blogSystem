@@ -2,11 +2,11 @@
 <html>
     <head>
         <meta http-equiv=Content-Type content="text/html;charset=utf-8">
-        <meta name="keywords" contect="react, redux-thunk, redux-promise, javascript">
+        <meta name="keywords" contect="force download, 强制下载, 浏览器下载，文件响应返回头">
         <meta name="author" contect="hazyzh">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
-        <title>简单粗暴实现redux的thunk和promise中间件</title>
-        <meta name="description" content="异步处理 改造 dispatch 加入 Thunk 能力 加入处理 Promise 能力 测试和思考 ">
+        <title>怎么去控制浏览器对资源文件的处理行为</title>
+        <meta name="description" content="浏览器是怎么处理文件链接的 强制下载文件 a标签的download属性 改变资源格式 配置Content-Disposition 用户自己在浏览器设置 ">
         <link rel="shortcut icon" href="/favicon.ico"  type="image/x-icon">
         <style>
             *{
@@ -160,72 +160,54 @@
             </div>
         </header>
         <div id="content">
-            <h1>简单粗暴实现redux的thunk和promise中间件</h1>
+            <h1>怎么去控制浏览器对资源文件的处理行为</h1>
             <span class="info-title clearleft">
                 
-                    <span class="tags">react</span>
+                    <span class="tags">标签属性</span>
                 
-                    <span class="tags"> redux</span>
+                    <span class="tags"> 最佳实践</span>
                 
-                <span class="time">2017年10月28日 18:17:58</span>
+                <span class="time">2018年06月29日 16:21:32</span>
                 <span class="count-total" id="countNumbers"></span>
             </span>
             <span class="line"></span>
             <div class="blog-container clearleft">
                 <article class="blog-content">
-                    <h3 id="hazyzh-h3-1">异步处理</h3><p>我们使用 <code>redux</code> 处理数据流时候, 一个比较令人头疼的问题就是关于异步操作。<code>Action</code> 发出以后，过一段时间再执行 <code>Reducer</code>，这就是异步。在哪个阶段处理异步, <code>Reducer</code> 作为一个纯函数, 不适合承担此类功能, 理论上也承担不了, <code>Action</code> 存放一个对象, 作为消息的载体自己更不能进行异步操作。想一想就发现可以在 <code>dispatch</code> 这个发送 <code>Action</code> 的方法上做文章。如果我们能在异步操作的不同阶段发送不同的 <code>Action</code> 我们就可以完成异步操作了。</p>
-<p><img src="http://hazyzh.oss-cn-shenzhen.aliyuncs.com/imgs/redux/thunk-promise.png" alt="redux-promise"></p>
-<h3 id="hazyzh-h3-2">改造 dispatch</h3><p>基于我们之前实现的简单 <code>redux</code>, 对于它的 <code>dispatch</code> 函数进行处理。使它具有处理我们异步逻辑的能力。</p>
-<p>有时候看源码总能感觉到作者对代码逻辑处理的很优雅, 以及对于功能的可扩展性把握的很好，但是往往这些优美的代码，理解起来需要很多其他方面的知识基础, 这也是很多人看源码困难很大的原因。我们这里对与 <code>redux</code> 中间件的处理在后续再去讨论, 这里我们就以一种比较蠢的方法简单粗暴的实现我们想要的功能</p>
-<h4 id="hazyzh-h4-1">加入 Thunk 能力</h4><pre><code class="lang-javascript">
-    ...
-    const dispatch1 = store.dispatch
-    store.dispatch = <span class="hljs-built_in">arg</span> =&gt; {
-        <span class="hljs-keyword">if</span> (typeof <span class="hljs-built_in">arg</span> === <span class="hljs-string">'function'</span>) <span class="hljs-keyword">return</span> <span class="hljs-built_in">arg</span>(store.dispatch, getState)
-        dispatch1(<span class="hljs-built_in">arg</span>)
-    }
-    ...
-
-</code></pre>
-<p>这里逻辑异常简单, 先把原来的 <code>dispatch</code> 函数存储起来, 判断 <code>dispatch</code> 传入的参数类型, 如果参数类型为 <code>function</code> 则执行改函数并返回, 传入 <code>store</code> 的 <code>dispatch</code> 和 <code>getState</code> 作为参数, 使得 <code>dispatch</code> 具有处理函数参数的能力。</p>
-<h4 id="hazyzh-h4-2">加入处理 Promise 能力</h4><p>其实上面的 <code>thunk</code> 我们已经有了处理异步的能力, 但是每次我们要自己去手动触发三个 <code>action</code>, 工作量还是很大的。现在 <code>ajax</code> 很多都会包装为 <code>promise</code> 对象, 因此我们可以对与 <code>dispatch</code> 增加一层判断, 使得它具有处理具有 <code>promise</code> 属性的 <code>action</code> 的能力。</p>
+                    <h3 id="hazyzh-h3-1">浏览器是怎么处理文件链接的</h3><p>通常当用户打开一个资源的<code>url</code>,如果浏览器支持这个格式的文件的情况下，浏览器会尝试去再页面里展示它而不是直接下载。例如一张图片(<code>jpg, png, gif等</code>)，几乎所有浏览器都会去将图片在浏览器里面展示。</p>
+<p>对于压缩格式的文件(<code>zip, tar, gzip等</code>)浏览器总是会直接去下载它们，另外一些格式的文件，根据浏览器的不同也会有差异的处理方法，例如<code>Microsoft Word</code>文件(<code>doc, docx</code>)在<code>ie</code>浏览器下通常会在浏览器中展示，但是其他浏览器几乎都会直接下载它，同样的对于<code>PDF</code>文件<code>chrome</code>有自己的<code>pdf 转换器</code>它会尝试去在浏览器上展示该文件。</p>
+<h3 id="hazyzh-h3-2">强制下载文件</h3><p>对于浏览器这种行为，一般情况下是可以接受的，因为用户可以在浏览器显示文件后将文件保存到电脑中，但是一些情况下用户可能希望文件直接被下载而不是在浏览器中被打开，比如有时候用户想去下载一个歌曲，但是浏览器可能回去播放该音频。那么怎么让浏览器强制去下载文件要怎么做呢</p>
+<h4 id="hazyzh-h4-1">a标签的download属性</h4><p><code>html5</code>中 <code>a</code> 标签新增了 <code>download</code> 属性，该属性指示浏览器下载<code>url</code>的内容而不是导航到<code>url</code>，因此如果配置了此属性用户会直接下载<code>url</code>的内容。作为开发如果想直接触发该事件我们可以直接用代码模拟a标签和点击事件</p>
 <pre><code class="lang-javascript">
-    ...
-    const dispatch2 = store.dispatch
-
-    store.dispatch = <span class="hljs-built_in">action</span> =&gt; {
-        <span class="hljs-keyword">if</span> (isPromise(<span class="hljs-built_in">action</span>.payload)) {
-            const { <span class="hljs-built_in">type</span>, payload, <span class="hljs-built_in">params</span> } = <span class="hljs-built_in">action</span>
-            dispatch2({
-                <span class="hljs-built_in">type</span>: `${<span class="hljs-built_in">type</span>}<span class="hljs-variable">_PENDDING</span>`,
-                <span class="hljs-built_in">params</span>
-            })
-            payload.<span class="hljs-keyword">then</span>(
-                resolve =&gt; {
-                    dispatch2({
-                        <span class="hljs-built_in">type</span>: `${<span class="hljs-built_in">type</span>}<span class="hljs-variable">_SUCCESS</span>`,
-                        content: resolve,
-                        <span class="hljs-built_in">params</span>
-                    })
-                },
-                reject =&gt; {
-                    dispatch2({
-                        <span class="hljs-built_in">type</span>: `${<span class="hljs-built_in">type</span>}<span class="hljs-variable">_ERROR</span>`,
-                        content: reject,
-                        <span class="hljs-built_in">params</span>
-                    })
-                }
-            )
-        } <span class="hljs-keyword">else</span> {
-            dispatch2(<span class="hljs-built_in">action</span>)
-        }
-    }
-    ...
+    <span class="hljs-keyword">const</span> link = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'a'</span>);
+    link.addEventListener(<span class="hljs-string">'click'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+      link.download = xxx;
+      link.href = xxx;
+    });
+    <span class="hljs-keyword">const</span> e = <span class="hljs-built_in">document</span>.createEvent(<span class="hljs-string">'MouseEvents'</span>);
+    e.initEvent(<span class="hljs-string">'click'</span>, <span class="hljs-literal">false</span>, <span class="hljs-literal">false</span>);
+    link.dispatchEvent(e);
 
 </code></pre>
-<p>我们规定 <code>action</code> 要把 <code>promise</code> 对象放入 <code>payload</code> 属性中。当接收到 <code>payload</code> 属性为 <code>promise</code> 对象的 <code>action</code> 时候, 我们这里硬编码直接触发该 <code>type</code> 加 <code>_PENDDING</code> 事件。等到该 <code>promise</code> 状态改变后, 我们根据它成功与否分别触发 <code>_SUCCESS</code> 和 <code>_ERROR</code> 事件, 这样我们就可以把异步逻辑包装为 <code>promise</code> 对象放在 <code>action</code> 中, 然后我们在 <code>reducer</code> 中分别处理这几种类型的事件即可。</p>
-<h3 id="hazyzh-h3-3">测试和思考</h3><p>我们现在可以在项目(<a href="https://github.com/Hazyzh/reacts-ggsddu">reacts-ggsddu</a>)中分别去 <code>dispatch</code> 一个函数和一个带有 <code>promise</code> 对象的 <code>action</code> 可以看到分别的请求效果。 一个简易的异步处理方法已经实现了。</p>
-<p>但是反观对 <code>dispatch</code> 的改造没有什么统一性, 代码很难维护和扩展, redux 是可以配置中间件来扩展配置的。我们后面再去研究。</p>
+<blockquote>
+<ul>
+<li><code>download</code>属性只在同域时候有效，当跨域请求时候该属性将会被忽略。</li>
+<li>当前并非所以浏览器都支持该属性，需要浏览器考虑兼容性。</li>
+</ul>
+</blockquote>
+<h4 id="hazyzh-h4-2">改变资源格式</h4><p>浏览器会根据资源类型去判断是否支持，如果支持时会尝试去在页面上展示该资源。浏览器判断资源类型是根据返回头<code>Content-Type</code>的值，因此一方面我们在服务端可以设置返回头字段为文件流<code>&#39;Content-Type&#39;: &#39;application/octet-stream&#39;</code>，或者根据一些具体资源直接压缩后传输，浏览器不能分析<code>zip</code>之类的压缩文件所以会直接去下载它们。</p>
+<h4 id="hazyzh-h4-3">配置Content-Disposition</h4><p>在HTTP场景中，<code>Content-Disposition</code> 消息头指示回复的内容该以何种形式展示，是以内联的形式（即网页或者页面的一部分），还是以附件的形式下载并保存到本地。</p>
+<blockquote>
+<ul>
+<li><code>inline</code>默认参数表示消息体会以页面的一部分或者整个页面的形式展示。</li>
+<li><code>attachment</code> 消息体应该被下载到本地，将参数<code>filename</code>的值预填为下载后的文件名</li>
+</ul>
+</blockquote>
+<p>因此当我们希望该资源被直接下载时候，我们可以设置返回头<code>Content-Disposition</code>的值为<code>attachment</code>。</p>
+<pre><code class="lang-linux">    <span class="hljs-comment">//example</span>
+    Content-<span class="hljs-string">Disposition:</span> attachment; filename=<span class="hljs-string">"fname.ext"</span>
+</code></pre>
+<p>这里设置名称时候，要注意下<code>filename</code>的编码格式。</p>
+<h4 id="hazyzh-h4-4">用户自己在浏览器设置</h4><p>浏览器既然定义了该行为，根据浏览器的不同用户可能在设置页面去配置某些格式的文件是否希望浏览器去展示该文件。一些有争议的情况下，你也可以提示用户自己根据需求去设置这些参数。</p>
 
                     <div id="comment" class="comment"></div>
                 </article>
